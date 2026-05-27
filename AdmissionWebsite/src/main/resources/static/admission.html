@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Admission Form</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+	*{box-sizing:border-box}
+
+	body{
+	  margin:0;
+	  min-height:100vh;
+	  font-family:'Segoe UI',system-ui;
+	  background:linear-gradient(135deg,#fdf2f8,#f0f9ff);
+	  padding:40px 15px;
+	}
+
+	.container{
+	  max-width:900px;
+	  margin:auto;
+	  background:rgba(255,255,255,0.9);
+	  backdrop-filter: blur(10px);
+	  border-radius:16px;
+	  padding:35px;
+	  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+	  border:1px solid rgba(255,255,255,0.3);
+	}
+
+	h2{
+	  text-align:center;
+	  font-size:30px;
+	  margin-bottom:10px;
+	  color:#ea580c;
+	  font-weight:700;
+	}
+
+	h3{
+	  font-size:17px;
+	  margin-bottom:12px;
+	  color:#111827;
+	  border-left:4px solid #ea580c;
+	  padding-left:10px;
+	}
+
+	.section{margin-top:10px}
+
+	.grid{
+	  display:grid;
+	  grid-template-columns:repeat(2,1fr);
+	  gap:18px
+	}
+
+	.field{
+	  display:flex;
+	  flex-direction:column;
+	  gap:6px
+	}
+
+	label{
+	  font-weight:600;
+	  font-size:14px;
+	  color:#374151
+	}
+
+	input,select{
+	  padding:12px;
+	  border-radius:10px;
+	  border:1px solid #e5e7eb;
+	  background:#f9fafb;
+	  transition:all 0.25s ease;
+	}
+
+	input:focus,select:focus{
+	  border-color:#ea580c;
+	  background:#fff;
+	  box-shadow:0 0 0 3px rgba(234,88,12,0.15);
+	}
+
+	input:focus,select:focus{
+	  outline:none;
+	  border-color:#ea580c;
+	}
+
+	input[type="file"]{
+	  padding:8px;
+	}
+
+	.full{grid-column:1/3}
+
+	button{
+	  width:100%;
+	  margin-top:15px;
+	  padding:12px;
+	  border:none;
+	  border-radius:10px;
+	  font-size:15px;
+	  font-weight:600;
+	  color:#fff;
+	  cursor:pointer;
+	  transition:all 0.3s ease;
+	  display:flex;
+	  align-items:center;
+	  justify-content:center;
+	  gap:8px;
+	  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+	}
+
+	/* SUBMIT */
+	button[type="submit"]{
+	  background:linear-gradient(135deg,#ea580c,#f97316);
+	}
+
+	button:hover{
+	  transform:translateY(-2px);
+	  box-shadow:0 6px 18px rgba(0,0,0,0.2);
+	}
+
+	/* PAY */
+	#payBtn{
+	  background:linear-gradient(135deg,#16a34a,#22c55e);
+	}
+
+	/* CONTINUE */
+	#continueBtn{
+	  background:linear-gradient(135deg,#2563eb,#3b82f6);
+	}
+
+	/* PRINT */
+	#printBtn{
+	  background:linear-gradient(135deg,#111827,#374151);
+	}
+	
+	/* VIEW BUTTON */
+	.btn-view{
+	  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+	}
+
+	.btn-view:hover{
+	  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+	}
+
+	/* CONTINUE BUTTON */
+	.btn-continue{
+	  background: linear-gradient(135deg, #059669, #10b981);
+	}
+
+	.btn-continue:hover{
+	  background: linear-gradient(135deg, #047857, #059669);
+	}
+	.fee-box{
+	  margin-top:20px;
+	  padding:18px;
+	  border-radius:12px;
+	  background:linear-gradient(135deg,#fff7ed,#ffedd5);
+	  border:1px solid #fed7aa;
+	  box-shadow:0 4px 12px rgba(234,88,12,0.1);
+	}
+
+	.fee-box p{
+	  margin:5px 0;
+	  font-weight:600;
+	  color:#9a3412;
+	}
+
+	.alert{
+	  margin-top:18px;
+	  padding:12px;
+	  border-radius:6px;
+	  font-weight:600;
+	  text-align:center;
+	  display:none;
+	  font-size:14px;
+	}
+
+	.success{
+	  background:#dcfce7;
+	  color:#065f46;
+	}
+
+	.error{
+	  background:#fee2e2;
+	  color:#7f1d1d;
+	}
+
+	.back-btn{
+	  display:inline-block;
+	  margin-top:20px;
+	  padding:8px 16px;
+	  border-radius:6px;
+	  background:#f3f4f6;
+	  text-decoration:none;
+	  font-weight:600;
+	  color:#374151;
+	  border:1px solid #e5e7eb;
+	}
+
+	.back-btn:hover{
+	  background:#ea580c;
+	  color:#fff;
+	}
+
+	@media(max-width:768px){
+	  .grid{grid-template-columns:1fr}
+	  .full{grid-column:1/2}
+	}
+	.required-star{
+	  color:red;
+	  margin-left:4px;
+	}
+	
+	.alert{
+	  white-space:pre-line;
+	}
+	
+	.section{
+	  margin-top:20px;
+	  padding:20px;
+	  border-radius:12px;
+	  background:#ffffff;
+	  border:1px solid #f1f5f9;
+	  box-shadow:0 4px 10px rgba(0,0,0,0.04);
+	}
+	
+	.popup{
+	  position:fixed;
+	  top:0;
+	  left:0;
+	  width:100%;
+	  height:100%;
+	  background:rgba(0,0,0,0.5);
+	  display:none;
+	  justify-content:center;
+	  align-items:center;
+	  z-index:999;
+	  background:rgba(0,0,0,0.5);
+	}
+
+	.popup-card{
+	  width:95%;
+	  max-width:800px;
+	  background:#fff;
+	  padding:25px;
+	  border-radius:16px;
+	  max-height:80vh;
+	  overflow-y:auto;
+	  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+	  margin:auto;
+	}
+
+	.popup-card h3{
+	  margin-bottom:15px;
+	}
+
+	.popup-card p{
+	  margin:6px 0;
+	  font-weight:500;
+	}
+	
+	#successScreen{
+	  background:#ffffff;
+	  border-radius:16px;
+	  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+	  margin-top:20px;
+	}
+	
+	/* SECTION TITLE */
+	.view-title{
+	  font-size:18px;
+	  font-weight:700;
+	  margin:15px 0 10px;
+	  color:#111827;
+	  border-left:4px solid #7c3aed;
+	  padding-left:10px;
+	}
+
+	/* DETAILS GRID */
+	.view-grid{
+	  display:grid;
+	  grid-template-columns:repeat(2,1fr);
+	  gap:12px;
+	}
+
+	.view-box{
+	  background:#f9fafb;
+	  padding:10px;
+	  border-radius:8px;
+	  border:1px solid #e5e7eb;
+	  font-size:14px;
+	}
+
+	.view-box b{
+	  display:block;
+	  color:#6b7280;
+	  font-size:12px;
+	}
+
+	/* DOCUMENT TABLE */
+	.doc-table{
+	  width:100%;
+	  border-collapse:collapse;
+	  margin-top:10px;
+	}
+
+	.doc-table th{
+	  background:#111827;
+	  color:#fff;
+	  padding:10px;
+	  text-align:left;
+	}
+
+	.doc-table td{
+	  padding:10px;
+	  border-bottom:1px solid #e5e7eb;
+	}
+
+	.view-doc-btn{
+	  background:#2563eb;
+	  padding:6px 12px;
+	  border-radius:6px;
+	  color:#fff;
+	  cursor:pointer;
+	  font-size:13px;
+	  border:none;
+	}
+
+	.view-doc-btn:hover{
+	  background:#1d4ed8;
+	}
+	
+	
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Student Admission Form</h2>
+
+<form id="admissionForm" enctype="multipart/form-data">
+
+<!-- BASIC DETAILS -->
+<div class="section">
+<h3>Basic Details</h3>
+<div class="grid">
+	
+	<div class="field">
+	<label>Mobile No. <span class="required-star">*</span></label>
+	<input id="mobno" name="mobno" maxlength="10" required>
+	</div>
+
+<div class="field">
+<label>Full Name <span class="required-star">*</span></label>
+<input name="sname" required>
+</div>
+
+<div class="field">
+<label>Course Name <span class="required-star">*</span></label>
+<select id="courseName" name="courseName" required>
+<option value="">Select Course</option>
+</select>
+</div>
+
+<div class="field">
+<label>Email <span class="required-star">*</span></label>
+<input type="email" id="email" name="email" required>
+</div>
+
+<div class="field">
+<label>Gender <span class="required-star">*</span></label>
+<select name="gender" required>
+<option value="">Select</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+
+
+
+<div class="field">
+<label>Date Of Birth <span class="required-star">*</span></label>
+<input type="date" name="dob" required>
+</div>
+
+</div>
+</div>
+
+<!-- ADDRESS -->
+<div class="section">
+<h3>Address Details</h3>
+<div class="grid">
+
+<div class="field">
+<label>State <span class="required-star">*</span></label>
+<select id="state" name="state" required></select>
+</div>
+
+<div class="field">
+<label>District <span class="required-star">*</span></label>
+<select id="district" name="district" required></select>
+</div>
+
+<div class="field">
+<label>Taluka <span class="required-star">*</span></label>
+<select id="taluka" name="taluka" required></select>
+</div>
+
+<div class="field full">
+<label>Full Address <span class="required-star">*</span></label>
+<input name="address">
+</div>
+
+</div>
+</div>
+
+<!-- DOCUMENTS -->
+<div class="section">
+<h3>Documents Upload</h3>
+<div class="grid">
+
+	<!-- PHOTO -->
+	<div class="field">
+	<label>Student Photo (JPG / PNG) <span class="required-star">*</span></label>
+	<input type="file" name="photo" accept="image/png,image/jpeg" required>
+	<img id="photoPreview" width="80" style="display:none;margin-top:5px;">
+	<p id="photoText" style="display:none;color:green;">Document already uploaded</p>
+	</div>
+
+	<!-- SIGNATURE -->
+	<div class="field">
+	<label>Signature (JPG / PNG)<span class="required-star">*</span></label>
+	<input type="file" name="signature" accept="image/png,image/jpeg" required>
+	<img id="signPreview" width="80" style="display:none;margin-top:5px;">
+	<p id="signText" style="display:none;color:green;">Document already uploaded</p>
+	</div>
+
+<div class="field">
+<label>Aadhar Card<span class="required-star">*</span></label>
+<input type="file" name="adharcard" accept="image/png,image/jpeg,application/pdf" required>
+<p id="adharPreview" style="display:none;color:green;">Document already uploaded</p>
+</div>
+
+<div class="field">
+<label>Marksheet<span class="required-star">*</span>
+</label>
+<input type="file" name="marksheet" accept="image/png,image/jpeg,application/pdf" required>
+<p id="marksheetPreview" style="display:none;color:green;">Document already uploaded</p>
+</div>
+
+</div>
+</div>
+
+<button type="submit" class="btn btn-submit">🚀 Submit Admission</button>
+</form>
+
+<!-- FEE DETAILS 
+<div class="fee-box" id="feeBox">
+<p>Total Course Fee: ₹ <span id="totalFee">0</span></p>
+<p>Advance Fee (20%): ₹ <span id="advanceFee">0</span></p>
+</div>  
+
+<button id="payBtn">Pay Advance Fee</button>  
+
+<button id="continueBtn" style="background:#2563eb;display:none;"> Continue to Dashboard </button>
+<button id="viewBtn" style="display:none;background:#7c3aed;">  👁 View Form </button>  -->
+
+<!-- SUCCESS SCREEN -->
+<div id="successScreen" style="display:none;text-align:center;padding:40px;">
+
+  <h2 style="color:#16a34a;">✅ Admission Submitted Successfully</h2>
+  <p style="margin-top:10px;color:#555;">
+    Your admission has been submitted successfully.
+  </p>
+
+  <div style="display:flex;gap:15px;justify-content:center;margin-top:25px;flex-wrap:wrap;">
+
+    <button id="viewAfterSubmit" class="btn btn-view">👁 View Form</button>
+
+    <button onclick="goDashboard()" class="btn btn-continue">
+      ➡ Continue to Dashboard
+    </button>
+
+  </div>
+
+</div>
+
+<div id="alert" class="alert"></div>
+
+<a href="javascript:void(0)" onclick="goBack()" class="back-btn">⬅ Back</a>
+
+<!-- VIEW POPUP -->
+<div id="viewPopup" class="popup">
+  <div class="popup-card">
+
+    <h3>📄 Admission Details</h3>
+
+    <div id="popupContent"></div>
+
+    <button id="printBtn">🖨 Print</button>
+    <button onclick="closePopup()" style="background:#ef4444;">Close</button>
+
+  </div>
+</div>
+
+</div>
+
+<script>
+	
+/*	const params = new URLSearchParams(window.location.search);
+	const studentEmail = params.get("email");
+
+	if(studentEmail){
+	   document.querySelector("input[name='email']").value = studentEmail;
+	   loadStudentData(studentEmail);
+	}  */
+	
+	/* LOAD COURSES FROM BACKEND */
+
+	async function loadCourses(){
+
+	  const res = await fetch("http://localhost:8080/course/get");
+
+	  const data = await res.json();
+
+	  const dropdown = document.getElementById("courseName");
+
+	  data.forEach(course => {
+
+	    const option = document.createElement("option");
+
+	    option.value = course.courseName;
+
+	    option.textContent = course.courseName ;
+
+	    dropdown.appendChild(option);
+
+	  });
+
+	}
+
+	loadCourses();
+	
+/* STATE-DISTRICT-TALUKA */
+const data = {
+
+  Maharashtra: {
+    Pune: ["Haveli", "Mulshi", "Shirur", "Baramati"],
+    Nagpur: ["Katol", "Hingna", "Narkhed"],
+    Raigad: ["Mahad", "Mangaon", "Pen", "Panvel"],
+    Nashik: ["Sinnar", "Igatpuri", "Malegaon"],
+    Mumbai: ["Andheri", "Borivali", "Kurla"]
+  },
+
+  "Madhya Pradesh": {
+    Bhopal: ["Huzur", "Berasia"],
+    Indore: ["Mhow", "Depalpur", "Sanwer"],
+    Gwalior: ["Dabra", "Bhitarwar"],
+    Jabalpur: ["Sihora", "Patan"]
+  },
+
+  Gujarat: {
+    Ahmedabad: ["Daskroi", "Sanand", "Detroj"],
+    Surat: ["Kamrej", "Bardoli", "Olpad"],
+    Rajkot: ["Jasdan", "Gondal"],
+    Vadodara: ["Padra", "Savli"]
+  },
+
+  Rajasthan: {
+    Jaipur: ["Sanganer", "Amber", "Chomu"],
+    Jodhpur: ["Osian", "Phalodi"],
+    Udaipur: ["Girwa", "Mavli"],
+    Kota: ["Ladpura", "Sangod"]
+  },
+
+  Karnataka: {
+    Bengaluru: ["Anekal", "Yelahanka", "Devanahalli"],
+    Mysuru: ["Nanjangud", "Hunsur"],
+    Hubli: ["Kalghatgi", "Navalgund"]
+  },
+
+  Telangana: {
+    Hyderabad: ["Shaikpet", "Amberpet", "Secunderabad"],
+    Warangal: ["Hanamkonda", "Parkal"],
+    Karimnagar: ["Huzurabad", "Jammikunta"]
+  },
+
+  TamilNadu: {
+    Chennai: ["Tambaram", "Guindy", "Ambattur"],
+    Coimbatore: ["Mettupalayam", "Pollachi"],
+    Madurai: ["Melur", "Usilampatti"]
+  },
+
+  UttarPradesh: {
+    Lucknow: ["Bakshi Ka Talab", "Malihabad"],
+    Kanpur: ["Bilhaur", "Ghatampur"],
+    Agra: ["Etmadpur", "Kheragarh"]
+  },
+
+  Bihar: {
+    Patna: ["Danapur", "Phulwari"],
+    Gaya: ["Tekari", "Sherghati"],
+    Muzaffarpur: ["Bochaha", "Sakra"]
+  },
+
+  Chhattisgarh: {
+    Raipur: ["Abhanpur", "Arang"],
+    Bilaspur: ["Takhatpur", "Masturi"],
+    Durg: ["Patan", "Dhamdha"]
+  }
+
+};
+
+
+const s=document.getElementById("state"),
+d=document.getElementById("district"),
+t=document.getElementById("taluka");
+
+s.innerHTML='<option value="">Select State</option>';
+Object.keys(data).forEach(x=>s.innerHTML+=`<option>${x}</option>`);
+
+s.onchange=()=>{
+  d.innerHTML='<option value="">Select District</option>';
+  t.innerHTML='<option value="">Select Taluka</option>';
+  if(!s.value) return;
+  Object.keys(data[s.value]).forEach(x=>d.innerHTML+=`<option>${x}</option>`);
+};
+d.onchange=()=>{
+  t.innerHTML='<option value="">Select Taluka</option>';
+  if(!d.value) return;
+  data[s.value][d.value].forEach(x=>t.innerHTML+=`<option>${x}</option>`);
+};
+
+/* VALIDATION FUNCTION */
+function validateForm(){
+
+  let errors = [];
+
+  const mob = document.getElementById("mobno").value.trim();
+  const email = document.getElementById("email").value.trim();
+
+  if(!/^\d{10}$/.test(mob)){
+    errors.push("Enter valid 10-digit Mobile Number");
+  }
+
+  if(!email){
+    errors.push("Email is required");
+  }
+
+  document.querySelectorAll("[required]").forEach(field=>{
+    if(!field.value){
+      const label = field.closest(".field").querySelector("label").innerText;
+      errors.push(label + " is required");
+    }
+  });
+
+  return errors;
+}
+let submittedData = {};
+
+
+/* FORM SUBMIT */
+const form=document.getElementById("admissionForm");
+const alertBox=document.getElementById("alert");
+//const feeBox=document.getElementById("feeBox");
+//const payBtn=document.getElementById("payBtn");
+//const continueBtn = document.getElementById("continueBtn");
+
+let admissionId=null;
+
+form.onsubmit = async e => {
+  e.preventDefault();
+
+  const errors = validateForm();
+
+  if(errors.length > 0){
+    show(errors.join("\n"), "error");
+    return;
+  }
+
+  const fd = new FormData(form);
+  
+  submittedData = Object.fromEntries(fd.entries());
+  
+  // ✅ FILES bhi store karo
+  submittedData.photoFile = form.photo.files[0];
+  submittedData.signFile = form.signature.files[0];
+  submittedData.adharFile = form.adharcard.files[0];
+  submittedData.markFile = form.marksheet.files[0];
+
+ // show("Submitting admission...", "success");
+
+  try{
+
+    const res = await fetch("http://localhost:8080/admission/apply",{
+      method:"POST",
+      body:fd
+    });
+
+    if(!res.ok){
+      const msg = await res.text();
+      show(msg || "Submission failed","error");
+      return;
+    }
+
+    const json = await res.json();
+
+    admissionId = json.id;
+
+   document.getElementById("admissionForm").style.display = "none";
+
+   // success screen show karo
+   document.getElementById("successScreen").style.display = "block";
+   
+  }catch(err){
+    show("Server error, please try again","error");
+  }
+};
+
+const viewBtn = document.getElementById("viewAfterSubmit");
+
+viewBtn.onclick = () => {
+
+  function createDocRow(name, file){
+    if(!file){
+      return `
+        <tr>
+          <td>${name}</td>
+          <td style="color:red;">Not Uploaded</td>
+        </tr>
+      `;
+    }
+
+    const fileURL = URL.createObjectURL(file);
+
+    return `
+      <tr>
+        <td>${name}</td>
+        <td>
+          <button class="view-doc-btn" onclick="openDoc('${fileURL}','${file.type}')">
+            View
+          </button>
+        </td>
+      </tr>
+    `;
+  }
+
+  let html = `
+
+  <div class="view-title">Basic Details</div>
+  <div class="view-grid">
+    <div class="view-box"><b>Name</b>${submittedData.sname}</div>
+    <div class="view-box"><b>Email</b>${submittedData.email}</div>
+    <div class="view-box"><b>Mobile</b>${submittedData.mobno}</div>
+    <div class="view-box"><b>Course</b>${submittedData.courseName}</div>
+    <div class="view-box"><b>Gender</b>${submittedData.gender}</div>
+    <div class="view-box"><b>DOB</b>${submittedData.dob}</div>
+  </div>
+
+  <div class="view-title">Address Details</div>
+  <div class="view-grid">
+    <div class="view-box"><b>State</b>${submittedData.state}</div>
+    <div class="view-box"><b>District</b>${submittedData.district}</div>
+    <div class="view-box"><b>Taluka</b>${submittedData.taluka}</div>
+    <div class="view-box"><b>Address</b>${submittedData.address}</div>
+  </div>
+
+  <div class="view-title">Documents</div>
+
+  <table class="doc-table">
+    <tr>
+      <th>Document Name</th>
+      <th>Action</th>
+    </tr>
+
+    ${createDocRow("Photo", submittedData.photoFile)}
+    ${createDocRow("Signature", submittedData.signFile)}
+    ${createDocRow("Aadhar Card", submittedData.adharFile)}
+    ${createDocRow("Marksheet", submittedData.markFile)}
+
+  </table>
+  `;
+
+  document.getElementById("popupContent").innerHTML = html;
+  document.getElementById("viewPopup").style.display = "flex";
+};
+
+function closePopup(){
+  document.getElementById("viewPopup").style.display = "none";
+}
+
+document.getElementById("printBtn").onclick = () => {
+
+  let content = document.getElementById("popupContent").innerHTML;
+
+  let win = window.open("", "", "width=800,height=600");
+
+  win.document.write(`
+    <html>
+    <head>
+      <title>Print Admission</title>
+      <style>
+        body{font-family:Segoe UI;padding:20px;}
+        p{margin:8px 0;font-size:14px;}
+      </style>
+    </head>
+    <body>
+      <h2>Admission Details</h2>
+      ${content}
+    </body>
+    </html>
+  `);
+
+  win.document.close();
+  win.print();
+};
+
+
+function show(msg,type){
+  alertBox.textContent = msg;
+  alertBox.className = "alert " + type;
+  alertBox.style.display = "block";
+
+  setTimeout(()=>{
+    alertBox.style.display = "none";
+  },4000);
+}
+
+/* AUTO FILL STUDENT DATA */
+
+async function loadStudentData(email){
+
+try{
+
+const res = await fetch(`http://localhost:8080/admission/student/get-by-email?email=${email}`);
+
+if(res.status === 404){
+    show("New Student - Please fill details", "error");
+    return;
+}
+
+if(!res.ok){
+    show("Error fetching data", "error");
+    return;
+}
+
+const data = await res.json();
+fillForm(data);
+
+show("Previous data loaded", "success");
+
+}catch(err){
+    show("Server error", "error");
+}
+
+}
+
+
+function fillForm(data){
+
+  document.querySelector("input[name='sname']").value = data.sname || "";
+  document.querySelector("input[name='email']").value = data.email || "";
+  document.querySelector("input[name='mobno']").value = data.mobno || "";
+  document.querySelector("input[name='dob']").value = data.dob || "";
+  document.querySelector("select[name='gender']").value = data.gender || "";
+
+  if(data.state){
+    s.value = data.state;
+    s.dispatchEvent(new Event("change"));
+
+    setTimeout(()=>{
+      if(data.district){
+        d.value = data.district;
+        d.dispatchEvent(new Event("change"));
+      }
+
+      setTimeout(()=>{
+        if(data.taluka){
+          t.value = data.taluka;
+        }
+      },200);
+
+    },200);
+  }
+
+  document.querySelector("input[name='address']").value = data.address || "";
+  
+  // PHOTO
+  if(data.photopath){
+      const img = document.getElementById("photoPreview");
+      img.src = data.photopath;
+      img.style.display = "block";
+
+      document.querySelector("input[name='photo']").required = false;
+  }
+
+  // SIGNATURE
+  if(data.signaturePhoto){
+      const img = document.getElementById("signPreview");
+      img.src = data.signaturePhoto;
+      img.style.display = "block";
+
+      document.querySelector("input[name='signature']").required = false;
+  }
+
+  // AADHAR
+  if(data.adharCradPhoto){
+      document.getElementById("adharPreview").style.display = "block";
+      document.querySelector("input[name='adharcard']").required = false;
+  }
+
+  // MARKSHEET
+  if(data.marksheet){
+      document.getElementById("marksheetPreview").style.display = "block";
+      document.querySelector("input[name='marksheet']").required = false;
+  }
+  
+}
+
+function clearForm(){
+	document.querySelector("input[name='email']").value = "";
+
+  document.querySelector("input[name='sname']").value = "";
+ // 
+  document.querySelector("input[name='dob']").value = "";
+  document.querySelector("select[name='gender']").value = "";
+
+  s.value = "";
+  d.innerHTML = '<option value="">Select District</option>';
+  t.innerHTML = '<option value="">Select Taluka</option>';
+
+  document.querySelector("input[name='address']").value = "";
+  
+  // hide previews
+  document.getElementById("photoText").style.display = "none";
+  document.getElementById("signText").style.display = "none";
+  document.getElementById("adharPreview").style.display = "none";
+  document.getElementById("marksheetPreview").style.display = "none";
+
+  // make files required again
+  document.querySelector("input[name='photo']").required = true;
+  document.querySelector("input[name='signature']").required = true;
+  document.querySelector("input[name='adharcard']").required = true;
+  document.querySelector("input[name='marksheet']").required = true;
+  
+}
+
+async function loadStudentByMobile(mob){
+
+  console.log("📱 Mobile:", mob);
+
+  try{
+    const res = await fetch(`http://localhost:8080/admission/get-by-mobile?mobno=${mob}`);
+
+    console.log("📡 Status:", res.status);
+
+    const data = await res.json();
+
+    console.log("📦 Data:", data);
+
+    if(data){
+        fillForm(data);
+        show("Old Student Data Loaded", "success");
+    }
+
+  }catch(err){
+    console.error(err);
+    show("Server error", "error");
+  }
+}
+
+
+const mobInput = document.getElementById("mobno");
+
+let timer;
+
+mobInput.addEventListener("input", () => {
+
+    clearTimeout(timer);
+
+    const mob = mobInput.value.trim();
+
+    if(mob.length === 10){
+
+        timer = setTimeout(() => {
+            loadStudentByMobile(mob);
+        }, 500);
+
+    } 
+    else if(mob.length < 10){
+        show("Enter 10 digit mobile number", "error");
+    }
+
+});
+
+continueBtn.onclick = () => {
+    window.location.href = "student-dash.html";
+};
+
+function goBack(){
+    window.history.back();
+}
+
+function goDashboard(){
+    window.location.href = "student-dash.html";
+}
+
+function openDoc(url, type){
+
+  let win = window.open("", "_blank");
+
+  if(type.includes("image")){
+    win.document.write(`<img src="${url}" style="width:100%">`);
+  }else{
+    win.document.write(`
+      <iframe src="${url}" width="100%" height="100%"></iframe>
+    `);
+  }
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Register & Login</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+.container {
+    width: 380px;
+    margin: 80px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 95%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.toggle {
+    text-align: center;
+    margin-top: 15px;
+    cursor: pointer;
+    color: #007bff;
+}
+
+.toggle:hover {
+    text-decoration: underline;
+}
+
+#msg {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+.showpass{
+font-size:13px;
+margin-bottom:8px;
+}
+
+.forget{
+text-align:right;
+font-size:13px;
+color:#007bff;
+cursor:pointer;
+}
+
+.forget:hover{
+text-decoration:underline;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- REGISTER -->
+<div id="registerBox">
+<h2>Student Registration</h2>
+
+<input type="text" id="rname" placeholder="Student Name">
+<input type="email" id="remail" placeholder="Email">
+
+<input type="password" id="rpassword" placeholder="Password">
+<div class="showpass">
+<input type="checkbox" onclick="togglePassword('rpassword')"> Show Password
+</div>
+
+<button onclick="register()">Register</button>
+
+<div class="toggle" onclick="showLogin()">Already have an account? Login</div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginBox" class="hidden">
+
+<h2>Student Login</h2>
+
+<input type="email" id="lemail" placeholder="Email">
+
+<input type="password" id="lpassword" placeholder="Password">
+<div class="showpass">
+<input type="checkbox" onclick="togglePassword('lpassword')"> Show Password
+</div>
+
+<div class="forget" onclick="forgetPassword()">Forgot Password?</div>
+
+<button onclick="login()">Login</button>
+
+<div class="toggle" onclick="showRegister()">New user? Register</div>
+
+</div>
+
+<p id="msg"></p>
+
+</div>
+
+<script>
+
+const BASE_URL = "http://localhost:8080/student";
+
+function showLogin(){
+document.getElementById("registerBox").classList.add("hidden");
+document.getElementById("loginBox").classList.remove("hidden");
+document.getElementById("msg").innerText="";
+}
+
+function showRegister(){
+document.getElementById("loginBox").classList.add("hidden");
+document.getElementById("registerBox").classList.remove("hidden");
+document.getElementById("msg").innerText="";
+}
+
+function togglePassword(id){
+let field=document.getElementById(id);
+
+if(field.type==="password"){
+field.type="text";
+}else{
+field.type="password";
+}
+}
+
+function register(){
+
+const data={
+sname:document.getElementById("rname").value,
+email:document.getElementById("remail").value,
+password:document.getElementById("rpassword").value
+};
+
+fetch(`${BASE_URL}/register`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+.then(res=>res.text())
+.then(msg=>{
+document.getElementById("msg").style.color="green";
+document.getElementById("msg").innerText=msg;
+})
+.catch(err=>console.error(err));
+
+}
+
+function login(){
+
+const data={
+email:document.getElementById("lemail").value,
+password:document.getElementById("lpassword").value
+};
+
+fetch(`${BASE_URL}/login`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+.then(res=>res.text())
+.then(msg=>{
+
+if(msg==="Login Successfully"){
+
+document.getElementById("msg").style.color="green";
+document.getElementById("msg").innerText=msg;
+
+localStorage.setItem("studentEmail",data.email);
+
+setTimeout(()=>{
+window.location.href="homepage.html";
+},1000);
+
+}else{
+
+document.getElementById("msg").style.color="red";
+document.getElementById("msg").innerText=msg;
+
+}
+
+})
+.catch(err=>console.error(err));
+
+}
+
+function forgetPassword(){
+
+let email=prompt("Enter your registered email");
+let newPass=prompt("Enter new password");
+
+const data={
+email:email,
+password:newPass
+};
+
+fetch(`${BASE_URL}/forgetpass`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+.then(res=>res.text())
+.then(msg=>{
+
+document.getElementById("msg").style.color="green";
+document.getElementById("msg").innerText=msg;
+
+})
+.catch(err=>console.error(err));
+
+}
+
+</script>
+
+</body>
+</html>

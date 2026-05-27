@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>View Submission</title>
+<style>
+
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background:#f2f5f9;
+    margin:0;
+    padding:40px;
+}
+
+/* Card Container */
+.container{
+    background:white;
+    padding:35px;
+    border-radius:14px;
+    max-width:650px;
+    margin:auto;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    border-top:6px solid #ff7a00;
+}
+
+/* Heading */
+h2{
+    margin:0;
+    font-size:26px;
+    color:#333;
+}
+
+/* Status */
+.status{
+    margin-top:15px;
+    padding:10px 15px;
+    border-radius:8px;
+    font-weight:600;
+    display:inline-block;
+    background:rgba(255,122,0,0.1);
+    color:#ff7a00;
+}
+
+/* Section Title */
+h4{
+    margin-top:25px;
+    margin-bottom:10px;
+    color:#333;
+}
+
+/* Submission Box */
+pre{
+    background:#f3f4f6;
+    padding:18px;
+    border-radius:10px;
+    white-space:pre-wrap;
+    font-size:14px;
+    border:1px solid #e5e7eb;
+}
+
+/* File Download Link */
+#fileSection a{
+    display:inline-block;
+    margin-top:15px;
+    padding:10px 18px;
+    background:#ff7a00;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+#fileSection a:hover{
+    background:#e86f00;
+}
+
+/* Back Button */
+button{
+    margin-top:25px;
+    padding:12px 22px;
+    background:#e5e7eb;
+    color:#333;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#d1d5db;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2 id="title">Assignment</h2>
+
+    <p class="status" id="status"></p>
+
+    <h4>Your Submission:</h4>
+    <pre id="submissionText"></pre>
+
+    <div id="fileSection"></div>
+
+    <br>
+    <button onclick="goBack()">Back</button>
+</div>
+
+<script>
+
+window.onload = function(){
+
+    let params = new URLSearchParams(window.location.search);
+    let assignmentId = params.get("id");
+
+    fetch("http://localhost:8080/assignment/get/student-Assignmnet?email=" 
+        + sessionStorage.getItem("studentEmail"))
+    .then(res => res.json())
+    .then(data => {
+
+        let assignment = data.find(a => a.id == assignmentId);
+
+        document.getElementById("title").innerText = assignment.title;
+        document.getElementById("status").innerText = 
+            "Status: " + assignment.status;
+
+        document.getElementById("submissionText").innerText =
+            assignment.submissionText || "No text submitted";
+
+        if(assignment.attachmentUrl){
+            document.getElementById("fileSection").innerHTML =
+                `<a href="http://localhost:8080/${assignment.attachmentUrl}" 
+                   target="_blank">Download Submitted File</a>`;
+        }
+    });
+};
+
+function goBack(){
+    window.location.href="Student-dash.html";
+}
+
+</script>
+
+</body>
+</html>

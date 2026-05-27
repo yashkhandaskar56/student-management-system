@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Course Learning</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#f3f4f6;
+}
+
+.container{
+    max-width:1000px;
+    margin:40px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.module{
+    padding:15px;
+    margin-bottom:15px;
+    background:#f9fafb;
+    border-radius:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+button{
+    padding:6px 14px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.start-btn{
+    background:#3b82f6;
+    color:white;
+}
+
+.complete-btn{
+    background:#10b981;
+    color:white;
+}
+
+.back-btn{
+    background:#6b7280;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h2 id="courseTitle">Course Learning</h2>
+
+        <button class="back-btn"
+            onclick="window.location.href='student-dash.html'">
+            Back to Dashboard
+        </button>
+    </div>
+
+    <div id="moduleList">
+        <!-- Modules will load here -->
+    </div>
+
+</div>
+
+<script>
+
+let courseId = new URLSearchParams(window.location.search).get("id");
+
+fetch("http://localhost:8080/admission/get/courseById/" + courseId)
+.then(res => res.json())
+.then(course => {
+
+    document.getElementById("courseTitle").innerText =
+        course.courseName;
+
+    let moduleList = document.getElementById("moduleList");
+
+    // Demo Modules (Later backend se la sakte ho)
+    let modules = [
+        "Introduction",
+        "Basics",
+        "Advanced Concepts",
+        "Final Project"
+    ];
+
+    modules.forEach((mod,index)=>{
+
+        moduleList.innerHTML += `
+            <div class="module">
+                <span>${index+1}. ${mod}</span>
+                
+            </div>
+        `;
+    });
+
+});
+
+</script>
+
+</body>
+</html>

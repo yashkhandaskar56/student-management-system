@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Certificate Verification</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f7f7f7;
+}
+
+/* ================= HERO SECTION ================= */
+
+.hero{
+    width:100%;
+    min-height:720px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #fff8ee,
+        #f8e8d2
+    );
+
+    position:relative;
+    overflow:hidden;
+}
+
+/* BACKGROUND CIRCLES */
+
+.hero::before{
+    content:"";
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:rgba(212, 170, 120, 0.10);
+    border-radius:50%;
+    top:-120px;
+    right:-120px;
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    width:350px;
+    height:350px;
+    background:rgba(212, 170, 120, 0.08);
+    border-radius:50%;
+    bottom:-100px;
+    left:-100px;
+}
+
+.hero-overlay{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+    position:relative;
+    z-index:2;
+}
+
+/* ================= NAVBAR ================= */
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:28px 0;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+}
+
+/* LOGO IMAGE */
+
+.logo-img{
+    height:75px;
+    width:auto;
+    object-fit:contain;
+    transition:0.3s;
+}
+
+.logo-img:hover{
+    transform:scale(1.03);
+}
+
+@media(max-width:768px){
+
+    .logo-img{
+        height:65px;
+    }
+
+}
+
+/* NAV LINKS */
+
+.nav-links{
+    display:flex;
+    gap:22px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#5c4033;
+    font-weight:600;
+    transition:0.3s;
+    font-size:15px;
+}
+
+.nav-links a:hover{
+    color:#c97b2b;
+}
+
+/* OUTLINE BUTTON */
+
+.btn-outline{
+    padding:10px 22px;
+    border:2px solid #d9b38c;
+    color:#8b5e34 !important;
+    border-radius:10px;
+    transition:0.3s;
+    background:white;
+}
+
+.btn-outline:hover{
+    background:#f5d7b5;
+    color:#7a4d22 !important;
+}
+
+/* PRIMARY BUTTON */
+
+.btn-primary{
+    padding:12px 28px;
+    background:#d48b3a;
+    color:white !important;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:600;
+    font-size:15px;
+    transition:0.3s;
+    box-shadow:0 10px 25px rgba(0,0,0,0.10);
+}
+
+.btn-primary:hover{
+    background:#bb7427;
+    transform:translateY(-3px);
+}
+
+/* ================= HERO CONTENT ================= */
+
+.hero-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:60px;
+    min-height:580px;
+}
+
+/* LEFT SIDE */
+
+.hero-left{
+    flex:1;
+}
+
+.hero-left h1{
+    font-size:55px;
+    line-height:1.2;
+    font-weight:700;
+    color:#5c4033;
+    margin-bottom:25px;
+}
+
+.hero-left p{
+    font-size:18px;
+    line-height:1.9;
+    color:#7a5c45;
+    max-width:650px;
+    margin-bottom:35px;
+}
+
+/* FEATURES */
+
+.hero-list{
+    list-style:none;
+}
+
+.hero-list li{
+    margin-bottom:18px;
+    font-size:17px;
+    color:#6b4a32;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:500;
+}
+
+/* RIGHT CARD */
+
+.hero-right{
+    flex:1;
+    display:flex;
+    justify-content:center;
+}
+
+.hero-card{
+    width:420px;
+    background:rgba(255,255,255,0.75);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(220,190,150,0.35);
+    border-radius:30px;
+    padding:40px;
+    color:#5c4033;
+    box-shadow:0 20px 50px rgba(0,0,0,0.08);
+}
+
+.hero-card h3{
+    font-size:28px;
+    margin-bottom:18px;
+    color:#8b5e34;
+}
+
+.hero-card p{
+    line-height:1.8;
+    color:#6f5644;
+}
+
+/* STATS */
+
+.hero-stats{
+    margin-top:30px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.stat-box{
+    background:#fffaf4;
+    padding:20px;
+    border-radius:18px;
+    text-align:center;
+    border:1px solid #f0dcc5;
+}
+
+.stat-box h2{
+    font-size:30px;
+    margin-bottom:8px;
+    color:#d48b3a;
+}
+
+.stat-box span{
+    font-size:14px;
+    color:#7a5c45;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    nav{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .nav-links{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .hero-content{
+        flex-direction:column;
+        text-align:center;
+        padding:50px 0;
+    }
+
+    .hero-left h1{
+        font-size:42px;
+    }
+
+    .hero-card{
+        width:100%;
+    }
+
+    .hero-list li{
+        justify-content:center;
+    }
+}
+
+/* ================= VERIFY BOX ================= */
+
+.verify-section{
+    width:90%;
+    max-width:1000px;
+    margin:auto;
+    margin-top:60px;
+    margin-bottom:80px;
+}
+
+.verify-section h2{
+    font-size:34px;
+    margin-bottom:20px;
+    color:#222;
+}
+
+.verify-section p{
+    color:#666;
+    line-height:1.8;
+    margin-bottom:20px;
+}
+
+.verify-container{
+    background:white;
+    padding:50px;
+    border-radius:20px;
+    margin-top:50px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
+
+.verify-box{
+    display:flex;
+    overflow:hidden;
+    border-radius:12px;
+    border:1px solid #ddd;
+}
+
+.verify-box input{
+    flex:1;
+    padding:18px;
+    border:none;
+    outline:none;
+    font-size:16px;
+}
+
+.verify-box button{
+    width:220px;
+    border:none;
+    background:#f28c28;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.verify-box button:hover{
+    background:#dd7817;
+}
+
+/* ================= RESULT CARD ================= */
+
+.result-card{
+    display:none;
+    margin-top:40px;
+    background:#fffaf5;
+    border:2px solid #ffd7b1;
+    padding:35px;
+    border-radius:18px;
+}
+
+.result-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.result-top h3{
+    color:#27ae60;
+    font-size:28px;
+}
+
+.verified-badge{
+    background:#27ae60;
+    color:white;
+    padding:10px 18px;
+    border-radius:30px;
+    font-size:14px;
+}
+
+.result-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:25px;
+}
+
+.result-item{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #eee;
+}
+
+.label{
+    color:#888;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.value{
+    font-size:18px;
+    font-weight:600;
+}
+
+.action-buttons{
+    margin-top:35px;
+    display:flex;
+    gap:20px;
+}
+
+.action-buttons button{
+    padding:14px 28px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:500;
+}
+
+.download-btn{
+    background:#f28c28;
+    color:white;
+}
+
+.view-btn{
+    background:#222;
+    color:white;
+}
+
+/* ERROR */
+
+.error-box{
+    display:none;
+    margin-top:30px;
+    background:#ffe5e5;
+    color:#d63031;
+    padding:18px;
+    border-radius:12px;
+    font-weight:500;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .navbar{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .nav-links{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .hero-content h1{
+        font-size:38px;
+    }
+
+    .verify-box{
+        flex-direction:column;
+    }
+
+    .verify-box button{
+        width:100%;
+        height:60px;
+    }
+
+    .result-grid{
+        grid-template-columns:1fr;
+    }
+
+    .result-top{
+        flex-direction:column;
+        gap:20px;
+        align-items:flex-start;
+    }
+
+    .action-buttons{
+        flex-direction:column;
+    }
+
+    .verify-container{
+        padding:25px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+    <div class="hero-overlay">
+
+        <!-- NAVBAR -->
+
+		<nav>
+			<div class="logo">
+
+			    <img
+			        src="/image/icons/cropped-iseesedu.png"
+			        alt="ISEES Logo"
+			        class="logo-img"
+			    >
+
+			</div>
+
+		    <div class="nav-links" id="navLinks">
+
+		        <a href="homepage.html">Home</a>
+
+		        <a href="homepage.html#courses">Courses</a>
+
+		        <a href="homepage.html#categories">Blog</a>
+
+		        <a href="homepage.html#futue">About Us</a>
+
+		        <a href="homepage.html#contact">Contact</a>
+
+		        <a href="login.html" class="btn-outline">
+		            Login
+		        </a>
+
+		        <a href="register.html" class="btn-outline">
+		            Register
+		        </a>
+
+		        <a href="certificate-verification.html"
+		           class="btn-primary">
+		            Verify Certificate
+		        </a>
+
+		    </div>
+		</nav>
+
+        <!-- HERO CONTENT -->
+
+		<div class="hero-content">
+
+		    <!-- LEFT -->
+
+		    <div class="hero-left">
+
+		        <h1>
+		            Secure Certificate
+		            Verification System
+		        </h1>
+
+		        <p>
+		            Instantly verify student certificates using
+		            advanced secure verification technology.
+		            Trusted digital validation system for students,
+		            institutes, and employers.
+		        </p>
+
+		        <ul class="hero-list">
+
+		            <li>✔ Instant Certificate Validation</li>
+
+		            <li>✔ Fraud Prevention System</li>
+
+		            <li>✔ Trusted & Secure Verification</li>
+
+		        </ul>
+
+		    </div>
+
+		    <!-- RIGHT -->
+
+		    <div class="hero-right">
+
+		        <div class="hero-card">
+
+		            <h3>
+		                Trusted Verification
+		            </h3>
+
+		            <p>
+		                Verify certificates issued by
+		                ISEES TECHNOLOGY using unique
+		                certificate identification numbers.
+		            </p>
+
+		            <div class="hero-stats">
+
+		                <div class="stat-box">
+		                    <h2>10K+</h2>
+		                    <span>Certificates</span>
+		                </div>
+
+		                <div class="stat-box">
+		                    <h2>100%</h2>
+		                    <span>Secure</span>
+		                </div>
+
+		                <div class="stat-box">
+		                    <h2>24/7</h2>
+		                    <span>Verification</span>
+		                </div>
+
+		                <div class="stat-box">
+		                    <h2>Fast</h2>
+		                    <span>System</span>
+		                </div>
+
+		            </div>
+
+		        </div>
+
+		    </div>
+
+		</div>
+
+    </div>
+
+</section>
+
+<!-- VERIFY SECTION -->
+
+<section class="verify-section">
+
+    <h2>Verify Certificate Using Certificate Code</h2>
+
+    <p>
+        Verifying certificates using secure verification codes
+        provides a trusted and efficient method to authenticate
+        student certifications and prevent fraudulent activities.
+    </p>
+
+    <p>
+        Enter certificate code below to verify certificate.
+    </p>
+
+    <div class="verify-container">
+
+        <div class="verify-box">
+
+            <input
+                type="text"
+                id="certificateCode"
+                placeholder="Enter Certificate Code"
+            >
+
+			<button id="verifyBtn" onclick="verifyCertificate()">
+			    Search
+			</button>
+
+        </div>
+
+        <!-- ERROR -->
+
+        <div class="error-box" id="errorBox">
+            ❌ Certificate Not Found. Please check your code.
+        </div>
+
+        <!-- RESULT CARD -->
+
+        <div class="result-card" id="resultCard">
+
+            <div class="result-top">
+
+                <h3>
+                    ✅ Certificate Verified
+                </h3>
+
+                <div class="verified-badge">
+                    VERIFIED BY ISEES
+                </div>
+
+            </div>
+
+            <div class="result-grid">
+
+                <div class="result-item">
+                    <div class="label">Student Name</div>
+                    <div class="value" id="studentName"></div>
+                </div>
+
+                <div class="result-item">
+                    <div class="label">Course Name</div>
+                    <div class="value" id="courseName"></div>
+                </div>
+
+                <div class="result-item">
+                    <div class="label">Certificate ID</div>
+                    <div class="value" id="certificateId"></div>
+                </div>
+
+                <div class="result-item">
+                    <div class="label">Issue Date</div>
+                    <div class="value" id="issueDate"></div>
+                </div>
+
+                <div class="result-item">
+                    <div class="label">Grade</div>
+                    <div class="value">A+</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="label">Status</div>
+                    <div class="value">VALID CERTIFICATE</div>
+                </div>
+
+            </div>
+
+            <div class="action-buttons">
+
+				<button
+				    class="download-btn"
+				    id="downloadBtn">
+				    Download Certificate
+				</button>
+
+				<button
+				    class="view-btn"
+				    id="viewBtn">
+				    View Full Certificate
+				</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+async function verifyCertificate(){
+
+    let code =
+    document.getElementById("certificateCode").value.trim();
+
+    let resultCard =
+    document.getElementById("resultCard");
+
+    let errorBox =
+    document.getElementById("errorBox");
+
+    let btn =
+    document.getElementById("verifyBtn");
+
+    // BUTTON LOADING
+
+    btn.innerHTML = "Verifying...";
+
+    btn.disabled = true;
+
+    try{
+
+        let response = await fetch(
+        `http://localhost:8080/api/student/certificate/verify?certificateNo=${code}`
+        );
+
+        if(!response.ok){
+
+            let errorData = await response.json();
+
+            errorBox.style.display = "block";
+
+            errorBox.innerHTML =
+            "❌ " + errorData.message;
+
+            resultCard.style.display = "none";
+
+            return;
+        }
+
+        let data = await response.json();
+
+        errorBox.style.display = "none";
+
+        resultCard.style.display = "block";
+
+        document.getElementById("studentName")
+        .innerText = data.studentName;
+
+        document.getElementById("courseName")
+        .innerText = data.courseName;
+
+        document.getElementById("certificateId")
+        .innerText = data.certificateNo;
+
+        document.getElementById("issueDate")
+        .innerText = data.issuedate;
+		
+		// DOWNLOAD BUTTON
+
+		document.getElementById("downloadBtn")
+		.onclick = function(){
+
+		    window.open(
+		    `http://localhost:8080/api/student/certificate/download?email=${data.email}&courseName=${data.courseName}`,
+		    "_blank"
+		    );
+		};
+
+		// VIEW BUTTON
+
+		document.getElementById("viewBtn")
+		.onclick = function(){
+
+		    window.open(
+		    `http://localhost:8080/api/student/certificate/viewPdf?email=${data.email}&courseName=${data.courseName}`,
+		    "_blank"
+		    );
+		};
+
+    }
+
+    catch(error){
+
+        errorBox.style.display = "block";
+
+        errorBox.innerHTML =
+        "❌ Server Error";
+
+        resultCard.style.display = "none";
+    }
+
+    // ✅ YAHAPE
+
+    finally{
+
+        btn.innerHTML = "Search";
+
+        btn.disabled = false;
+    }
+}
+
+</script>
+
+</body>
+</html>

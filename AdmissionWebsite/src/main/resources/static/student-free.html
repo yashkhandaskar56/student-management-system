@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Fee Management</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #d9efff, #fef6ff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      margin-top: 50px;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 420px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #555;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #5c9ded;
+      box-shadow: 0 0 6px rgba(92, 157, 237, 0.4);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #5c9ded;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #4b8bd6;
+    }
+
+    .alert {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+      font-weight: 600;
+    }
+
+    .alert.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .alert.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .fee-details {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background-color: #f8faff;
+    }
+
+    .fee-details p {
+      margin: 6px 0;
+      font-weight: 500;
+    }
+
+    .back-btn {
+      margin-top: 10px;
+      display: inline-block;
+      text-decoration: none;
+      color: #5c9ded;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🎓 Student Fee Details</h2>
+
+    <label>Email:</label>
+    <input type="email" id="email" placeholder="Enter student email" required>
+
+    <label>Course Name:</label>
+    <input type="text" id="courseName" placeholder="Enter course name" required>
+
+    <button onclick="getFeeDetails()">Search Fee Details</button>
+
+    <div id="alert" class="alert"></div>
+
+    <div id="feeDetails" class="fee-details" style="display:none;">
+      <p><strong>Total Fee:</strong> ₹<span id="totalFee">0</span></p>
+      <p><strong>Paid Fee:</strong> ₹<span id="paidFee">0</span></p>
+      <p><strong>Remaining Fee:</strong> ₹<span id="remainingFee">0</span></p>
+
+
+      <button onclick="window.location='fee.html'">💰 Paid fee</button>
+    </div>
+
+    <a href="student-dashboard.html" class="back-btn">⬅ Back to Dashboard</a>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8080/Student-free";
+    
+    async function getFeeDetails() {
+      const email = document.getElementById("email").value.trim();
+      const courseName = document.getElementById("courseName").value.trim();
+      const alertBox = document.getElementById("alert");
+
+      if (!email || !courseName) {
+        showAlert("⚠️ Please enter email and course name.", false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/free-details?email=${email}&courseName=${courseName}`);
+        
+        if (!response.ok) {
+          throw new Error("No record found for this student.");
+        }
+
+        const data = await response.json();
+        document.getElementById("feeDetails").style.display = "block";
+        document.getElementById("totalFee").textContent = data.totalfree ?? 0;
+        document.getElementById("paidFee").textContent = data.paidfree ?? 0;
+        document.getElementById("remainingFee").textContent = data.remainingfree ?? 0;
+
+        showAlert("✅ Fee details loaded successfully.", true);
+
+      } catch (err) {
+        showAlert(`❌ ${err.message}`, false);
+        document.getElementById("feeDetails").style.display = "none";
+      }
+    }
+
+
+    function showAlert(message, success) {
+      const alertBox = document.getElementById("alert");
+      alertBox.textContent = message;
+      alertBox.className = success ? "alert success" : "alert error";
+      alertBox.style.display = "block";
+      setTimeout(() => alertBox.style.display = "none", 3000);
+    }
+  </script>
+</body>
+</html>

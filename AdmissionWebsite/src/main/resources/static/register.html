@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Register</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI;
+    background:#fff8f2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.card{
+    background:white;
+    width:380px;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    position:relative;
+}
+
+h2{
+    text-align:center;
+    color:#f28c28;
+}
+
+/* CROSS BUTTON */
+.close-btn{
+    position:absolute;
+    top:15px;
+    right:20px;
+    font-size:22px;
+    cursor:pointer;
+    color:#999;
+    font-weight:bold;
+}
+
+.close-btn:hover{
+    color:#f28c28;
+    transform:scale(1.2);
+    transition:0.2s;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+input:focus{
+    outline:none;
+    border-color:#f28c28;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#f28c28;
+    border:none;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+button:hover{
+    background:#d97412;
+}
+
+p{
+    text-align:center;
+}
+
+a{
+    color:#f28c28;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.message{
+    text-align:center;
+    margin-top:10px;
+}
+
+/* SHOW PASSWORD ALIGNMENT */
+.showpass{
+display:flex;
+align-items:center;
+gap:6px;
+font-size:13px;
+margin-top:-5px;
+margin-bottom:10px;
+}
+
+.showpass input{
+width:auto;
+margin:0;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<span class="close-btn" onclick="goBack()">&times;</span>
+
+<h2>Student Register</h2>
+
+<input type="text" id="name" placeholder="Full Name">
+<input type="email" id="email" placeholder="Email">
+
+<input type="password" id="password" placeholder="Password">
+
+<!-- SHOW PASSWORD -->
+<div class="showpass">
+<input type="checkbox" onclick="togglePassword()">
+<label>Show Password</label>
+</div>
+
+<button onclick="register()">Register</button>
+
+<p>Already have account? <a href="login.html">Login</a></p>
+
+<div class="message" id="msg"></div>
+
+</div>
+
+<script>
+
+function goBack(){
+    window.location.href="homepage.html";
+}
+
+function togglePassword(){
+
+let pass=document.getElementById("password");
+
+if(pass.type==="password"){
+pass.type="text";
+}else{
+pass.type="password";
+}
+
+}
+
+function register(){
+
+fetch("student/register",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+sname:document.getElementById("name").value,
+email:document.getElementById("email").value,
+password:document.getElementById("password").value
+})
+})
+.then(res=>res.text())
+.then(data=>{
+
+document.getElementById("msg").innerText=data;
+
+if(data.toLowerCase().includes("success")){
+
+document.getElementById("msg").style.color="green";
+
+setTimeout(()=>{
+window.location.href="login.html";
+},1500);
+
+}else{
+
+document.getElementById("msg").style.color="red";
+
+}
+
+})
+.catch(()=>{
+alert("Server error");
+});
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin Panel — Dashboard</title>
+
+
+
+<!-- Google font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg: #f3f6fb;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --accent: #4f46e5;
+    --accent-2: #2563eb;
+    --success: #10b981;
+    --danger: #ef4444;
+    --glass: rgba(255,255,255,0.6);
+    --border: #e6eef6;
+  }
+  *{box-sizing:border-box;font-family:'Inter',system-ui,Arial;margin:0;padding:0}
+    html, body{width:100%; height:100%; background:var(--bg);}
+  
+  .app{	width:100vw;
+	    height:100vh;;margin:20px auto;padding:18px}
+
+  /* Top header */
+  header.topbar{
+    position: relative;   /* ⭐ ADD THIS */
+    z-index: 100;         /* ⭐ ADD THIS */
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px;
+    border-radius:12px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:rgb(255, 128, 0);
+    box-shadow:0 8px 30px rgba(15,23,42,0.12);
+  }
+
+  header .title{font-size:20px;font-weight:700}
+  header .meta{font-size:13px;opacity:0.95}
+
+  /* layout */
+  .layout{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
+  @media(max-width:980px){ .layout{grid-template-columns:1fr; padding-bottom: 30px} }
+
+  /* sidebar */
+  aside.sidebar{
+    background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);
+    height:calc(100vh - 140px);overflow:auto;position:sticky;top:20px;
+  }
+  .logo{font-weight:700;color:var(--accent);margin-bottom:12px}
+  .nav{display:flex;flex-direction:column;gap:8px}
+  .nav button{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;border:0;background:#f8fafc;cursor:pointer}
+  .nav button.active{background:linear-gradient(90deg,#eef2ff,#f1f5ff);box-shadow:0 6px 14px rgba(79,70,229,0.06)}
+  .nav button:hover{opacity:0.95}
+
+  .small{font-size:13px;color:#eef2ff}
+  .small-1{font-size:13px;color:#111827}
+
+  /* main area */
+  main.content{padding:0 6px}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .card{
+    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg,#ffffffcc,#f4f6ffcc);
+    border-radius:16px;
+    box-shadow:0 12px 30px rgba(0,0,0,.12);
+    transition:.3s;
+  }
+  .card:hover{
+    transform: translateY(-6px);
+    box-shadow:0 18px 40px rgba(30,60,114,.3);
+  }
+  .stat{
+    flex:1;
+    min-width:200px;
+    text-align:center;     /* ⭐ MAIN FIX */
+  }
+  .stat .label{
+    font-size:12px;
+    color:#111827;
+    display:block;
+  }
+
+  .stat .value{
+    font-size:26px;
+    font-weight:700;
+    color:var(--accent-2);
+    margin-top:6px;
+  }
+
+  .stat .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  /* charts area */
+  .cards-row{display:grid;grid-template-columns:1fr 380px;gap:18px;margin-top:14px}
+  @media(max-width:980px){ .cards-row{grid-template-columns:1fr} }
+
+  canvas{max-width:100%}
+
+  /* recent admissions */
+  .recent-list{max-height:260px;overflow:auto;padding-right:6px}
+  .recent-item{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #f3f6fb}
+  .recent-item .left{font-weight:600}
+  .muted{color:var(--muted);font-size:13px}
+
+  /* activity timeline */
+  .timeline{max-height:260px;overflow:auto}
+  .timeline .t-item{padding:10px;border-bottom:1px solid #f3f6fb;display:flex;gap:12px}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--accent-2);margin-top:6px}
+
+  /* exam list cards */
+  .exam-list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto;padding-right:6px}
+  .exam-card{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px;border-radius:10px;border:1px solid var(--border);background:#fff}
+  .exam-card h4{margin:0;color:var(--accent);font-size:16px}
+  .exam-card .meta{font-size:13px;color:var(--muted)}
+  
+  .table-container {
+          margin-bottom: 50px;
+          background: #fff;
+          padding: 20px;
+          border-radius: 15px;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      }
+	  table {
+	    width: 100%;
+	    border-collapse: collapse;
+	    margin-top: 10px;
+	    background: #fff;
+	    border-radius: 12px;
+	    overflow: hidden;
+	  }
+
+	  table thead tr {
+	    background: #2a4dff;
+	    color: #fff;
+	  }
+
+	  table th, table td {
+	    padding: 14px 18px;
+	    text-align: left;
+	    border-bottom: 1px solid #e5e7eb;
+	    font-size: 15px;
+	  }
+
+	  table tbody tr:hover {
+	    background-color: #f5f7ff;
+	  }
+
+  /* quick actions */
+  .quick-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .qa-btn{padding:9px 12px;border-radius:8px;border:0;cursor:pointer}
+
+  .btn-primary{background:var(--accent-2);color:white}
+  .btn-ghost{background:#f8fafc}
+  .btn-success{background:var(--success);color:white}
+  .btn-danger{background:var(--danger);color:white}
+
+  /* forms */
+  .form-row{display:flex;gap:8px}
+  input,select,textarea{padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px}
+  textarea{min-height:80px}
+
+  /* modal */
+  .modal{position:fixed;left:0;top:0;width:100%;height:100%;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.4);z-index:60}
+  .modal .box{width:860px;max-width:94%;background:white;border-radius:12px;padding:18px;box-shadow:0 18px 40px rgba(2,6,23,0.3)}
+  .modal .row{margin-top:10px;flex-wrap:wrap}
+  .close-x{float:right;cursor:pointer;padding:6px;border-radius:6px}
+
+  footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+  
+  /* small stat card for exam summary */
+  .exam-mini-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; }
+  .exam-mini-card { background: #fff; padding:12px; border-radius:10px; border:1px solid var(--border); min-width:180px; box-shadow:0 6px 18px rgba(2,6,23,0.04); text-align:center; }
+  .exam-mini-card .label { font-size:13px; color:var(--muted); }
+  .exam-mini-card .val { font-size:20px; font-weight:700; color:var(--accent-2); margin-top:6px; }
+  
+  /* -------------------------------
+     Fee Reminder Section Styles
+  ---------------------------------*/
+  #studentfeeReminder {
+      display: flex;               /* make it a flex container */
+      align-items: center;         /* vertical centering */
+      justify-content: center;     /* horizontal centering */
+      position: fixed;             /* stay in place */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2,6,23,0.4);  /* semi-transparent background */
+      z-index: 1000;               /* above everything else */
+  }
+
+  #studentfeeReminder .box {
+      width: 700px;                /* box width */
+      max-width: 90%;              /* responsive on smaller screens */
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(2,6,23,0.2);
+      overflow-y: auto;
+      max-height: 90%;             /* avoid overflow on small screens */
+  }
+
+
+  #studentfeeReminder h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-2);
+      margin-bottom: 16px;
+  }
+
+  #studentfeeReminder label {
+      font-weight: 600;
+      color: var(--muted);
+  }
+
+  #studentfeeReminder input[type="email"] {
+      width: 300px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+  }
+
+  #studentfeeReminder button.qa-btn {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+  }
+
+  #studentfeeReminder button.btn-primary {
+      background: var(--accent-2);
+      color: #fff;
+      transition: 0.3s;
+  }
+
+  #studentfeeReminder button.btn-primary:hover {
+      background: var(--accent);
+  }
+
+  #studentfeeReminder .alert {
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-left: 12px;
+      display: none;
+      font-size: 13px;
+  }
+
+  #studentfeeReminder .alert.success {
+      background-color: #ecfdf5;
+      color: #065f46;
+  }
+
+  #studentfeeReminder .alert.error {
+      background-color: #ffeded;
+      color: #7f1d1d;
+  }
+
+  #studentfeeReminder .table-container {
+      margin-top: 12px;
+      overflow-x: auto;
+  }
+
+  #studentfeeReminder .fee-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+
+  #studentfeeReminder .fee-table thead tr {
+      background: var(--accent-2);
+      color: #fff;
+      font-weight: 600;
+  }
+
+  #studentfeeReminder .fee-table th,
+  #studentfeeReminder .fee-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+  }
+
+  #studentfeeReminder .fee-table tbody tr:hover {
+      background-color: #f5f7ff;
+  }
+
+  #studentfeeReminder .fee-table button {
+      padding: 6px 10px;
+      font-size: 13px;
+  }
+  
+  h1 {
+        text-align: center;
+        color: #2a2a72;
+        margin-top: 20px;
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+
+      .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        backdrop-filter: blur(6px);
+      }
+
+	  /* Parent container: form + chart side by side */
+	  .expense-row {
+	      display: flex;           /* flex container */
+	      gap: 20px;               /* space between form and chart */
+	      align-items: flex-start; /* top align */
+	      margin: 20px;
+	      flex-wrap: wrap;         /* responsive: stack on small screens */
+	  }
+
+	  /* Left side: form */
+	  .form-box {
+	      width: 400px;             
+	      height: 570px; 
+	      background: #ffffff;
+	      padding: 28px;
+	      border-radius: 20px;
+	      box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+	      border-left: 6px solid #4f46e5;
+	  }
+	  .form-box label {
+	      display: block;
+	      margin-top: 14px;      /* space above each label */
+	      margin-bottom: 6px;    /* space below label before input */
+	      font-size: 14px;
+	      color: #333;
+	      font-weight: 600;
+	  }
+
+	  .form-box input,
+	  .form-box select {
+	      width: 100%;
+	      padding: 10px 12px;
+	      border-radius: 8px;
+	      border: 1px solid #d1d5db;
+	      font-size: 14px;
+	      outline: none;
+	      transition: 0.2s ease;
+	      margin-bottom: 12px;   /* space below each input */
+	  }
+
+	  .form-box input:focus,
+	  .form-box select:focus {
+	      border-color: #4f46e5;
+	      box-shadow: 0 0 0 3px rgba(79,70,229,0.2);
+	  }
+
+	  /* Add margin-top to button so it doesn’t stick to last input */
+	  .form-box button {
+	      margin-top: 18px;
+	  }
+
+
+	  /* Right side: chart */
+	  .chart-box {              
+	      flex: 1;                  /* take remaining space */
+	      min-width: 500px;          /* minimum width for chart */
+	      height: 420px;
+	      background: #fff;
+	      padding: 20px;
+	      border-radius: 16px;
+	      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+		  margin-top: 50px;
+	  }
+
+	  /* Make canvas fill chart box */
+	  .chart-box canvas {
+		  width: 100% !important;
+		  height: 100% !important;
+	  }
+
+	  
+	  /* ===== Modal Background ===== */
+	  .modal-overlay {
+	    position: fixed;
+	    inset: 0;
+	    background: rgba(15, 23, 42, 0.55);
+	    backdrop-filter: blur(6px);
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    z-index: 9999;
+	  }
+
+	  /* ===== Modal Box ===== */
+	  .modal-box {
+	    width: 380px;
+	    background: linear-gradient(180deg, #ffffff, #f8faff);
+	    border-radius: 16px;
+	    padding: 22px;
+	    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+	    animation: popup 0.25s ease;
+	  }
+
+	  /* ===== Heading ===== */
+	  .modal-box h3 {
+	    margin: 0 0 14px;
+	    font-size: 18px;
+	    font-weight: 600;
+	    color: #1e293b;
+	  }
+
+	  /* ===== Inputs & Select ===== */
+	  .modal-box input,
+	  .modal-box textarea,
+	  .modal-box select {
+	    width: 100%;
+	    padding: 10px 12px;
+	    margin-top: 10px;
+	    border-radius: 10px;
+	    border: 1px solid #cbd5e1;
+	    font-size: 14px;
+	    outline: none;
+	    background: #fff;
+	    transition: all 0.2s ease;
+	  }
+
+	  .modal-box textarea {
+	    resize: none;
+	    min-height: 70px;
+	  }
+
+	  /* ===== Focus Effect ===== */
+	  .modal-box input:focus,
+	  .modal-box textarea:focus,
+	  .modal-box select:focus {
+	    border-color: #6366f1;
+	    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+	  }
+
+	  /* ===== Buttons ===== */
+	  .modal-box .qa-btn {
+	    padding: 8px 16px;
+	    border-radius: 10px;
+	    font-size: 14px;
+	    cursor: pointer;
+	  }
+
+	  .btn-primary {
+	    background: linear-gradient(135deg, #6366f1, #4f46e5);
+	    color: #fff;
+	    border: none;
+	  }
+
+	  .btn-primary:hover {
+	    opacity: 0.9;
+	  }
+
+	  .btn-ghost {
+	    background: #f1f5f9;
+	    color: #475569;
+	    border: none;
+	  }
+
+	  .btn-ghost:hover {
+	    background: #e2e8f0;
+	  }
+
+	  /* ===== Popup Animation ===== */
+	  @keyframes popup {
+	    from {
+	      transform: translateY(10px) scale(0.95);
+	      opacity: 0;
+	    }
+	    to {
+	      transform: translateY(0) scale(1);
+	      opacity: 1;
+	    }
+	  }
+
+
+	  /* ===== REPORT SECTION ===== */
+
+	  .report-card{
+	    background:var(--card);
+	    border-radius:12px;
+	    padding:20px;
+	    box-shadow:0 10px 30px rgba(2,6,23,0.08);
+	  }
+
+	  .hidden{display:none}
+
+	  /* REPORT TYPE CARDS */
+	  .report-grid{
+	    display:grid;
+	    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+	    gap:16px;
+	    margin-top:15px;
+	  }
+
+	  .report-type{
+	    padding:18px;
+	    border-radius:12px;
+	    border:1px solid var(--border);
+	    cursor:pointer;
+	    transition:.25s;
+	    text-align:center;
+	  }
+	  .report-type:hover{
+	    transform:translateY(-4px);
+	    box-shadow:0 8px 20px rgba(0,0,0,.08);
+	    border-color:var(--primary);
+	  }
+	  .report-type h4{
+	    margin:10px 0 5px;
+	  }
+
+	  /* DATE FILTER */
+	  .filter-bar{
+	      display:flex;
+	      gap:14px;
+	      align-items:flex-end; /* ← was "end", fix it */
+	      margin-top:15px;
+	      flex-wrap:wrap;
+	  }
+
+	  .filter-bar label{
+	    font-size:13px;
+	    color:#475569;
+	  }
+	  .filter-bar input{
+	    padding:10px;
+	    border-radius:8px;
+	    border:1px solid var(--border);
+	  }
+	  .filter-bar button{
+	    padding:10px 18px;
+	    border:none;
+	    border-radius:8px;
+	    background:#7f1d1d;
+	    color:rgb(255, 255, 255);
+	    cursor:pointer;
+	  }
+
+	  /* TABLE */
+	  #reportTable {
+	    width: 100%;
+	    border-collapse: collapse;
+	    margin-top: 20px;
+	  }
+
+	  #reportTable th {
+	    background: rgb(255, 0, 0);
+	    padding: 12px;
+	    text-align: left;
+	    font-size: 13px;
+	  }
+
+	  #reportTable td {
+	    padding: 10px;
+	    border-bottom: 1px solid var(--border);
+	    font-size: 14px;
+	  }
+
+	  #reportTable tr:hover td {
+	    background: #f8fafc;
+	  }
+
+
+	  .top-bar{
+	    display:flex;
+	    justify-content:flex-start;
+	    margin-bottom:10px;
+	  }
+
+	  .reportback-btn{
+	    background:#e5e7eb;
+	    border:none;
+	    padding:8px 14px;
+	    border-radius:8px;
+	    cursor:pointer;
+	    font-size:14px;
+	  }
+	  .reportback-btn:hover{
+	    background:#d1d5db;
+	  }
+	  
+	  .courses-card {
+	    background: #ffffff;
+	    border-radius: 16px;
+	    padding: 20px;
+	    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+	  }
+
+	  /* Header */
+	  .courses-header {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    flex-wrap: wrap;
+	    gap: 12px;
+	  }
+
+	  .courses-header h2 {
+	    margin: 0;
+	    font-size: 22px;
+	  }
+
+	  .subtitle {
+	    font-size: 13px;
+	    color: #6b7280;
+	  }
+
+	  /* Actions */
+	  .courses-actions {
+	    display: flex;
+	    gap: 10px;
+	    align-items: center;
+	  }
+
+	  .courses-actions input {
+	    padding: 10px 12px;
+	    border-radius: 10px;
+	    border: 1px solid #e5e7eb;
+	    outline: none;
+	    min-width: 200px;
+	  }
+
+	  /* Buttons */
+	  .btn {
+	    padding: 10px 16px;
+	    border-radius: 10px;
+	    font-size: 14px;
+	    cursor: pointer;
+	    border: none;
+	  }
+
+	  .btn-primary {
+	    background: #2563eb;
+	    color: white;
+	  }
+
+	  .btn-primary:hover {
+	    background: #1e40af;
+	  }
+
+	  .btn-outline {
+	    background: transparent;
+	    border: 1px solid #d1d5db;
+	    color: #374151;
+	  }
+
+	  .btn-outline:hover {
+	    background: #f3f4f6;
+	  }
+
+	  /* Courses Grid */
+	  .courses-grid {
+	    margin-top: 20px;
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	    gap: 16px;
+	  }
+
+	  /* Course Card Example */
+	  .course-card {
+	    background: #f9fafb;
+	    border-radius: 14px;
+	    padding: 16px;
+	    border: 1px solid #e5e7eb;
+	  }
+
+	  /* Material Box */
+	  .material-box {
+	    margin-top: 24px;
+	    padding: 18px;
+	    border-radius: 14px;
+	    background: linear-gradient(135deg, #eff6ff, #ffffff);
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	  }
+
+	  /* ===== MODAL ===== */
+	  .modal-overlay {
+	    display: none;
+	    position: fixed;
+	    inset: 0;
+	    background: rgba(0,0,0,0.4);
+	    justify-content: center;
+	    align-items: center;
+	    z-index: 1000;
+	  }
+
+	  .modal-box {
+	    background: white;
+	    width: 520px;
+	    max-width: 95%;
+	    border-radius: 16px;
+	    overflow: hidden;
+	    animation: pop 0.25s ease;
+	  }
+
+	  @keyframes pop {
+	    from { transform: scale(0.95); opacity: 0; }
+	    to { transform: scale(1); opacity: 1; }
+	  }
+
+	  /* Modal Header */
+	  .modal-header {
+	    padding: 16px 20px;
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    border-bottom: 1px solid #e5e7eb;
+	  }
+
+	  .close-btn {
+	    font-size: 22px;
+	    cursor: pointer;
+	  }
+
+	  /* Modal Body */
+	  .modal-body {
+	    padding: 20px;
+	  }
+
+	  .form-grid {
+	    display: grid;
+	    grid-template-columns: 1fr 1fr;
+	    gap: 14px;
+	  }
+
+	  .form-grid .full {
+	    grid-column: span 2;
+	  }
+
+	  .form-grid label {
+	    font-size: 12px;
+	    color: #6b7280;
+	  }
+
+	  .form-grid input,
+	  .form-grid textarea {
+	    width: 100%;
+	    padding: 10px;
+	    border-radius: 10px;
+	    border: 1px solid #d1d5db;
+	    outline: none;
+	  }
+
+	  textarea {
+	    resize: none;
+	    height: 80px;
+	  }
+
+	  /* Modal Footer */
+	  .modal-footer {
+	    padding: 16px 20px;
+	    display: flex;
+	    justify-content: flex-end;
+	    gap: 10px;
+	    border-top: 1px solid #e5e7eb;
+	  }
+
+	  
+	  
+
+	  /* Animation */
+	  @keyframes fadeIn {
+	    from { opacity: 0; transform: translateY(10px); }
+	    to { opacity: 1; transform: translateY(0); }
+	  }
+	  
+	  /* ===== OFFLINE FEE MODAL ===== */
+	  #offlineFeeModal {
+	    display: none;
+	    position: fixed;
+	    inset: 0;
+	    background: rgba(15, 23, 42, 0.55); /* dark blur */
+	    z-index: 9999;
+	    backdrop-filter: blur(3px);
+	  }
+
+	  /* Modal box */
+	  #offlineFeeModal .modal-content {
+	    background: #ffffff;
+	    width: 420px;
+	    max-width: 95%;
+	    margin: 8% auto;
+	    padding: 24px 26px;
+	    border-radius: 14px;
+	    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+	    animation: slideFadeIn 0.3s ease;
+	    position: relative;
+	  }
+
+	  /* Title */
+	  #offlineFeeModal h3 {
+	    margin-bottom: 18px;
+	    font-size: 18px;
+	    font-weight: 600;
+	    color: #0f172a;
+	  }
+
+	  /* Close button */
+	  #offlineFeeModal .close {
+	    position: absolute;
+	    top: 14px;
+	    right: 16px;
+	    font-size: 22px;
+	    font-weight: 600;
+	    cursor: pointer;
+	    color: #64748b;
+	    transition: 0.2s;
+	  }
+
+	  #offlineFeeModal .close:hover {
+	    color: #ef4444;
+	  }
+
+	  /* Labels */
+	  #offlineFeeModal label {
+	    display: block;
+	    margin-bottom: 6px;
+	    font-size: 13px;
+	    font-weight: 500;
+	    color: #475569;
+	  }
+
+	  /* Inputs */
+	  #offlineFeeModal input {
+	    width: 100%;
+	    padding: 10px 12px;
+	    border-radius: 8px;
+	    border: 1px solid #cbd5e1;
+	    margin-bottom: 14px;
+	    font-size: 14px;
+	    transition: border-color 0.2s, box-shadow 0.2s;
+	  }
+
+	  #offlineFeeModal input:focus {
+	    outline: none;
+	    border-color: #2563eb;
+	    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+	  }
+
+	  /* Submit button */
+	  #offlineFeeModal button {
+	    width: 100%;
+	    margin-top: 8px;
+	    padding: 10px;
+	    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+	    border: none;
+	    color: #fff;
+	    font-size: 14px;
+	    font-weight: 600;
+	    border-radius: 10px;
+	    cursor: pointer;
+	    transition: transform 0.2s, box-shadow 0.2s;
+	  }
+
+	  #offlineFeeModal button:hover {
+	    transform: translateY(-1px);
+	    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+	  }
+
+	  /* Message text */
+	  #of_msg {
+	    margin-top: 12px;
+	    font-size: 13px;
+	    text-align: center;
+	  }
+
+	  /* Success & error colors */
+	  #of_msg.success {
+	    color: #16a34a;
+	  }
+
+	  #of_msg.error {
+	    color: #dc2626;
+	  }
+
+	  /* Animation */
+	  @keyframes slideFadeIn {
+	    from {
+	      opacity: 0;
+	      transform: translateY(-10px) scale(0.97);
+	    }
+	    to {
+	      opacity: 1;
+	      transform: translateY(0) scale(1);
+	    }
+	  }
+	  
+	  
+	  /* ===== POPUP OVERLAY ===== */
+	  .popup-overlay {
+	    display: none;
+	    position: fixed;
+	    inset: 0;
+	    background: rgba(15, 23, 42, 0.55); /* darker professional overlay */
+	    backdrop-filter: blur(3px);
+	    z-index: 999;
+	  }
+
+	  /* ===== POPUP BOX ===== */
+	  .popup-box {
+	    background: #ffffff;
+	    width: 560px;
+	    margin: 70px auto;
+	    padding: 28px;
+	    border-radius: 14px;
+	    position: relative;
+	    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+	    animation: popupFade 0.25s ease-out;
+	  }
+
+	  /* POPUP ANIMATION */
+	  @keyframes popupFade {
+	    from {
+	      transform: translateY(-20px);
+	      opacity: 0;
+	    }
+	    to {
+	      transform: translateY(0);
+	      opacity: 1;
+	    }
+	  }
+
+	  /* CLOSE BUTTON */
+	  .close-btn {
+	    position: absolute;
+	    top: 14px;
+	    right: 18px;
+	    font-size: 24px;
+	    cursor: pointer;
+	    color: #64748b;
+	  }
+
+	  .close-btn:hover {
+	    color: #0f172a;
+	  }
+
+	  /* ===== PAYMENT MODE SECTION ===== */
+	  #paymentModeSection {
+	    display: block;
+	    padding: 10px 0;
+	  }
+
+	  #paymentModeSection h3 {
+	    font-size: 20px;
+	    font-weight: 600;
+	    color: #0f172a;
+	    margin-bottom: 18px;
+	  }
+
+	  /* MODE BUTTONS */
+	  .mode-buttons {
+	    display: flex;
+	    gap: 15px;
+	  }
+
+	  .mode-buttons button {
+	    flex: 1;
+	    padding: 12px;
+	    border: none;
+	    font-size: 15px;
+	    font-weight: 600;
+	    border-radius: 10px;
+	    cursor: pointer;
+	    transition: all 0.2s ease;
+	  }
+
+	  /* OFFLINE */
+	  .offline-btn {
+	    background: #16a34a;
+	    color: #ffffff;
+	  }
+
+	  .offline-btn:hover {
+	    background: #15803d;
+	  }
+
+	  /* ONLINE */
+	  .online-btn {
+	    background: #0ea5e9;
+	    color: #ffffff;
+	  }
+
+	  .online-btn:hover {
+	    background: #0284c7;
+	  }
+
+	  /* ===== OFFLINE MODAL ===== */
+	  #offlineFeeModal {
+	    display: none;
+	    margin-top: 25px;
+	  }
+
+	  .modal-content {
+	    background: #f8fafc;
+	    padding: 22px;
+	    border-radius: 12px;
+	    width: 100%;
+	    box-shadow: inset 0 0 0 1px #e5e7eb;
+	  }
+
+	  .modal-content h3 {
+	    font-size: 18px;
+	    margin-bottom: 15px;
+	    color: #0f172a;
+	  }
+
+	  .modal-content label {
+	    font-size: 13px;
+	    font-weight: 600;
+	    color: #475569;
+	    margin-top: 12px;
+	    display: block;
+	  }
+
+	  .modal-content input {
+	    width: 100%;
+	    padding: 10px 12px;
+	    margin-top: 6px;
+	    border-radius: 8px;
+	    border: 1px solid #cbd5e1;
+	    font-size: 14px;
+	  }
+
+	  .modal-content input:focus {
+	    outline: none;
+	    border-color: #0ea5e9;
+	    box-shadow: 0 0 0 2px rgba(14,165,233,0.2);
+	  }
+
+	  .modal-content button {
+	    margin-top: 18px;
+	    padding: 12px;
+	    width: 100%;
+	    border-radius: 10px;
+	    font-size: 15px;
+	    font-weight: 600;
+	    background: #16a34a;
+	    color: #ffffff;
+	    border: none;
+	    cursor: pointer;
+	  }
+
+	  .modal-content button:hover {
+	    background: #15803d;
+	  }
+
+	  /* ===== ONLINE SECTION ===== */
+	  #onlinePaymentSection {
+	    display: none;
+	    margin-top: 25px;
+	    padding: 22px;
+	    background: #f8fafc;
+	    border-radius: 12px;
+	    box-shadow: inset 0 0 0 1px #e5e7eb;
+	  }
+
+
+
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div>
+      <div class="title">Admin Panel</div>
+      <div class="small">ISEES TECHNOLOGIES • Management Console</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+    
+      <div style="position:relative">
+        <button id="notifBtn" class="qa-btn btn-ghost">🔔 Notifications <span id="notifCount" style="margin-left:8px;color:var(--danger);font-weight:600"></span></button>
+        <div id="notifDropdown" style="position:absolute;right:0;top:38px;display:none;background:white;border:1px solid var(--border);border-radius:8px;min-width:260px;padding:10px;box-shadow:0 10px 30px rgba(2,6,23,0.12)">
+          <div class="small muted">Notifications</div>
+          <div id="notifList" style="margin-top:8px">No notifications</div>
+        </div>
+      </div>
+	  
+      <div class="small">Admin</div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo">My Institute</div>
+      <div class="small muted">Welcome back, Admin</div>
+      <nav class="nav" style="margin-top:12px">
+        <button id="menu-dashboard" class="active" onclick="switchSection('dashboard')">📊 Dashboard</button>
+        <button id="menu-students" onclick="switchSection('students')">👨‍🎓 Students List</button>
+        <button id="menu-courses" onclick="switchSection('courses')">📚 Manage Courses</button>
+        <button id="menu-exam" onclick="switchSection('exam')">🧾 Manage Exam</button>
+		<button id="menu-examattempt" onclick="switchSection('examattempt')">📄 Exam Attempts</button>
+		<button id="menu-expense" onclick="switchSection('expense')">📄 Expense Manage</button>
+		<button id="menu-report2" onclick="openReportList()">📊 Reports</button>
+
+		
+
+      </nav>
+
+      <div style="margin-top:18px">
+        <div class="small muted">Quick Links</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <button class="qa-btn btn-primary" onclick="openCourseModal()">+ Add Course</button>
+          <button class="qa-btn btn-primary" onclick="openExamModal()">+ Create Exam</button>
+		  <button class="qa-btn btn-primary" onclick="openOfflineFeeModal()">
+		   + Offline Fee Payment  </button>
+		  <button class="qa-btn btn-primary" onclick="openPaymentPopup()"> + Payment mode </button>
+		  <button id="menu-studentfeeReminder" class="qa-btn btn-primary" onclick="switchSection('studentfeeReminder')">
+		            + Reminder Student Fee</button>
+		<button class="qa-btn btn-primary" onclick="openSendNotificationModal()">Send Notification</button>
+          <button class="qa-btn btn-ghost" onclick="downloadCSV()">📥 Export Admissions CSV</button>
+        </div>
+      </div>
+
+      <div style="margin-top:18px">
+        <div class="small muted">System</div>
+        <div style="margin-top:8px" class="small-1">Server: <strong id="serverStatus">Checking...</strong></div>
+        <div class="small-1" style="margin-top:6px">Last backup: <span id="lastBackup">—</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <section class="content">
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="panel">
+        <div class="row">
+          <div class="card stat">
+            <div class="label">Total Students</div>
+            <div id="totalStudents" class="value">0</div>
+            <div class="sub">Unique students registered</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Currently Admissions</div>
+            <div id="totalAdmissions" class="value">0</div>
+            <div class="sub">INPROGRESS Admissions recorded </div>
+          </div>
+          <div class="card stat">
+            <div class="label">Total Courses</div>
+            <div id="totalCourses" class="value">0</div>
+            <div class="sub">Active courses</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Total Exams</div>
+            <div id="totalExams" class="value">0</div>
+            <div class="sub">Exams created</div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px">
+          <div class="card stat">
+            <div class="label">Pending Fees (amount)</div>
+            <div id="pendingFeesAmount" class="value">₹0</div>
+            <div class="sub">Total remaining fees to collect</div>
+          </div> 
+		   
+       <!--   <div class="card stat">
+            <div class="label">Pending Admissions (count)</div>
+            <div id="pendingAdmissions" class="value">0</div>
+            <div class="sub">Awaiting payment / docs</div>
+          </div> -->
+		  
+		  
+		  <div class="card stat">
+		    <div class="label">Income This Month</div>
+		    <div class="value" id="currentMonthIncome">₹ 0</div>
+		  </div>
+		  <div class="card stat">
+		  	<div class="label">Expense This Month</div>
+		  	<div class="value" id="currentMonthExpense">₹ 0</div>
+		  </div>
+
+        </div>
+
+        <div class="cards-row" style="margin-top:14px">
+          	<div class="card">
+            	<h3 style="margin: 20px">Admissions (last 7 days)</h3>
+            	<canvas id="admissionsChart" height="120"></canvas>
+          	</div>
+
+          	<div class="card">
+            	<h3 style="margin: 20px"  >Top 5 Courses</h3>
+            	<canvas id="coursesChart" height="270" ></canvas>
+            	<div style="margin: 10px" class="small muted">Course popularity by admissions</div>
+          	</div>
+		  
+			<div class="card">
+			  <h3 style="margin: 20px">Exam Performance</h3>
+			  <canvas id="examGraphCanvas" height="100"></canvas>
+			</div>
+			
+			<div class="card" style="width:370px">
+							   <h3 style="margin: 20px">Activity Timeline</h3>
+							   <div id="timeline" class="timeline">
+							   		<div class="empty">Loading activity...</div>
+							   </div>
+			</div>
+		  
+		  	<div class="card" style="flex:1;min-width:400px">
+		          <h3 style="margin-bottom:10px">Recent Admissions</h3>
+		           <div id="recentAdmissions" class="recent-list">Loading...</div>
+		    </div>
+				   
+			
+		 
+        </div>
+		
+	</section>
+
+      <!-- STUDENTS -->
+      <section id="students" class="panel" style="display:none;margin-top:8px">
+        <div class="card">
+          <h3>Students List</h3>
+          <div id="studentsTable" class="table-container" style="margin-top:12px">Loading...</div>
+        </div>
+      </section>
+
+     
+      
+     
+	  <!-- COURSES PANEL -->
+	  <section id="courses" class="panel">
+	    <div class="courses-card">
+	      
+	      <!-- Header -->
+	      <div class="courses-header">
+	        <div>
+	          <h2>Course Management</h2>
+	          <p class="subtitle">Create, view and manage all courses</p>
+	        </div>
+
+	        <div class="courses-actions">
+	          <input id="courseSearch" type="text" placeholder="Search courses...">
+	          <button class="btn btn-primary" onclick="openAddCourse()">+ Add Course</button>
+	          <button class="btn btn-outline" onclick="loadCourses()">Refresh</button>
+	        </div>
+	      </div>
+
+	      <!-- Course List -->
+	      <div id="coursesList" class="courses-grid">
+	        <!-- Dynamic cards -->
+	      </div>
+
+	      <!-- Course Material -->
+	      <div class="material-box">
+	        <div>
+	          <h4>Course Materials</h4>
+	          <p>Upload and manage learning materials for courses</p>
+	        </div>
+	        <button class="btn btn-primary"
+	                onclick="window.location='CourseMaterial.html'">
+	          Manage Materials
+	        </button>
+	      </div>
+
+	    </div>
+	  </section>
+
+	  <!-- ADD COURSE MODAL -->
+	  <div id="addCourseModal" class="modal-overlay">
+	    <div class="modal-box">
+
+	      <div class="modal-header">
+	        <h3>Add New Course</h3>
+	        <span class="close-btn" onclick="closeAddCourse()">×</span>
+	      </div>
+
+	      <div class="modal-body">
+	        <div class="form-grid">
+	          <div>
+	            <label>Course Name</label>
+	            <input id="cName" placeholder="e.g. MCA, BSc IT">
+	          </div>
+
+	          <div>
+	            <label>Total Seats</label>
+	            <input id="cSeat" type="number" placeholder="100">
+	          </div>
+
+	          <div>
+	            <label>Duration</label>
+	            <input id="cDuration" placeholder="2 Years">
+	          </div>
+
+	          <div>
+	            <label>Eligibility</label>
+	            <input id="cEligibility" placeholder="Graduation">
+	          </div>
+
+	          <div>
+	            <label>Course Fee</label>
+	            <input id="cFee" type="number" placeholder="50000">
+	          </div>
+
+	          <div class="full">
+	            <label>Description</label>
+	            <textarea id="cDesc" placeholder="Course description..."></textarea>
+	          </div>
+	        </div>
+	      </div>
+
+	      <div class="modal-footer">
+	        <button class="btn btn-outline" onclick="closeAddCourse()">Cancel</button>
+	        <button class="btn btn-primary" onclick="saveCourse()">Save Course</button>
+	      </div>
+
+	    </div>
+	  </div>
+	  
+
+      <!-- EXAM Manage-->
+      <section id="exam" class="panel" style="display:none;margin-top:8px">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3>Manage Exams</h3>
+            <div class="row">
+              <input id="examSearch" placeholder="Search exams..." style="padding:8px;border-radius:8px;border:1px solid var(--border)">
+              <button class="qa-btn btn-ghost" id="examRefreshBtn" onclick="loadExams()">Refresh</button>
+              <button class="qa-btn btn-primary" onclick="openExamModal()">+ New Exam</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:420px">
+              <div style="margin-bottom:8px" class="small-muted">Exam Editor (create or add questions)</div>
+              <div style="padding:12px;border-radius:10px;border:1px solid var(--border)">
+                <div style="display:flex;gap:8px">
+                  <input id="examTitleInput" placeholder="Exam title" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border)">
+				  <input id="examCourseInput"
+				         placeholder="Course Name"
+				         style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border)">
+
+                  <input id="examDurationInput" type="number" placeholder="Duration (mins)" style="width:120px;padding:8px;border-radius:8px;border:1px solid var(--border)">
+                </div>
+
+                <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+                  <select id="examModeSelect" style="padding:8px;border-radius:8px;border:1px solid var(--border)">
+                    <option value="new">Create New Exam</option>
+                    <option value="add">Add to Existing</option>
+                  </select>
+                  <input id="targetExamIdInput" placeholder="Target exam id (for add)" style="padding:8px;border-radius:8px;border:1px solid var(--border);flex:1">
+                  <button id="addQuestionBtn" class="qa-btn btn-primary">+ Q</button>
+                  <button id="saveExamBtn" class="qa-btn btn-success">Save</button>
+                </div>
+
+                <div id="questionsContainer" style="margin-top:12px"></div>
+              </div>
+            </div>
+
+            <div style="width:420px">
+              <div class="small-muted">Exams</div>
+              <div id="examListPanel" style="margin-top:8px;max-height:520px;overflow:auto"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+	  
+	  <!-- EXAM Attempt-->
+	  <section id="examattempt" class="panel" style="display:none;margin-top:8px">
+	  				<div class="card">
+	  			      <h2>All Student Exam Submission List</h2>	  				 	  				  	
+	  				  <table>
+	  				      <thead>
+	    			        <tr>
+	    			            <th>Submission ID</th>
+	  				            <th>Email</th>
+	  				            <th>Exam Name</th>
+	  				            <th>Score</th>
+	  				            <th>Total Marks</th>
+	  				            <th>Percentage</th>
+	  				            <th>Grade</th>
+	  				            <th>Submitted Date</th>
+	  				  		</tr>
+	  				  	</thead>
+	  				  <tbody id="submissionBody"></tbody>
+	  			</table>
+	  	</div>
+	  </section>
+	  
+	  <!-- Expense Manage-->
+	  
+    <section id="expense" class="panel" style="display:none;margin-top:8px">
+		<h1>School Admin – Expense Management</h1>
+
+		<div class="expense-row">
+			
+			
+
+		  <!-- Expense Form -->
+		  <div class="form-box">
+		    <h2>Add New Expense</h2>
+
+		    <label>Expense Type</label>
+		    <select id="expenseType">
+		      <option value="ADMINISTRATIVE">Administrative</option>
+		      <option value="STUDENT_FEE">Student Fee</option>
+		      <option value="EVENT">Event</option>
+		      <option value="MAINTENANCE">Maintenance</option>
+		    </select>
+
+		    <label>Description</label>
+		    <input type="text" id="description" placeholder="Enter description..." />
+
+		    <label>Amount</label>
+		    <input type="number" id="amount" placeholder="Enter amount..." />
+
+		    <label>Paid To</label>
+		    <input type="text" id="paidTo" placeholder="Vendor/Person Name" />
+
+		    <label>Bill Number</label>
+		    <input type="text" id="billNumber" placeholder="Bill Number" />
+
+			<button class="qa-btn btn-success" onclick="addExpense()">Add Expense</button>			
+			
+		  </div>
+		  
+		  <div class="chart-box">
+		  		  		<h2>Expense Summary</h2>
+		  		  		<canvas id="expenseGraph"></canvas>
+		  		  	</div>	
+		  		  
+		  
+		  
+		  <!-- Filter by Expense Type -->
+		  
+		  <select id="expenseFilter" onchange="filterByTypeServerSide()" class="filter-box">
+		    <option value="ALL">All Expenses</option>
+		    <option value="ADMINISTRATIVE">Administrative</option>
+		    <option value="STUDENT_FEE">Student Fee</option>
+		    <option value="EVENT">Event</option>
+		    <option value="MAINTENANCE">Maintenance</option>
+		  </select>
+
+		  <!-- Expense Table -->
+		  <table>
+		    <thead>
+		      <tr>
+		        <th>ID</th>
+		        <th>Type</th>
+		        <th>Description</th>
+		        <th>Amount</th>
+		        <th>Paid To</th>
+		        <th>Bill No</th>
+		        <th>Date</th>
+		      </tr>
+		    </thead>
+		    <tbody id="expenseTableBody"></tbody>
+		  </table>
+
+		  <p class="no-data" id="noDataMsg" style="display:none;">No Expense Records Found</p>
+
+		</div>
+		
+    </section>
+
+	
+	  
+	  <!-- ================= REPORT SECTION 2================= -->
+	  <!-- CONTENT -->
+	    <div id="report2" class="panel" style="display:none;margin-top:8px" >
+
+			<!-- REPORT LIST -->
+			    <div id="reportList" class="report-card hidden">
+			      <h2>Select Report Type</h2>
+
+			      <div class="report-grid">
+			        <div class="report-type" onclick="selectReport('ADMISSION')">
+			          📘
+			          <h4>Admission Report</h4>
+			          <small>Date wise admissions</small>
+			        </div>
+
+			        <div class="report-type" onclick="selectReport('FEE')">
+			          💰
+			          <h4>Fee Report</h4>
+			          <small>Collected fees</small>
+			        </div>
+
+			        <div class="report-type" onclick="selectReport('EXPENSE')">
+			          📉
+			          <h4>Expense Report</h4>
+			          <small>All expenses</small>
+			        </div>
+			      </div>
+			    </div>
+
+			    <!-- REPORT VIEW -->
+			    <div id="reportView" class="report-card hidden">
+					<div class="top-bar">
+					  <button class="reportback-btn" onclick="goBack()">← Back</button>
+					</div>
+
+			      <h2 id="reportTitle"></h2>
+
+			      <div class="filter-bar">
+			        <div>
+			          <label>From Date</label><br>
+			          <input type="date" id="fromDate">
+			        </div>
+
+			        <div>
+			          <label>To Date</label><br>
+			          <input type="date" id="toDate">
+			        </div>
+
+			        <button  onclick="loadReport()">Generate</button>
+			      </div>
+
+			      <table id="reportTable" class="hidden">
+			        <thead id="tableHead"></thead>
+			        <tbody id="tableBody"></tbody>
+			      </table>
+			    </div>
+
+	    </div>
+
+      <footer>© <span id="year"></span> My Institute — Admin Dashboard</footer>
+    
+  </div>
+</div>
+
+
+
+
+<!-- Course modal -->
+<div id="courseModal" class="modal">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3>Add Course</h3>
+      <button class="close-x" onclick="closeCourseModal()">✕</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div style="flex:1">
+        <label>Course Name</label>
+        <input id="courseNameInput" placeholder="Course Name">
+      </div>
+      <div style="width:180px">
+        <label>Fee</label>
+        <input id="courseFeeInput" type="number" placeholder="Fee">
+      </div>
+    </div>
+    <div class="row">
+      <div style="flex:1">
+        <label>Duration (text)</label>
+        <input id="courseDurationInput" placeholder="e.g. 6 months">
+      </div>
+      <div style="width:180px">
+        <label>Total seats</label>
+        <input id="courseTotalSeatInput" type="number" placeholder="Total seats">
+      </div>
+    </div>
+
+    <div style="text-align:right;margin-top:12px">
+      <button class="qa-btn btn-ghost" onclick="closeCourseModal()">Cancel</button>
+      <button class="qa-btn btn-primary" onclick="saveCourse()">Save Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- Exam modal (quick create) -->
+<div id="examModal" class="modal">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3>Create Exam</h3>
+      <button class="close-x" onclick="closeExamModal()">✕</button>
+    </div>
+
+    <div style="margin-top:8px">
+      <label>Exam Title</label>
+      <input id="quickExamTitle" placeholder="Exam Title">
+      <label style="margin-top:8px">Duration (mins)</label>
+      <input id="quickExamDuration" type="number" value="30">
+      <label style="margin-top:8px">Add one sample question (optional)</label>
+      <textarea id="quickExamQuestion" placeholder="Question text (optional)"></textarea>
+    </div>
+
+    <div style="text-align:right;margin-top:12px">
+      <button class="qa-btn btn-ghost" onclick="closeExamModal()">Cancel</button>
+      <button class="qa-btn btn-primary" onclick="quickCreateExam()">Create</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== OFFLINE STUDENT FEE MODAL ===== -->
+<div id="offlineFeeModal">
+
+  <div class="modal-content">
+
+    <!-- Close Button -->
+    <span class="close" onclick="closeOfflineFeeModal()">×</span>
+
+    <!-- Title -->
+    <h3>Offline Student Fee Payment</h3>
+
+    <!-- Student Email -->
+    <label for="of_email">Student Email</label>
+    <input type="email" id="of_email" placeholder="student@example.com" />
+
+    <!-- Course Name -->
+    <label for="of_course">Course Name</label>
+    <input type="text" id="of_course" placeholder="Enter course name" />
+
+    <!-- Paid Amount -->
+    <label for="of_amount">Paid Amount</label>
+    <input type="number" id="of_amount" placeholder="Enter paid amount" />
+
+    <!-- Submit Button -->
+    <button onclick="submitOfflineFee()">Submit Payment</button>
+
+    <!-- Message -->
+    <div id="of_msg"></div>
+
+  </div>
+
+</div>
+
+
+<!-- POPUP -->
+<div id="paymentPopup" class="popup-overlay">
+
+  <div class="popup-box">
+
+    <span class="close-btn" onclick="closePaymentPopup()">×</span>
+
+    <!-- PAYMENT MODE SECTION -->
+    <div id="paymentModeSection">
+      <h3>Select Payment Mode</h3>
+
+      <div class="mode-buttons">
+        <button class="offline-btn" onclick="openOffline()">Offline</button>
+        <button class="online-btn" onclick="window.location.href='fee.html'"">Online</button>
+      </div>
+    </div>
+	
+	<!-- ===== OFFLINE STUDENT FEE MODAL ===== -->
+	<div id="offlineFeeModal">
+
+	  <div class="modal-content">
+
+	    <!-- Close Button -->
+	    <span class="close" onclick="closeOfflineFeeModal()">×</span>
+
+	    <!-- Title -->
+	    <h3>Offline Student Fee Payment</h3>
+
+	    <!-- Student Email -->
+	    <label for="of_email">Student Email</label>
+	    <input type="email" id="of_email" placeholder="student@example.com" />
+
+	    <!-- Course Name -->
+	    <label for="of_course">Course Name</label>
+	    <input type="text" id="of_course" placeholder="Enter course name" />
+
+	    <!-- Paid Amount -->
+	    <label for="of_amount">Paid Amount</label>
+	    <input type="number" id="of_amount" placeholder="Enter paid amount" />
+
+	    <!-- Submit Button -->
+	    <button onclick="submitOfflineFee()">Submit Payment</button>
+
+	    <!-- Message -->
+	    <div id="of_msg"></div>
+
+	  </div>
+
+	</div>
+
+
+  </div>
+</div>
+
+
+<!-- Fee Reminder modal (quick create) -->
+<section id="studentfeeReminder" class="panel" style="display:none;margin-top:8px;">
+  <div class="box">
+    <h2>Send Fee Reminder Email</h2>
+	<button class="close-x" onclick="closeFeeReminderModal()">✕</button>
+
+    <div style="margin-top:20px; display:flex; gap:12px; align-items:center;">
+      <label for="reminderEmail" style="min-width:110px">Student Email</label>
+      <input type="email" id="reminderEmail" placeholder="Enter student email" style="width:300px;padding:10px;" />
+      <button class="qa-btn btn-primary" style="margin-left:10px;" onclick="sendFeeReminderFromInput()">Send Reminder</button>
+      <div id="feeReminderMsg" class="alert success" style="margin-left:12px;"></div>
+      <div id="feeReminderErr" class="alert error" style="margin-left:12px;"></div>
+    </div>
+
+    <div style="margin-top:18px">
+      <h3>Students with Pending Fees</h3>
+      <div class="table-container">
+        <table class="fee-table">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Email</th><th>Remaining</th><th>Action</th></tr>
+          </thead>
+          <tbody id="table-body">
+            <tr><td colspan="5" style="text-align:center;padding:12px">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Send Notification  modal (quick create) -->
+<div id="sendNotifyModal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <h3>Send Notification</h3>
+
+    <input id="notifyEmail" placeholder="Student Email" />
+    <input id="notifyTitle" placeholder="Title" />
+    <textarea id="notifyMessage" placeholder="Message"></textarea>
+
+    <select id="notifyType">
+      <option value="ADMISSION">Admission</option>
+      <option value="PAYMENT">Payment</option>
+      <option value="EXAM">Exam</option>
+    </select>
+
+    <div style="margin-top:12px;display:flex;gap:10px">
+      <button class="qa-btn btn-primary" onclick="sendAdminNotification()">Send</button>
+      <button class="qa-btn btn-ghost" onclick="closeSendNotificationModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+/* ---------------------------
+  Configuration: API endpoints
+---------------------------- */
+const API_BASE = "http://localhost:8080";
+const API_COURSE = API_BASE + "/course";
+const API_ADMISSION = API_BASE + "/admission/get";
+const API_EXAM = API_BASE + "/exam";
+const API_SUBMISSION = API_BASE + "/submission/get";
+const API_SEND_REMINDER = API_BASE + "/Student-free/send-feereminder";
+const API_EXAMSTUDENTCHART = API_BASE + "/submission/Exam-Summary";
+const API_EXAM_SUMMARY = API_BASE + "/api/dashboard/exams/summary";
+const API_EXPENSE = "http://localhost:8080/api/expense";
+const API_NOTIFICATION = API_BASE + "/api/admin/Notification";
+const API_INPROGRESS = API_BASE + "/admission/get-All/InProgress";
+
+
+
+
+/* utils */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const nowYear = new Date().getFullYear(); $('#year').innerText = nowYear;
+
+function setVisible(el, v) { el.style.display = v ? '' : 'none'; }
+function toText(s){ return s == null ? '' : String(s); }
+function escapeHtml(s){ if(s==null) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* Section switching */
+/* Section switching */
+const panels = ['dashboard','students','admissions','courses','exam','examattempt','studentfeeReminder','expense','report2'];
+
+function switchSection(id){
+  panels.forEach(p => {
+    const el = document.getElementById(p);
+    if(!el) return;
+	el.style.display = (p === id) ? 'block' : 'none';
+  });
+
+  // sidebar active
+  $$('.nav button').forEach(b => b.classList.remove('active'));
+
+  const map = {
+    dashboard:'menu-dashboard',
+    students:'menu-students',
+    admissions:'menu-admissions',
+    courses:'menu-courses',
+    exam:'menu-exam',
+    examattempt:'menu-examattempt',
+    studentfeeReminder:'menu-studentfeeReminder',
+	//examDoughnutChart:'menu-examDoughnutChart',
+	expense:'menu-expense',
+	report2:'menu-report2'
+	
+  };
+
+  const btnId = map[id];
+  const btn = document.getElementById(btnId);
+  if(btn) btn.classList.add('active');
+
+  // load data for the section
+  if(id === 'dashboard') loadDashboard();
+  if(id === 'students') loadStudents();
+  if(id === 'admissions') loadAdmissions();
+  if(id === 'courses') loadCourses();
+  if(id === 'exam') loadExams();
+  if(id === 'examattempt') loadExamAttempts();
+  if(id === 'studentfeeReminder') loadFeeReminder();
+ // if(id=== 'examDoughnutChart') loadExamDoughnutChart();
+ 
+
+}
+
+function openSendNotificationModal() {
+  document.getElementById("sendNotifyModal").style.display = "flex";
+}
+
+function closeSendNotificationModal() {
+  document.getElementById("sendNotifyModal").style.display = "none";
+}
+
+
+async function sendAdminNotification() {
+  const email = document.getElementById("notifyEmail").value.trim();
+  const title = document.getElementById("notifyTitle").value.trim();
+  const message = document.getElementById("notifyMessage").value.trim();
+  const type = document.getElementById("notifyType").value; // ADMISSION / PAYMENT / EXAM
+
+  if (!email || !title || !message) {
+    alert("All fields are required");
+    return;
+  }
+
+  const params = new URLSearchParams({
+    email,
+    title,
+    message,
+    type
+  });
+
+  try {
+    const res = await fetch(`${API_NOTIFICATION}/send-notify?${params.toString()}`, {
+      method: "POST"
+    });
+
+    if (!res.ok) throw new Error("Failed to send notification");
+
+    const data = await res.json();
+    alert("Notification sent successfully");
+
+    // optional refresh
+    loadAdminNotifications();
+
+  } catch (err) {
+    console.error(err);
+    alert("Error sending notification");
+  }
+}
+
+
+
+
+
+
+/* ---------------------------
+  Dashboard: load summary + charts
+---------------------------- */
+let expenseGraphChart = null;
+let admissionsChart = null;
+let coursesChart = null;
+
+async function loadDashboard() {
+  try {
+    // Fetch all required data concurrently
+    const [coursesRes, admissionsRes, examsRes, examSummaryRes, inProgressRes] = await Promise.all([
+      fetch(API_COURSE + "/get"),
+      fetch(API_ADMISSION),
+      fetch(API_EXAM + "/get"),
+      fetch(API_EXAMSTUDENTCHART),
+	  fetch(API_INPROGRESS)
+    ]);
+
+    const courses = await (coursesRes.ok ? coursesRes.json() : []);
+    const admissions = await (admissionsRes.ok ? admissionsRes.json() : []);
+    const exams = await (examsRes.ok ? examsRes.json() : []);
+    const examSummary = await (examSummaryRes.ok ? examSummaryRes.json() : {});
+	const inProgressCount = await (inProgressRes.ok ? inProgressRes.json() : 0);
+
+    // Update summary metrics
+    const totalCourses = courses.length;
+   // const totalAdmissions = admissions.length;
+    const totalExams = exams.length;
+
+    const studentsSet = new Set(admissions.map(a => (a.email || a.sname || '').toLowerCase()));
+    const totalRemaining = admissions.reduce((sum, a) => sum + Math.max(Number(a.remainingfree ?? a.totalfree - a.paidfree), 0), 0);
+   // const pendingCount = admissions.filter(a => Number(a.totalfree || 0) > 0 && Number(a.paidfree || 0) < Number(a.totalfree || 0)).length;
+
+    $('#totalCourses').innerText = totalCourses;
+    $('#totalAdmissions').innerText =inProgressCount ;
+    $('#totalExams').innerText = totalExams;
+    $('#totalStudents').innerText = studentsSet.size;
+    $('#pendingFeesAmount').innerText = `₹ ${totalRemaining.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+   // $('#pendingAdmissions').innerText = pendingCount;
+	
+	const now = new Date();
+	    const currentMonth = now.getMonth(); // 0-11
+	    const currentYear = now.getFullYear();
+
+		// CURRENT MONTH INCOME
+	    const currentMonthAdmissions = admissions.filter(a => {
+	      const date = new Date(a.paymentdate || a.datetime);
+	      return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+	    });
+
+	    const monthlyIncome = currentMonthAdmissions.reduce((sum, a) => sum + Number(a.paidfree || 0), 0);
+	    document.getElementById('currentMonthIncome').innerText = `₹ ${monthlyIncome.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+
+		// CURRENT MONTH EXPENSE
+		const expenseRes = await fetch(`${API_EXPENSE}/all`);
+		const expenses = await (expenseRes.ok ? expenseRes.json() : []);
+
+		const currentMonthExpenses = expenses.filter(e => {
+		    const date = new Date(e.expenseDate);
+		    return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+		});
+
+		const monthlyExpense = currentMonthExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+		document.getElementById('currentMonthExpense').innerText = `₹ ${monthlyExpense.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+
+		
+		
+    // Load recent admissions
+	const container = document.getElementById("recentAdmissions");
+	if (!container) {
+	  console.error("recentAdmissions container missing");
+	  return;
+	}
+
+	const safeAdmissions = Array.isArray(admissions) ? admissions : [];
+
+	const recent = safeAdmissions
+	  .slice()
+	  .sort((a, b) => {
+	    const d1 = new Date(b.datetime || b.paymentdate || b.createdAt || 0);
+	    const d2 = new Date(a.datetime || a.paymentdate || a.createdAt || 0);
+	    return d1 - d2;
+	  })
+	  .slice(0, 10);
+
+	container.innerHTML = recent.length
+	  ? recent.map(a => `
+	    <div class="recent-item">
+	      <div class="left">
+	        ${escapeHtml(a.sname || a.studentName || '—')}
+	        <div class="muted">${escapeHtml(a.courseName || '')}</div>
+	      </div>
+	      <div class="right small muted">
+	        ${new Date(a.datetime || a.paymentdate || Date.now()).toLocaleString()}
+	      </div>
+	    </div>
+	  `).join('')
+	  : '<div class="empty">No admissions</div>';
+
+
+    // Timeline
+    const timelineItems = [];
+    recent.forEach(a => timelineItems.push({txt:`Admission: ${a.sname || a.studentName} — ${a.courseName}`, t:a.datetime || a.paymentdate}));
+    exams.slice(0,5).forEach(e => timelineItems.push({txt:`Exam created: ${e.title}`, t:e.createdAt || new Date().toISOString()}));
+    courses.slice(0,5).forEach(c => timelineItems.push({txt:`Course: ${c.courseName}`, t:c.createdAt || new Date().toISOString()}));
+    renderTimeline(timelineItems.slice(0,12));
+
+    // Load charts
+    
+    populateAdmissionsChart(admissions);
+    populateCoursesChart(admissions, courses);
+	
+	console.log("Exam API Response:", examSummary);
+	loadExamSummaryFromData(examSummary);
+	
+	
+    // Notifications
+    renderNotifs();
+
+  } catch(err) {
+    console.error('Dashboard load failed', err);
+    $('#recentAdmissions').innerHTML = '<div class="empty">Failed to load data</div>';
+  }
+}
+
+
+
+
+
+
+
+
+
+function renderTimeline(items){
+  const box = $('#timeline');
+  box.innerHTML = items.length ? items.map(it => `
+    <div class="t-item">
+      <div class="dot"></div>
+      <div><div style="font-weight:600">${escapeHtml(it.txt)}</div><div class="muted">${escapeHtml(String(it.t || '')).slice(0,24)}</div></div>
+    </div>
+  `).join('') : '<div class="empty">No recent activity</div>';
+}
+
+/* Admissions chart helpers */
+function normalizeDate(d){ const dt = new Date(d); dt.setHours(0,0,0,0); return dt.getTime(); }
+
+function populateAdmissionsChart(admissions){
+  // count per last 7 days
+  const labels = [];
+  const counts = [];
+  for(let i=6;i>=0;i--){
+    const dt = new Date(); dt.setDate(dt.getDate()-i); dt.setHours(0,0,0,0);
+    labels.push(dt.toLocaleDateString());
+    counts.push(0);
+  }
+  (admissions || []).forEach(a => {
+    try {
+      const idx = labels.indexOf(new Date(a.datetime || a.paymentdate || Date.now()).toLocaleDateString());
+      if(idx >= 0) counts[idx]++;
+    } catch(e){}
+  });
+
+  const ctx = document.getElementById('admissionsChart');
+  if(admissionsChart) admissionsChart.destroy();
+  admissionsChart = new Chart(ctx.getContext('2d'), {
+    type: 'line',
+    data: { labels, datasets:[{ label:'Admissions', data:counts, fill:true, tension:0.3, backgroundColor:'rgba(79,70,229,0.08)', borderColor:'rgba(79,70,229,0.9)', pointRadius:4 }] },
+    options:{ plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true } } }
+  });
+}
+
+/* Courses chart (top 5) */
+function populateCoursesChart(admissions, courses){
+  const map = {};
+  (admissions || []).forEach(a => {
+    const name = a.courseName || 'Unknown';
+    map[name] = (map[name]||0) + 1;
+  });
+  (courses || []).forEach(c => { map[c.courseName] = map[c.courseName] || 0 });
+
+  const pairs = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const labels = pairs.map(p=>p[0]);
+  const data = pairs.map(p=>p[1]);
+
+  const ctx = document.getElementById('coursesChart');
+  if(coursesChart) coursesChart.destroy();
+  coursesChart = new Chart(ctx.getContext('2d'), {
+    type:'bar',
+    data:{ labels, datasets:[{ label:'Enrollments', data, backgroundColor: ['#4f46e5','#2563eb','#60a5fa','#34d399','#f59e0b'] }] },
+    options:{ plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true } } }
+  });
+}
+
+let examChart;
+
+function loadExamSummaryFromData(data = {}) {
+
+  console.log("Exam summary data:", data);
+
+  const totalExams = Number(data.totalExams || 0);
+  const passingPercent = Number(data.passingPercentage || 0);
+  const failedPercent = Number(data.FailedPercentage || 0);
+  const attemptsToday = Number(data.attemptsToday || 0);
+
+  if (totalExams === 0 && attemptsToday === 0) {
+    console.warn("No exam data to display");
+    return;
+  }
+
+  const canvas = document.getElementById("examGraphCanvas");
+  if (!canvas) {
+    console.error("examGraphCanvas not found");
+    return;
+  }
+
+  if (typeof Chart === "undefined") {
+    console.error("Chart.js not loaded");
+    return;
+  }
+
+  const ctx = canvas.getContext("2d");
+
+  if (window.examChart) window.examChart.destroy();
+
+  window.examChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Total Exams", "Passing %", "Failed %", "Attempts Today"],
+      datasets: [{
+        data: [
+          totalExams,
+          passingPercent,
+          failedPercent,
+          attemptsToday
+        ],
+        backgroundColor: [
+          "#6366f1",
+          "#22c55e",
+          "#ef4444",
+          "#f59e0b"
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
+
+
+
+
+/* ---------------------------
+  Students / Admissions lists
+---------------------------- */
+async function loadStudents(){
+  try {
+    const res = await fetch(API_ADMISSION);
+    const data = await (res.ok ? res.json() : []);
+    const html = `<table style="width:100%;">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Course</th>
+				<th>Date</th>
+				<th>Email</th>
+				<th>Total</th>
+				<th>Paid</th>
+				<th>Remaining</th>
+			</tr>
+		</thead>
+		<tbody>${
+      (data || []).map(a => `<tr>
+        <td>${escapeHtml(a.sname)}</td>
+        <td>${escapeHtml(a.courseName)}</td>
+        <td>${escapeHtml(a.createdAt)}</td>
+        <td>${escapeHtml(a.email||'')}</td>
+        <td>${escapeHtml(String(a.totalfree||''))}</td>
+        <td>${escapeHtml(String(a.paidfree||'0.0'))}</td>
+        <td>${escapeHtml(String(a.remainingfree||''))}</td>
+      </tr>`).join('')
+    }</tbody></table>`;
+    $('#studentsTable').innerHTML = html;
+  } catch(err){
+    console.error('students load', err);
+    $('#studentsTable').innerHTML = '<div class="empty">Failed to load students</div>';
+  }
+}
+
+
+/* ---------------------------
+  Courses management
+---------------------------- */
+function openAddCourse() {
+  document.getElementById("addCourseModal").style.display = "flex";
+}
+
+function closeAddCourse() {
+  document.getElementById("addCourseModal").style.display = "none";
+}
+
+async function saveCourse() {
+  const data = {
+    courseName: document.getElementById("cName").value.trim(),
+    totalseat: document.getElementById("cSeat").value,
+    duration: document.getElementById("cDuration").value,
+    eligibility: document.getElementById("cEligibility").value,
+    free: document.getElementById("cFee").value,
+    description: document.getElementById("cDesc").value
+  };
+
+  if (!data.courseName || !data.totalseat) {
+    alert("Course name and total seats required");
+    return;
+  }
+
+  const res = await fetch(API_COURSE + "/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const msg = await res.text();
+  alert(msg);
+
+  closeAddCourse();
+  loadCourses();
+}
+
+async function loadCourses() {
+  const res = await fetch(API_COURSE + "/get");
+  const courses = await res.json();
+
+  document.getElementById("coursesList").innerHTML = courses.map(c => `
+    <div class="list-item">
+      <div>
+        <b>${c.courseName}</b>
+        <div class="muted">${c.duration} | TotalSeats: ${c.totalseat} | AvailableSeats: ${c.availableSeat}</div>
+		 
+      </div>
+      <div>
+        <button class="qa-btn btn-danger" onclick="deleteCourse(${c.id})"> Delete </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function deleteCourse(id) {
+  if (!confirm("Delete this course?")) return;
+
+  const res = await fetch(API_COURSE + "/delete/" + id, { method: "DELETE" });
+  alert(await res.text());
+  loadCourses();
+}
+
+
+/* Course modal */
+function openCourseModal(){ $('#courseModal').style.display = 'flex'; }
+function closeCourseModal(){ $('#courseModal').style.display = 'none'; }
+
+/* ---------------------------
+  Exams: CRUD basics (frontend)
+---------------------------- */
+async function loadExams(){
+  $('#examListPanel').innerHTML = '<div class="loader">Loading exams...</div>';
+  try {
+    const res = await fetch(API_EXAM + '/get');
+    const data = await (res.ok ? res.json() : []);
+    renderExamPanel(data || []);
+  } catch(err){
+    console.error('loadExams', err);
+    $('#examListPanel').innerHTML = '<div class="empty">Failed to load exams</div>';
+  }
+}
+
+function renderExamPanel(list){
+  const q = ($('#examSearch').value || '').toLowerCase();
+  const filtered = (list || []).filter(e => !q || (e.title||'').toLowerCase().includes(q) || String(e.examId||'').includes(q));
+  $('#totalExams').innerText = (list || []).length;
+  $('#examListPanel').innerHTML = filtered.map(e => `
+    <div class="exam-card">
+      <div style="flex:1">
+        <h4>${escapeHtml(e.title)}</h4>
+        <div class="meta">${escapeHtml((e.questionList||[]).length + ' questions')} • ${escapeHtml(String(e.durationMinutes||e.duration||' - '))} min</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div class="muted">ID: ${escapeHtml(String(e.examId||e.id||''))}</div>
+        <div style="margin-top:8px">
+          <button class="qa-btn btn-ghost" onclick="viewExam(${e.examId})">View</button>
+          <button class="qa-btn btn-primary" onclick="prepareAdd(${e.examId})">Add Q</button>
+          <button class="qa-btn btn-danger" onclick="deleteExam(${e.examId})">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('') || '<div class="empty">No exams</div>';
+}
+
+/* exam UI helpers */
+$('#addQuestionBtn').addEventListener('click', ()=> {
+  const block = createQuestionBlock();
+  $('#questionsContainer').appendChild(block);
+});
+
+function createQuestionBlock(data = {}){ /* same as before - omitted for brevity */ 
+  const wrapper = document.createElement('div');
+  wrapper.className = 'question-box';
+  const qval = escapeHtml(data.question || '');
+  const marks = data.marks ?? 1;
+  const correct = data.correctOptionIndex ?? 0;
+  const opts = (data.options || ['','','','']).map(o => escapeHtml(o));
+  wrapper.innerHTML = `
+    <div class="q-row">
+      <div style="flex:1"><input class="q-question" placeholder="Question" value="${qval}"></div>
+      <div style="width:110px"><input class="q-marks" type="number" value="${marks}"></div>
+      <div style="width:90px"><input class="q-correct" type="number" min="0" max="3" value="${correct}"></div>
+      <div style="width:70px"><button class="btn btn-danger remove-q">Remove</button></div>
+    </div>
+    <div class="opt-grid">
+      <div><input class="q-opt" placeholder="Option 1" value="${opts[0]||''}"></div>
+      <div><input class="q-opt" placeholder="Option 2" value="${opts[1]||''}"></div>
+      <div><input class="q-opt" placeholder="Option 3" value="${opts[2]||''}"></div>
+      <div><input class="q-opt" placeholder="Option 4" value="${opts[3]||''}"></div>
+    </div>
+  `;
+  wrapper.querySelector('.remove-q').addEventListener('click', ()=> wrapper.remove());
+  return wrapper;
+}
+
+$('#saveExamBtn').addEventListener('click', async ()=>{ /* same as before */ 
+  const mode = $('#examModeSelect').value;
+  const title = $('#examTitleInput').value.trim();
+  const courseName = $('#examCourseInput').value.trim();
+  const duration = Number($('#examDurationInput').value) || 0;
+  const targetId = $('#targetExamIdInput').value.trim();
+
+  const qblocks = $$('.question-box');
+  const questionlist = qblocks.map(b => {
+    const question = b.querySelector('.q-question').value || '';
+    const marks = Number(b.querySelector('.q-marks').value) || 0;
+    const correctOptionIndex = Number(b.querySelector('.q-correct').value) || 0;
+    const optionlist = Array.from(b.querySelectorAll('.q-opt')).map(o => ({ options: o.value || '' }));
+    return { question, marks, correctOptionIndex, optionlist };
+  });
+
+  const payload = { title,courseName, durationMinutes: duration, questionlist, questionList: questionlist };
+
+  try {
+    if(mode === 'new'){
+      const res = await fetch(API_EXAM + '/create', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if(!res.ok) throw new Error('Create failed: '+res.status);
+      await loadExams();
+      alert('Exam created');
+    } else {
+      if(!targetId){ alert('Provide target exam id'); return; }
+      const res = await fetch(API_EXAM + `/create/${encodeURIComponent(targetId)}/add-question`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ questionlist }) });
+      if(!res.ok) throw new Error('Add failed: '+res.status);
+      await loadExams();
+      alert('Questions added');
+    }
+    $('#questionsContainer').innerHTML = '';
+    $('#examTitleInput').value = '';
+    $('#targetExamIdInput').value = '';
+  } catch(err){ console.error(err); alert('Failed: '+(err.message||err)) }
+});
+
+async function viewExam(id){
+  try {
+    const res = await fetch(API_EXAM + '/get/' + encodeURIComponent(id));
+    if(!res.ok) throw new Error('Not found');
+    const exam = await res.json();
+    $('#examTitleInput').value = exam.title || '';
+	$('#examCourseInput').value = exam.courseName || '';
+    $('#examDurationInput').value = exam.durationMinutes ?? exam.duration ?? '';
+    $('#examModeSelect').value = 'add';
+    $('#targetExamIdInput').value = exam.examId ?? exam.id ?? '';
+    $('#questionsContainer').innerHTML = '';
+    const qlist = exam.questionList ?? exam.questionlist ?? [];
+    qlist.forEach(q => {
+      const opts = (q.optionlist ?? q.optionList ?? []).map(o => o.options || '');
+      $('#questionsContainer').appendChild(createQuestionBlock({ question: q.question, marks: q.marks, correctOptionIndex: q.correctOptionIndex, options: opts }));
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch(err){ console.error('viewExam', err); alert('Failed to load exam') }
+}
+
+function prepareAdd(id){ $('#examModeSelect').value = 'add'; $('#targetExamIdInput').value = id; window.scrollTo({top:0,behavior:'smooth'}); }
+
+async function deleteExam(id){
+  console.log("Deleting exam ID:", id);
+
+  if(!id){
+    alert("Invalid exam ID");
+    return;
+  }
+
+  if(!confirm('Delete exam ' + id + ' ?')) return;
+
+  try {
+    const res = await fetch(API_EXAM + '/delete-exam/' + id, { method:'DELETE' });
+    if(!res.ok) throw new Error(res.status);
+    alert('Deleted');
+    loadExams();
+  } catch(err){
+    console.error(err);
+    alert('Delete failed');
+  }
+}
+
+
+/* Quick exam modal */
+function openOfflineFeeModal() {
+  document.getElementById("offlineFeeModal").style.display = "block";
+  clearOfflineFeeForm();
+}
+
+function closeOfflineFeeModal() {
+  document.getElementById("offlineFeeModal").style.display = "none";
+}
+
+function clearOfflineFeeForm() {
+  document.getElementById("of_email").value = "";
+  document.getElementById("of_course").value = "";
+  document.getElementById("of_amount").value = "";
+  const msg = document.getElementById("of_msg");
+  msg.innerHTML = "";
+  msg.className = "";
+}
+
+async function submitOfflineFee() {
+
+  const email = document.getElementById("of_email").value.trim();
+  const courseName = document.getElementById("of_course").value.trim();
+  const paidfee = document.getElementById("of_amount").value.trim();
+  const msg = document.getElementById("of_msg");
+
+  // 🔐 Validation
+  if (!email || !courseName || !paidfee) {
+    msg.className = "error";
+    msg.innerText = "All fields are required";
+    return;
+  }
+
+  if (paidfee <= 0) {
+    msg.className = "error";
+    msg.innerText = "Paid amount must be greater than 0";
+    return;
+  }
+
+  // ⏳ Loading state
+  msg.className = "";
+  msg.innerText = "Processing offline payment...";
+
+  try {
+    const response = await fetch("http://localhost:8080/Student-free/offline-payment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        courseName: courseName,
+        paidfee: Number(paidfee)
+      })
+    });
+
+    const result = await response.text();
+
+    if (!response.ok) {
+      throw new Error(result || "Payment failed");
+    }
+
+    // ✅ Success
+    msg.className = "success";
+    msg.innerText = result || "Offline payment successful";
+
+    setTimeout(() => {
+      closeOfflineFeeModal();
+    }, 10000);
+
+  } catch (error) {
+    // ❌ Error
+    msg.className = "error";
+    msg.innerText = error.message || "Server error";
+  }
+}
+
+function openPaymentPopup() {
+  document.getElementById("paymentPopup").style.display = "block";
+
+  // show only payment mode first
+  document.getElementById("paymentModeSection").style.display = "block";
+  document.getElementById("offlineFeeModal").style.display = "none";
+  document.getElementById("onlinePaymentSection").style.display = "none";
+}
+
+function closePaymentPopup() {
+  document.getElementById("paymentPopup").style.display = "none";
+}
+
+function openOffline() {
+  document.getElementById("offlineFeeModal").style.display = "block";
+  document.getElementById("onlinePaymentSection").style.display = "none";
+}
+
+
+
+/* Quick exam modal */
+function openExamModal(){ $('#examModal').style.display = 'flex'; }
+function closeExamModal(){ $('#examModal').style.display = 'none'; }
+
+async function quickCreateExam(){
+  const title = $('#quickExamTitle').value.trim();
+  const duration = Number($('#quickExamDuration').value) || 0;
+  const qtext = $('#quickExamQuestion').value.trim();
+  if(!title){ alert('Title required'); return; }
+  const qlist = qtext ? [{ question: qtext, marks:1, correctOptionIndex:0, optionlist:[{options:'A'},{options:'B'},{options:'C'},{options:'D'}] }] : [];
+  const payload = { title, durationMinutes: duration, questionlist: qlist, questionList: qlist };
+  try {
+    await fetch(API_EXAM + '/create', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    closeExamModal(); loadExams(); alert('Exam created');
+  } catch(err){ console.error('quickCreate', err); alert('Failed to create exam') }
+}
+
+/* ---------------------------
+   Load Exam Attempts (Submissions)
+---------------------------- */
+async function loadExamAttempts(){
+  try {
+    const res = await fetch(API_SUBMISSION);
+    const data = await (res.ok ? res.json() : []);
+
+    const rows = (data || []).map(s => `
+      <tr>
+        <td>${escapeHtml(s.submissionId)}</td>
+        <td>${escapeHtml(s.email)}</td>
+        <td>${escapeHtml(s.examName)}</td>
+        <td>${escapeHtml(s.totalscore)}</td>
+        <td>${escapeHtml(s.totalmarks)}</td>
+        <td>${escapeHtml(s.percentage)}</td>
+        <td>${escapeHtml(s.grade)}</td>
+        <td>${escapeHtml(s.submittedAt)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById("submissionBody").innerHTML = rows;
+
+  } catch (err){
+    console.error("Error:", err);
+    document.getElementById("submissionBody").innerHTML =
+      `<tr><td colspan="9" style="color:red">Failed to load submissions</td></tr>`;
+  }
+}
+
+/* Add Expenses Code */
+async function addExpense() {
+  try {
+    const expense = {
+      expenseType: document.getElementById("expenseType").value,
+      description: document.getElementById("description").value,
+      amount: Number(document.getElementById("amount").value),
+      paidTo: document.getElementById("paidTo").value,
+      billNumber: document.getElementById("billNumber").value,
+      expenseDate: new Date().toISOString()
+    };
+
+    const res = await axios.post(`${API_EXPENSE}/upload`, expense);
+
+    alert("Expense Added Successfully!");
+
+    loadExpenses();  
+    loadChart();     
+  } 
+  catch (err) {
+    console.error(err);
+    alert("Failed to add expense. Check console!");
+  }
+}
+
+async function loadExpenseGraph() {
+  try {
+    // Fetch expenses
+    const res = await fetch(`${API_EXPENSE}/all`);
+    if (!res.ok) throw new Error("Failed to load expenses");
+    const data = await res.json();
+
+    // Aggregate by type
+    const summary = {};
+    data.forEach(exp => {
+      if (!summary[exp.expenseType]) summary[exp.expenseType] = 0;
+      summary[exp.expenseType] += Number(exp.amount || 0);
+    });
+
+    const labels = Object.keys(summary);
+    const amounts = Object.values(summary);
+
+    const ctx = document.getElementById("expenseGraph").getContext("2d");
+
+    if (expenseGraphChart) expenseGraphChart.destroy();
+
+    expenseGraphChart = new Chart(ctx, {
+      type: 'bar',  // bar chart
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Expenses (₹)',
+          data: amounts,
+          backgroundColor: ['#4f46e5','#facc15','#10b981','#ef4444'],
+        }]
+      },
+	  options: {
+	    responsive: true,
+	    maintainAspectRatio: false,
+	    plugins: {
+	      legend: { display: false },
+	      tooltip: {
+	        callbacks: {
+	          label: ctx => `₹ ${ctx.raw.toLocaleString()}`
+	        }
+	      }
+	    },
+		scales: {
+		  x: {
+		    ticks: {
+		      autoSkip: false,   // show all labels
+		      maxRotation: 0,    // keep labels straight
+		      minRotation: 0,
+		      font: { size: 14 } // font size
+		    }
+		  },
+		  y: {
+		    beginAtZero: true,
+		    ticks: {
+		      callback: value => `₹ ${value.toLocaleString()}`
+		    }
+		  }
+		}
+
+	  }
+
+	      });
+
+  } catch (err) {
+    console.error("Failed to load expense graph:", err);
+  }
+}
+loadExpenseGraph();
+
+/* Filter by Expense Type */
+
+async function filterByTypeServerSide() {
+  // 1. Get the value from dropdown
+  const type = document.getElementById("expenseFilter").value; // must be enum string
+
+  // 2. If ALL selected → reload all expenses
+  if (type === "ALL") {
+    loadExpenses();
+    return;
+  }
+
+  // 3. Server-side filter
+  try {
+    const res = await axios.get(`${API_EXPENSE}/type/${type}`); // <-- use 'type' here
+    renderExpenseTable(res.data || []);
+  } 
+  catch (err) {
+    console.error("Server filter error:", err);
+    loadExpenses(); // fallback
+  }
+}
+
+function renderExpenseTable(data) {
+  const table = document.getElementById("expenseTableBody");
+
+  if (!data || data.length === 0) {
+    table.innerHTML = "<tr><td colspan='7'>No expenses found</td></tr>";
+    return;
+  }
+
+  table.innerHTML = data.map(row => `
+    <tr>
+      <td>${row.id}</td>
+      <td>${row.expenseType}</td>
+      <td>${row.description}</td>
+      <td>₹ ${row.amount}</td>
+      <td>${row.paidTo}</td>
+      <td>${row.billNumber}</td>
+      <td>${new Date(row.expenseDate).toLocaleString()}</td>
+    </tr>
+  `).join("");
+}
+
+
+/* Load Expenses Code */
+  async function loadExpenses() {
+    const table = document.getElementById("expenseTableBody");
+    table.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
+
+    try {
+      const res = await fetch(`${API_EXPENSE}/all`);
+      if (!res.ok) throw new Error("Failed to load expenses");
+
+      const data = await res.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        table.innerHTML = "<tr><td colspan='7'>No expenses found</td></tr>";
+        return;
+      }
+
+      table.innerHTML = data.map(row => `
+        <tr>
+          <td>${row.id}</td>
+          <td>${row.expenseType}</td>
+          <td>${row.description}</td>
+          <td>₹ ${row.amount}</td>
+          <td>${row.paidTo}</td>
+          <td>${row.billNumber}</td>
+          <td>${new Date(row.expenseDate).toLocaleString()}</td>
+        </tr>
+      `).join("");
+    }
+    catch(err) {
+      console.error(err);
+      table.innerHTML = "<tr><td colspan='7'>Error loading expenses</td></tr>";
+    }
+  }
+  
+  
+  
+  /* ---------------------------
+      List of  Report
+    ---------------------------- */
+  
+  let selectedReport="";
+
+  function openReportList() {
+      // Hide all other panels
+      const panels = document.querySelectorAll('.panel');
+      panels.forEach(p => p.style.display = 'none');
+
+      // Show report2 panel
+      const report2Panel = document.getElementById('report2');
+      report2Panel.style.display = 'block';
+
+      // Show report list inside report2
+      const reportListDiv = document.getElementById('reportList');
+      reportListDiv.classList.remove('hidden');
+
+      // Hide report view (table) inside report2
+      const reportViewDiv = document.getElementById('reportView');
+      reportViewDiv.classList.add('hidden');
+  }
+
+
+  function selectReport(type){
+    selectedReport = type;
+    hideAll();
+    document.getElementById("reportView").classList.remove("hidden");
+    document.getElementById("reportTitle").innerText = type + " REPORT";
+  }
+
+  function loadReport(){
+    const from = fromDate.value;
+    const to = toDate.value;
+
+    if(!from || !to){
+      alert("Select both dates");
+      return;
+    }
+
+    fetch(`/api/report/data?reportType=${selectedReport}&from=${from}&to=${to}`)
+      .then(r=>r.json())
+      .then(d=>renderTable(d));
+  }
+
+  function renderTable(data){
+    if(!data || data.length===0){
+      alert("No records found");
+      return;
+    }
+
+    const head = tableHead;
+    const body = tableBody;
+    head.innerHTML="";
+    body.innerHTML="";
+
+    const cols = Object.keys(data[0]);
+    head.innerHTML = "<tr>" + cols.map(c=>`<th>${c}</th>`).join("") + "</tr>";
+
+    data.forEach(row=>{
+      body.innerHTML += "<tr>" +
+        cols.map(c=>`<td>${row[c]}</td>`).join("") +
+        "</tr>";
+    });
+
+    reportTable.classList.remove("hidden");
+  }
+
+  function hideAll(){
+    reportList.classList.add("hidden");
+    reportView.classList.add("hidden");
+  }
+
+  function goBack() {
+      // Clear table
+      document.getElementById("fromDate").value = "";
+      document.getElementById("toDate").value = "";
+      document.getElementById("tableHead").innerHTML = "";
+      document.getElementById("tableBody").innerHTML = "";
+      document.getElementById("reportTable").classList.add("hidden");
+
+      // Hide report view
+      document.getElementById("reportView").classList.add("hidden");
+
+      // Show report list
+      document.getElementById("reportList").classList.remove("hidden");
+  }
+
+
+/* ---------------------------
+  Notifications & server check
+---------------------------- */
+function renderNotifs(){
+  const list = $('#notifList');
+  if(notifications.length === 0) list.innerHTML = '<div class="small muted">No notifications</div>';
+  else list.innerHTML = notifications.map(n => `<div style="padding:8px 6px;border-bottom:1px solid #f3f6fb"><div style="font-weight:600">${escapeHtml(n.text)}</div><div class="muted small">${escapeHtml(n.time)}</div></div>`).join('');
+  $('#notifCount').innerText = notifications.length ? `(${notifications.length})` : '';
+}
+
+async function checkServer(){
+  try {
+    const res = await fetch(API_BASE + '/actuator/health').catch(()=>null);
+    if(res && res.ok){ $('#serverStatus').innerText = 'UP'; } else { $('#serverStatus').innerText = 'OK (limited)'; }
+    $('#lastBackup').innerText = new Date().toLocaleString();
+  } catch(e){
+    $('#serverStatus').innerText = 'Unknown';
+  }
+}
+
+/* ---------------------------
+  Fee Reminder: Load students
+---------------------------- */
+/* ---------------------------
+  Utility functions
+---------------------------- */
+function showFeeSuccess(msg) {
+    const el = document.getElementById('feeReminderMsg');
+    const err = document.getElementById('feeReminderErr');
+    el.style.display = 'block';
+    el.innerText = msg;
+    err.style.display = 'none';
+}
+
+function showFeeError(msg) {
+    const el = document.getElementById('feeReminderErr');
+    const suc = document.getElementById('feeReminderMsg');
+    el.style.display = 'block';
+    el.innerText = msg;
+    suc.style.display = 'none';
+}
+
+function clearFeeMessages() {
+    document.getElementById('feeReminderMsg').style.display = 'none';
+    document.getElementById('feeReminderErr').style.display = 'none';
+}
+
+function closeFeeReminderModal() {
+    const modal = document.getElementById('studentfeeReminder');
+    modal.style.display = 'none';
+    clearFeeMessages(); // optional: clears success/error messages when closed
+}
+
+
+/* ---------------------------
+  Send Fee Reminder
+---------------------------- */
+async function sendFeeReminder(email, button = null) {
+    if (!email) {
+        showFeeError("Email is required");
+        return;
+    }
+    clearFeeMessages();
+
+    // Disable button temporarily
+    if (button) button.disabled = true;
+
+    showFeeSuccess("Sending reminder, please wait...");
+
+    try {
+        const url = `/Student-free/send-feereminder?email=${encodeURIComponent(email)}`;
+        const res = await fetch(url, { method: 'POST' });
+        const data = await res.json();
+
+        if (res.ok) showFeeSuccess(data.message || `Reminder sent to ${email}`);
+        else showFeeError(data.message || "Failed to send reminder");
+
+    } catch (err) {
+        console.error(err);
+        showFeeError("Error sending reminder");
+    } finally {
+        if (button) button.disabled = false;
+    }
+}
+
+/* ---------------------------
+  Send from input field
+---------------------------- */
+function sendFeeReminderFromInput() {
+    const email = document.getElementById('reminderEmail').value.trim();
+    sendFeeReminder(email);
+}
+
+/* ---------------------------
+  Load Students with Pending Fees
+---------------------------- */
+async function loadFeeReminder() {
+    const tbody = document.getElementById('table-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:12px">Loading...</td></tr>`;
+    clearFeeMessages();
+
+    try {
+        const res = await fetch("/admission/get"); // backend endpoint for students
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center">No students found</td></tr>`;
+            return;
+        }
+
+        // filter students with remaining fees
+        const rowsHtml = data
+            .filter(s => Number(s.remainingfree ?? s.remainingFee ?? s.remaining ?? 0) > 0)
+            .map((s, idx) => {
+                const id = s.id ?? s.studentId ?? (idx + 1);
+                const name = s.sname ?? s.name ?? "";
+                const email = s.email ?? "";
+                const remaining = Number(s.remainingfree ?? s.remainingFee ?? s.remaining ?? 0);
+
+                return `<tr>
+                    <td>${id}</td>
+                    <td>${name}</td>
+                    <td>${email}</td>
+                    <td>₹ ${remaining.toLocaleString()}</td>
+                    <td>
+                        <button class="qa-btn btn-danger" 
+                                onclick="sendFeeReminder('${email}', this)">
+                            Send Reminder
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+        tbody.innerHTML = rowsHtml || `<tr><td colspan="5" style="text-align:center">No pending fees</td></tr>`;
+
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#c00">Error loading data</td></tr>`;
+    }
+}
+
+
+/* ---------------------------
+  Utilities
+---------------------------- */
+function downloadCSV(){
+  // attempt to fetch admissions and make CSV (basic)
+  fetch(API_ADMISSION).then(r=>r.json()).then(data=>{
+    if(!Array.isArray(data) || data.length===0){ alert('No admissions'); return; }
+    const keys = Object.keys(data[0]);
+    const csv = [keys.join(',')].concat(data.map(row=>keys.map(k=>`"${((row[k]||'')+'').replace(/"/g,'""')}"`).join(','))).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'admissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }).catch(e=>{ alert('Export failed'); console.error(e) });
+}
+
+
+
+
+
+/* ---------------------------
+  Initial load
+---------------------------- */
+switchSection('dashboard'); // loads dashboard
+setTimeout(()=>{ loadCourses(); loadExams(); }, 400);
+
+</script>
+</body>
+</html>

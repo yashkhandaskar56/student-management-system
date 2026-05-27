@@ -1,0 +1,6293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+display:flex;
+background:#f6f8fb;
+font-family:Segoe UI;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:240px;
+height:100vh;
+background:rgb(0, 53, 106);
+color:white;
+position:fixed;
+left:0;
+top:0;
+display:flex;
+flex-direction:column;
+}
+
+.sidebar li i{
+margin-right:10px;
+font-size:18px;
+}
+
+.logo{
+font-size:22px;
+font-weight:bold;
+text-align:center;
+padding:20px 0;
+border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+.dropdown .submenu{
+display:none;
+padding-left:20px;
+}
+
+.dropdown .submenu li{
+background:#0d2a4a;
+margin-top:5px;
+border-radius:6px;
+padding:8px;
+font-size:13px;
+cursor:pointer;
+}
+
+.dropdown .submenu li:hover{
+background:#1d4ed8;
+color:white;
+}
+
+.arrow{
+float:right;
+font-size:12px;
+transition:0.3s;
+}
+
+/* MENU */
+
+.menu{
+flex:1;
+padding-top:20px;
+}
+
+.menu li{
+list-style:none;
+padding:14px 25px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.menu li:hover{
+background:rgba(255,255,255,0.2);
+}
+
+/* LOGOUT */
+
+.logout{
+padding:15px 25px;
+border-top:1px solid rgba(255,255,255,0.2);
+cursor:pointer;
+}
+
+.logout:hover{
+background:rgba(255,255,255,0.2);
+}
+
+/* MAIN */
+
+.main{
+margin-left:240px;
+width:100%;
+}
+
+/* TOPBAR */
+
+.topbar{
+height:60px;
+background:white;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.menu-btn{
+font-size:20px;
+cursor:pointer;
+}
+
+/* DASHBOARD CONTENT */
+
+/* CONTENT */
+
+.content{
+padding:30px;
+}
+
+/* CARD GRID */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4, 1fr);
+gap:20px;
+margin-top:20px;
+}
+
+/* CARD STYLE */
+
+.card{
+background:white;
+padding:18px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+text-align:center;
+}
+
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 15px 30px rgba(0,0,0,0.08);
+}
+
+/* CARD HEADER */
+
+.card-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+/* CARD ICON */
+
+.card-icon{
+width:32px;
+height:32px;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:14px;
+color:white;
+}
+
+/* ICON COLORS */
+
+.icon-blue{
+background:#3b82f6;
+}
+
+.icon-green{
+background:#22c55e;
+}
+
+.icon-orange{
+background:#f97316;
+}
+
+.icon-purple{
+background:#8b5cf6;
+}
+
+.icon-red{
+background:#ef4444;
+}
+
+.icon-teal{
+background:#14b8a6;
+}
+
+/* TITLE */
+
+.card h4{
+font-size:13px;
+color:rgb(64, 0, 0);
+margin-bottom:5px;
+}
+
+/* VALUE */
+
+.card h2{
+font-size:22px;
+font-weight:700;
+color:#1f2937;
+}
+
+/* DESCRIPTION */
+.card p{
+font-size:12px;
+color:#9ca3af;
+margin-top:4px;
+}
+
+
+@media(max-width:1000px){
+
+.cards{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:600px){
+
+.cards{
+grid-template-columns:1fr;
+}
+
+}
+
+.bottom-section{
+display:grid;
+grid-template-columns:1.7fr 1.3fr;
+gap:20px;
+margin:30px;
+align-items:flex-start;
+}
+
+.recent-section{
+margin-top:0;
+background:white;
+padding:18px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+max-height:350px;
+overflow-y:auto;
+}
+
+.recent-section h3{
+margin-bottom:12px;
+font-size:16px;
+}
+
+.recent-table{
+width:100%;
+border-collapse:collapse;
+}
+
+.recent-table th{
+background:#00356a;
+color:white;
+padding:10px;
+font-size:13px;
+}
+
+.recent-table td{
+padding:10px;
+font-size:13px;
+border-bottom:1px solid #f1f5f9;
+}
+
+.recent-table tr:hover{
+background:#f6f8fb;
+}
+
+.chart-box{
+background:white;
+padding:22px;
+border-radius:14px;
+box-shadow:0 12px 30px rgba(0,0,0,0.08);
+height:320px;
+position:relative;
+}
+
+.chart-box:hover{
+transform:translateY(-3px);
+box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+
+.chart-box h3{
+font-size:18px;
+font-weight:600;
+margin-bottom:20px;
+color:#111827;
+}
+
+#courseChart{
+height:260px !important;
+}
+
+/* STUDENTS PAGE */
+
+.students-wrapper{
+padding:30px;
+margin:20px;
+}
+
+.students-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.add-btn{
+background:#00356a;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+}
+
+.add-btn:hover{
+background:#0050a3;
+}
+
+/* TABLE CARD */
+
+.students-card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+
+.students-table{
+width:100%;
+border-collapse:collapse;
+}
+
+.students-table th{
+background:#00356a;
+color:white;
+padding:12px;
+font-size:14px;
+text-align:left;
+}
+
+.students-table td{
+padding:12px;
+border-bottom:1px solid #eee;
+font-size:14px;
+}
+
+.students-table tr:hover{
+background:#f6f8fb;
+}
+
+/* COURSES PAGE */
+
+.courses-wrapper{
+padding:30px;
+margin:20px;
+}
+
+.courses-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.btn-group{
+    display:flex;
+    gap:10px;
+}
+
+.add-btn{
+background:#00356a;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.add-btn:hover{
+background:#0050a3;
+}
+
+.courses-card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.courses-table{
+width:100%;
+border-collapse:collapse;
+}
+
+.courses-table th{
+background:#00356a;
+color:white;
+padding:12px;
+text-align:left;
+}
+
+.courses-table td{
+padding:12px;
+border-bottom:1px solid #eee;
+vertical-align:middle;
+}
+
+.courses-table tr:hover{
+background:#f6f8fb;
+}
+
+.courses-table td button{
+margin-right:6px;
+}
+
+/* FORM */
+
+.form-input{
+width:100%;
+padding:8px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+.save-btn{
+width:100%;
+padding:10px;
+background:#00356a;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* POPUP BACKGROUND */
+
+/* POPUP OVERLAY */
+
+.popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.45);
+backdrop-filter:blur(3px);
+justify-content:center;
+align-items:center;
+z-index:1000;
+}
+
+/* POPUP CARD */
+
+.popup-card{
+background:white;
+width:90%;
+max-width:900px;
+max-height:85vh;
+overflow-y:auto;
+border-radius:14px;
+padding:25px 28px;
+box-shadow:0 25px 60px rgba(0,0,0,0.25);
+animation:popupFade 0.3s ease;
+}
+
+/* HEADER */
+
+.popup-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+border-bottom:1px solid #eee;
+padding-bottom:10px;
+}
+
+.popup-header h3{
+font-size:18px;
+font-weight:600;
+color:#111827;
+}
+
+/* CLOSE BUTTON */
+
+.close-btn{
+background:#f3f4f6;
+border:none;
+width:32px;
+height:32px;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+}
+
+.close-btn:hover{
+background:#e5e7eb;
+}
+
+/* FORM INPUT */
+
+.form-input{
+width:100%;
+padding:10px 12px;
+margin:8px 0;
+border:1px solid #d1d5db;
+border-radius:6px;
+font-size:14px;
+transition:0.2s;
+}
+
+.form-input:focus{
+outline:none;
+border-color:#2563eb;
+box-shadow:0 0 0 2px rgba(37,99,235,0.15);
+}
+
+/* SECTION TITLE */
+
+.form-section{
+margin-top:15px;
+font-weight:600;
+color:#374151;
+font-size:14px;
+}
+
+/* BUTTON AREA */
+
+.popup-buttons{
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-top:18px;
+}
+
+/* BUTTONS */
+
+.save-btn{
+background:#00356a;
+color:white;
+border:none;
+padding:9px 18px;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+}
+
+.save-btn:hover{
+background:#0050a3;
+}
+
+.cancel-btn{
+background:#9ca3af;
+color:white;
+border:none;
+padding:9px 18px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.cancel-btn:hover{
+background:#6b7280;
+}
+
+/* ANIMATION */
+
+@keyframes popupFade{
+
+from{
+opacity:0;
+transform:scale(0.9);
+}
+
+to{
+opacity:1;
+transform:scale(1);
+}
+
+}
+
+/* ACTION BUTTONS */
+
+.edit-btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+font-size:13px;
+cursor:pointer;
+margin-right:6px;
+}
+
+.edit-btn:hover{
+background:#1d4ed8;
+}
+
+/* DELETE BUTTON */
+
+.delete-btn{
+background:#ef4444;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+font-size:13px;
+cursor:pointer;
+}
+
+.delete-btn:hover{
+background:#dc2626;
+}
+
+.report-card{
+flex:1;
+background:white;
+padding:20px;
+border-radius:10px;
+cursor:pointer;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+text-align:center;
+font-weight:600;
+transition:0.2s;
+}
+
+.report-card:hover{
+transform:translateY(-5px);
+background:#00356a;
+color:white;
+}
+
+.settings-cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.settings-card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+cursor:pointer;
+transition:0.2s;
+}
+
+.settings-card:hover{
+transform:translateY(-5px);
+background:#00356a;
+color:white;
+}
+
+.settings-card h3{
+font-size:16px;
+margin-bottom:6px;
+}
+
+.settings-card p{
+font-size:13px;
+color:#6b7280;
+}
+
+.form-card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+width:400px;
+}
+
+
+.payment-options{
+  display:flex;
+  gap:15px;
+  margin-top:20px;
+}
+
+.pay-btn{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.online{
+  background:#2563eb;
+  color:white;
+}
+
+.offline{
+  background:#10b981;
+  color:white;
+}
+
+.pay-btn:hover{
+  transform:scale(1.05);
+}
+
+.form-label{
+  display:block;
+  margin-top:10px;
+  font-weight:600;
+  font-size:14px;
+  color:#333;
+}
+
+.form-input{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  margin-bottom:10px;
+}
+
+.search-input{
+    padding:8px 12px;
+    border-radius:6px;
+    border:1px solid rgb(0, 0, 0);
+    margin-left:15px;
+    outline:none;
+    transition:0.3s;
+}
+
+.search-input:focus{
+    border-color:#4CAF50;
+    box-shadow:0 0 5px rgba(76,175,80,0.3);
+}
+
+.assign-btn {
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    margin-left: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.assign-btn:hover {
+    background: linear-gradient(135deg, #43a047, #1b5e20);
+    transform: translateY(-1px);
+}
+
+/* Click effect */
+.assign-btn:active {
+    transform: scale(0.95);
+}
+
+/* Disabled state */
+.assign-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.chart-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+
+    /* 🔥 modern shadow */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+    /* 🔥 border for clean look */
+    border: 1px solid #f1f5f9;
+
+    /* 🔥 FIX SIZE */
+    height: 320px;
+    width: 100%;
+}
+
+#kpiChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.kpi-title {
+    color: #111827;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.kpi-title i {
+    color: #3b82f6;
+    background: #eff6ff;
+    padding: 6px;
+    border-radius: 8px;
+}
+
+.section-title{
+    color: black;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i{
+    font-size: 18px;
+    color: #10b981; /* green tone (admission vibe) */
+}
+
+/* WRAPPER */
+.quick-actions-wrapper{
+    background:#ffffff;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    margin-top:1px;
+	max-height:310px;
+    border:1px solid #f1f5f9;
+}
+
+/* HEADER */
+.qa-header{
+    margin-bottom:15px;
+}
+
+.qa-header h3{
+    font-size:16px;
+    font-weight:600;
+    color:#111827;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.qa-header span{
+    font-size:12px;
+    color:#6b7280;
+}
+
+/* GRID */
+.quick-actions{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap:16px;
+}
+
+/* CARD */
+.action-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:#f9fafb;
+    padding:14px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.3s;
+    border:1px solid transparent;
+}
+
+/* ICON */
+.icon-box{
+    width:12px;
+    height:8px;
+    border-radius:10px;
+    background:#eff6ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.icon-box i{
+    font-size:16px;
+    color:#3b82f6;
+}
+
+/* TEXT */
+.action-text h4{
+    font-size:14px;
+    font-weight:600;
+    color:#111827;
+}
+
+.action-text p{
+    font-size:12px;
+    color:#6b7280;
+}
+
+/* HOVER */
+.action-card:hover{
+    background:#ffffff;
+    border:1px solid #3b82f6;
+    transform:translateY(-3px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:14px;
+}
+
+@media(max-width:600px){
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+.popup-card{
+  transform:translateY(20px);
+  opacity:0;
+  animation:popupSlide 0.3s ease forwards;
+}
+
+@keyframes popupSlide{
+  to{
+    transform:translateY(0);
+    opacity:1;
+  }
+}
+
+.doc-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.doc-table th{
+  background:#00356a;
+  color:white;
+  padding:10px;
+  font-size:13px;
+  text-align:left;
+}
+
+.doc-table td{
+  padding:10px;
+  border-bottom:1px solid #eee;
+  font-size:13px;
+}
+
+.doc-table tr:hover{
+  background:#f6f8fb;
+}
+
+/* view button */
+.view-btn{
+  background:#10b981;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.view-btn:hover{
+  background:#059669;
+}
+
+.active-btn{
+  background:#10b981;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:5px;
+  cursor:pointer;
+  margin-left:5px;
+}
+
+.inactive-btn{
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:5px;
+  cursor:pointer;
+  margin-left:5px;
+}
+
+.report-header h2{
+    font-size:22px;
+    font-weight:700;
+    color:#111827;
+}
+
+.report-header p{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.report-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+.report-card i{
+    font-size:22px;
+    color:#00356a;
+    transition:0.3s;
+}
+
+.report-card:hover i{
+    color:white;
+}
+
+.report-card span{
+    font-size:14px;
+}
+
+.search-box{
+    margin-bottom:20px;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.search-box input{
+    width:250px;
+    padding:10px 15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+}
+
+.search-box input:focus{
+    border-color:#4f46e5;
+    box-shadow:0 0 5px rgba(79,70,229,0.3);
+}
+
+.completed-btn{
+
+background:#28a745;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+cursor:pointer;
+margin-left:5px;
+
+}
+
+.progress-btn{
+
+background:#ff9800;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+cursor:pointer;
+margin-left:5px;
+
+}
+
+.pending-btn{
+
+background:#f44336;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+cursor:not-allowed;
+margin-left:5px;
+
+}
+
+.progress-bar{
+    width:100px;
+    height:8px;
+    background:#ddd;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:5px;
+}
+
+.fill{
+    height:100%;
+    background:#28a745;
+}
+
+/* VIEW BUTTON */
+
+.view-btn{
+    background:#0ea5e9;
+    color:white;
+    border:none;
+    padding:8px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    margin-right:5px;
+}
+
+.view-btn:hover{
+    background:#0284c7;
+}
+
+/* VIEW POPUP */
+
+.view-popup{
+    width:850px;
+    max-width:95%;
+}
+
+.student-profile{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.student-photo{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #0b3b75;
+}
+
+.details-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.detail-box{
+    background:#f4f7fb;
+    padding:15px;
+    border-radius:10px;
+}
+
+.detail-box label{
+    font-size:13px;
+    color:#777;
+    display:block;
+    margin-bottom:5px;
+}
+
+.detail-box p{
+    font-size:15px;
+    font-weight:600;
+    color:#111;
+}
+
+.full-width{
+    grid-column:span 2;
+}
+
+/* SECTION TITLE */
+
+.section-title{
+    margin-top:25px;
+    margin-bottom:15px;
+    font-size:18px;
+    font-weight:700;
+    color:#0b3b75;
+    border-left:5px solid #0ea5e9;
+    padding-left:10px;
+}
+
+/* VIEW POPUP */
+
+.view-popup{
+    width:900px;
+    max-width:95%;
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+/* PROFILE */
+
+.student-profile{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.student-photo{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #0b3b75;
+}
+
+/* GRID */
+
+.details-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+/* DETAIL BOX */
+
+.detail-box{
+    background:#f8fbff;
+    padding:16px;
+    border-radius:12px;
+    border:1px solid #dbeafe;
+    transition:0.3s;
+}
+
+.detail-box:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.detail-box label{
+    font-size:13px;
+    color:#64748b;
+    display:block;
+    margin-bottom:6px;
+}
+
+.detail-box p{
+    font-size:15px;
+    font-weight:600;
+    color:#111827;
+}
+
+.full-width{
+    grid-column:span 2;
+}
+
+.popup-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #e5e7eb;
+    padding-bottom:12px;
+    margin-bottom:20px;
+}
+
+.popup-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.print-btn{
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.print-btn:hover{
+    background:#15803d;
+}
+
+.document-table-wrapper{
+    margin-top:15px;
+}
+
+.document-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.document-table th{
+    background:#0a3d78;
+    color:white;
+    padding:12px;
+    text-align:left;
+    font-size:14px;
+}
+
+.document-table td{
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+.uploaded-status{
+    background:#22c55e;
+    color:white;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.not-uploaded-status{
+    background:#ef4444;
+    color:white;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.student-profile{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin:20px 0;
+}
+
+.student-photo{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #0a3d78;
+    background:#f1f5f9;
+}
+
+.form-label{
+    display:block;
+    margin-bottom:6px;
+    margin-top:12px;
+    font-size:14px;
+    font-weight:600;
+    color:#1e293b;
+}
+
+.import-btn{
+
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.import-btn:hover{
+
+    background: #1b5e20;
+}
+
+/* 🔥 LOADER OVERLAY */
+.loader-overlay{
+
+    position: fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background: rgba(0,0,0,0.4);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+/* 🔥 BOX */
+.loader-box{
+
+    background:white;
+    padding:30px 40px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* 🔥 SPINNER */
+.spinner{
+
+    width:60px;
+    height:60px;
+
+    border:6px solid #e0e0e0;
+
+    border-top:6px solid #2e7d32;
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+
+    margin:auto;
+}
+
+/* 🔥 TEXT */
+.loader-box p{
+
+    margin-top:15px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#333;
+}
+
+/* 🔥 ANIMATION */
+@keyframes spin{
+
+    0%{
+        transform:rotate(0deg);
+    }
+
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+	<div class="logo"> ISEES Admin Panel</div>
+
+	<ul class="menu">
+		<li onclick="showSection('dashboardSection')">
+			<i class="fi fi-rr-dashboard"></i> Dashboard
+		</li>
+		
+		<li onclick="showSection('coursesSection')">
+			<i class="fi fi-rr-book"></i> Courses
+		</li>
+		
+		<li onclick="showSection('studentsSection')">
+			<i class="fi fi-rr-users"></i> Students
+		</li>
+		
+		
+		
+		<li onclick="showSection('examPage')">
+			<i class="fi fi-rr-file-edit"></i> Exams
+		</li>
+		
+		<li class="dropdown">
+
+		  <div class="menu-item" onclick="toggleDropdown(this)">
+		    <i class="fi fi-rr-money"></i> Finance
+		    <span class="arrow">▼</span>
+		  </div>
+
+		  <ul class="submenu">
+		    
+		      <li onclick="openPaymentMode()">Payment Mode</li>
+		    
+		  </ul>
+
+		</li>
+		
+		<li onclick="showSection('expenseSection')">
+			<i class="fi fi-rr-file-edit"></i> Expense Management
+		</li>
+		
+		<li onclick="showSection('certificateSection')">
+		   <i class="fi fi-rr-diploma"></i> Certificates
+		</li>
+		
+		<li onclick="showSection('reportSection')">
+		    <i class="fi fi-rr-chart-line-up"></i> Reports
+		</li>
+		
+		<!-- NOTIFICATION DROPDOWN -->
+		<li class="dropdown">
+		  <div onclick="toggleDropdown(this)">
+		    <i class="fi fi-rr-bell"></i> Notification
+		    <span class="arrow">▼</span>
+		  </div>
+
+		  <ul class="submenu">
+		   <li onclick="openNotificationPopup()">Send Notification</li>
+		   <li onclick="openReminderPopup()">Send Fee Reminder</li>
+		  </ul>
+		</li>
+		
+		<!-- Activity DROPDOWN -->
+				<li class="dropdown">
+				  <div onclick="openRecentActivityPopup()">
+				    <i class="fi fi-rr-bell"></i> Activitys
+				   
+				  </div>
+				</li>
+		
+		<li onclick="showSection('settingsSection')">
+		    <i class="fi fi-rr-settings"></i> Settings
+		</li>
+		
+		
+		
+	
+	</ul>
+
+	<div class="logout" onclick="logout()">
+		<li><i class="fi fi-rr-sign-out-alt"></i> Logout</li>
+	</div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+	<div class="topbar">
+		<h2> Dashboard Overview</h2>
+	</div>
+	
+	<!-- Dashboard -->
+	<div id="dashboardSection">
+		<div class="content">
+		
+			<div class="cards">
+	
+			<div class="card" onclick="openStudentPopup()">
+			<div class="card-header">
+			<h4>Total Students</h4>
+			<div class="card-icon icon-blue">
+			<i class="fi fi-rr-users"></i>
+			</div>
+			</div>
+			<h2 id="students">0</h2>
+			<p>Unique students registered</p>
+			</div>
+	
+			<div class="card" onclick="openStudentsSection()">
+			<div class="card-header">
+			<h4>Count Total Admissions</h4>
+			<div class="card-icon icon-green">
+			<i class="fi fi-rr-graduation-cap"></i>
+			</div>
+			</div>
+			<h2 id="admissions">0</h2>
+			<p>Admissions in progress</p>
+			</div>
+	
+			<div class="card" onclick="openCourseSection()">
+			<div class="card-header">
+			<h4>Total Courses</h4>
+			<div class="card-icon icon-orange">
+			<i class="fi fi-rr-book"></i>
+			</div>
+			</div>
+			<h2 id="courses">0</h2>
+			<p>Active courses</p>
+			</div>
+	
+			<div class="card" onclick="openExamSection()">
+			<div class="card-header">
+			<h4>Total Exams</h4>
+			<div class="card-icon icon-purple">
+			<i class="fi fi-rr-edit"></i>
+			</div>
+			</div>
+			<h2 id="exams">0</h2>
+			<p>Exams created</p>
+			</div>
+	
+			<div class="card" onclick="openPendingPopup()">
+			<div class="card-header">
+			<h4>Pending Fees</h4>
+			<div class="card-icon icon-red">
+			<i class="fi fi-rr-money"></i>
+			</div>
+			</div>
+			<h2 id="pendingFees">₹0</h2>
+			<p>Total remaining fees</p>
+			</div>
+	
+			<div class="card">
+			<div class="card-header">
+			<h4>Income This Month</h4>
+			<div class="card-icon icon-teal">
+			<i class="fi fi-rr-chart-line-up"></i>
+			</div>
+			</div>
+			<h2 id="income">₹0</h2>
+			<p>Income received this month</p>
+			</div>
+	
+			<div class="card">
+			<div class="card-header">
+			<h4>Expense This Month</h4>
+			<div class="card-icon icon-orange">
+			<i class="fi fi-rr-credit-card"></i>
+			</div>
+			</div>
+			<h2 id="expense">₹0</h2>
+			<p>Total expenses this month</p>
+			</div>
+			
+			<div class="card" onclick="openCertificateSection()">
+			    <div class="card-header">
+			        <h4>Total Certificate</h4>
+			        <div class="card-icon icon-purple">
+			            <i class="fi fi-rr-diploma"></i>
+			        </div>
+			    </div>
+			    <h2 id="certificate">0</h2>
+			    <p>Completed Certificates</p>
+			</div>
+	
+			</div>
+		
+		</div>
+		
+		<div class="bottom-section">
+			
+			<div class="chart-card">
+			    <h3 class="kpi-title">
+			        <i class="fi fi-rr-chart-line-up"></i> Income VS Expense Overview
+			    </h3>
+
+			    <div style="height:240px;">
+			        <canvas id="kpiChart"></canvas>
+			    </div>
+			</div>
+			
+			<div class="chart-box">
+				
+				<h3><i class="fi fi-rr-chart-histogram"></i> Course Popularity</h3>
+					
+				<canvas id="courseChart"></canvas>
+				
+			</div>
+	
+			<div class="recent-section">
+		
+				<h3 class="section-title">
+				    <i class="fi fi-rr-user-add"></i> Recent Admissions
+				</h3>
+		
+			<table class="recent-table">
+			<thead>
+			<tr>
+			<th>Student Name</th>
+			<th>Email</th>
+			<th>Course</th>
+			<th>Date</th>
+			</tr>
+			</thead>
+		
+			<tbody id="recentAdmissions"></tbody>
+		
+			</table>
+		
+			</div>
+			
+			<div class="quick-actions-wrapper">
+
+			    <div class="qa-header">
+			        <h3>⚡ Quick Actions</h3>
+			        <span>Manage your system faster</span>
+			    </div>
+
+			    <div class="quick-actions">
+
+			        <div class="action-card" onclick="window.location.href = 'admission.html'">
+			            <div class="icon-box">
+			                <i class="fi fi-rr-user-add"></i>
+			            </div>
+			            <div class="action-text">
+			                <h4 >Add Student</h4>
+			                <p>➤ Register new admission</p>
+			            </div>
+			        </div>
+
+			        <div class="action-card" onclick="openCourseSection()">
+			            <div class="icon-box">
+			                <i class="fi fi-rr-book-alt"></i>
+			            </div>
+			            <div class="action-text">
+			                <h4 >Add Course </h4>
+			                <p>➤ Create new course</p>
+			            </div>
+			        </div>
+
+			        <div class="action-card" onclick="openExpenseSection()">
+			            <div class="icon-box">
+			                <i class="fi fi-rr-money"></i>
+			            </div>
+			            <div class="action-text">
+			                <h4>Show Expense</h4>
+			                <p>➤ Track institute spending</p>
+			            </div>
+			        </div>
+
+			        <div class="action-card" onclick="openReportSection()">
+			            <div class="icon-box">
+			                <i class="fi fi-rr-file-chart-line"></i>
+			            </div>
+			            <div class="action-text">
+			                <h4>Generate Report</h4>
+			                <p>➤ View analytics & insights</p>
+			            </div>
+			        </div>
+
+			        <div class="action-card" onclick="openExamSection()">
+			            <div class="icon-box">
+			                <i class="fi fi-rr-bell"></i>
+			            </div>
+			            <div class="action-text">
+			                <h4>Show Exam</h4>
+			                <p>➤ View Exams </p>
+			            </div>
+			        </div>
+
+			        <div class="action-card" onclick="openCertificateSection()">
+			            <div class="icon-box">
+			                <i class="fi fi-rr-diploma"></i>
+			            </div>
+			            <div class="action-text">
+			                <h4>Issue Certificate</h4>
+			                <p>➤ Generate completion docs</p>
+			            </div>
+			        </div>
+
+			    </div>
+
+			</div>
+			
+			
+	
+		</div>
+	</div>
+	
+	<!-- STUDENT LIST POPUP -->
+	<div class="popup" id="studentPopup">
+	    <div class="popup-card">
+
+	        <div class="popup-header">
+	            <h3>All Registered Students</h3>
+	            <button class="close-btn" onclick="closeStudentPopup()">✖</button>
+	        </div>
+
+	        <table class="students-table">
+	            <thead>
+	                <tr>
+	                    <th>Name</th>
+	                    <th>Email</th>
+	                </tr>
+	            </thead>
+	            <tbody id="studentTableBody">
+	                <!-- data yaha ayega -->
+	            </tbody>
+	        </table>
+
+	    </div>
+	</div>
+	
+	<!-- Remaning fee  LIST POPUP -->
+	<div class="popup" id="pendingPopup">
+	    <div class="popup-card">
+
+	        <div class="popup-header">
+	            <h3>Pending Fees Students</h3>
+	            <button class="close-btn" onclick="closePendingPopup()">✖</button>
+	        </div>
+
+	        <table class="students-table">
+	            <thead>
+	                <tr>
+	                   
+	                    <th>Email</th>
+	                    <th>Course</th>
+	                    <th>Total</th>
+	                    <th>Paid</th>
+	                    <th>Remaining</th>
+						<th>Action</th>
+	                </tr>
+	            </thead>
+	            <tbody id="pendingTableBody"></tbody>
+	        </table>
+
+	    </div>
+	</div>
+	
+	<!-- student page -->
+	<div id="studentsSection" style="display:none;" class="students-wrapper">
+
+		<div class="students-header">
+
+		    <h2>All Students</h2>
+			
+			<input type="text" id="searchEmail" 
+							              placeholder="Search by Email..." 
+							              class="search-input"
+							              onkeyup="searchStudent()" />
+										  
+										  <!-- IMPORT LOADER -->
+		<div id="importLoader" class="loader-overlay">
+
+			<div class="loader-box">
+
+			 <div class="spinner"></div>
+
+			 <p>Importing Students...</p>
+
+			</div>
+
+		</div>
+
+		    <div class="btn-group">
+				
+				<!-- 🔥 HIDDEN FILE INPUT -->
+				<input type="file"
+				       id="excelFile"
+				       accept=".xlsx,.xls"
+				       style="display:none"
+				       onchange="uploadExcel()">
+
+				<!-- 🔥 IMPORT BUTTON -->
+				<button class="import-btn"
+				        onclick="document.getElementById('excelFile').click()">
+
+				    Import Data
+
+				</button>
+				
+		        <button onclick="openfeeDetailsPopup()" class="add-btn">
+		            Student Fee Details
+		        </button>
+
+		        <button onclick="window.location.href = 'admission.html'" class="add-btn">
+		            Add Student
+		        </button>
+		    </div>
+
+		</div>
+	
+		<div class="students-card">
+	
+		<table class="students-table">
+	
+			<thead>
+			<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Phone</th>
+			<th>Course</th>
+			<th>Admission Date</th>
+			<th>Total Hours</th>
+			<th>Completed Hr</th>
+			<th>Remaining Hr</th>
+			<th>Progress</th>
+			<th>Action</th>
+			</tr>
+			</thead>
+	
+		<tbody id="studentTable"></tbody>
+	
+		</table>
+	
+		</div>
+
+	</div>
+	
+	
+	<!-- student Edit popup -->
+	<div id="editPopup" class="popup">
+
+	  <div class="popup-card">
+
+	    <!-- HEADER -->
+	    <div class="popup-header">
+	      <h3>✏️ Edit Student</h3>
+	      <button class="close-btn" id="closeBtn">✖</button>
+	    </div>
+
+	    <!-- FORM GRID -->
+	    <div class="form-grid">
+
+	      <input type="hidden" id="editId">
+		  
+		  <div style="grid-column: span 2;">
+		  	        <label class="form-label">Profile Photo</label>
+		  	        <input type="file" id="editPhoto" class="form-input">
+		  	      </div>
+				  
+				  <div>
+				    <label class="form-label">Student ID</label>
+				    <input type="text" id="editIdDisplay" class="form-input" readonly>
+				  </div>
+
+	      <div>
+	        <label class="form-label">Full Name</label>
+	        <input type="text" id="editName" class="form-input">
+	      </div>
+
+	      <div>
+	        <label class="form-label">Mobile</label>
+	        <input type="text" id="editMobile" class="form-input">
+	      </div>
+
+	      <div>
+	        <label class="form-label">State</label>
+	        <input type="text" id="editState" class="form-input">
+	      </div>
+
+	      <div>
+	        <label class="form-label">District</label>
+	        <input type="text" id="editDistrict" class="form-input">
+	      </div>
+
+	      <div>
+	        <label class="form-label">Taluka</label>
+	        <input type="text" id="editTaluka" class="form-input">
+	      </div>
+
+	      <div>
+	        <label class="form-label">Date of Birth</label>
+	        <input type="date" id="editDob" class="form-input">
+	      </div>
+
+	      <div style="grid-column: span 2;">
+	        <label class="form-label">Address</label>
+	        <input type="text" id="editAddress" class="form-input">
+	      </div>
+
+	      
+
+	    </div>
+		
+		<div class="form-section">Documents</div>
+
+		<table class="doc-table">
+		  <thead>
+		    <tr>
+		      <th>Document Name</th>
+		      <th>Action</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+
+		    <tr>
+		      <td>Photo</td>
+		      <td><button class="view-btn" onclick="viewDoc('photo')">View</button></td>
+		    </tr>
+
+		    <tr>
+		      <td>Signature</td>
+		      <td><button class="view-btn" onclick="viewDoc('sign')">View</button></td>
+		    </tr>
+
+		    <tr>
+		      <td>Adhar Card</td>
+		      <td><button class="view-btn" onclick="viewDoc('adhar')">View</button></td>
+		    </tr>
+
+		    <tr>
+		      <td>Marksheet</td>
+		      <td><button class="view-btn" onclick="viewDoc('marksheet')">View</button></td>
+		    </tr>
+
+		  </tbody>
+		</table>
+
+	    <!-- BUTTONS -->
+	    <div class="popup-buttons">
+	      
+	      <button class="save-btn" onclick="updateStudent()">Save Changes</button>
+	    </div>
+
+	  </div>
+
+	</div>
+	
+	<!-- VIEW STUDENT POPUP -->
+
+	<div id="viewStudentPopup" class="popup">
+
+	    <div class="popup-card view-popup">
+
+			<div class="popup-header">
+
+			    <h3>Student Full Details</h3>
+
+			    <div class="popup-actions">
+
+			        <button class="print-btn"
+			            onclick="printStudentDetails()">
+			            🖨 Print
+			        </button>
+
+			        <button class="close-btn"
+			            onclick="closeViewPopup()">
+			            ✖
+			        </button>
+
+			    </div>
+
+			</div>
+
+	        <!-- TOP PROFILE -->
+
+	        <div class="student-profile">
+
+	            <img id="viewPhoto"
+	                 src=""
+	                 class="student-photo">
+
+	            <div>
+
+	                <h2 id="viewName"></h2>
+
+	                <p id="viewCourse"></p>
+
+	            </div>
+
+	        </div>
+
+	        <!-- DETAILS -->
+
+			<!-- PERSONAL DETAILS -->
+
+			<div class="section-title">
+			    👤 Personal Details
+			</div>
+
+			<div class="details-grid">
+
+			    <div class="detail-box">
+			        <label>Email</label>
+			        <p id="viewEmail"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Mobile</label>
+			        <p id="viewMobile"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Date Of Birth</label>
+			        <p id="viewDob"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Gender</label>
+			        <p id="viewGender"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>State</label>
+			        <p id="viewState"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>District</label>
+			        <p id="viewDistrict"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Taluka</label>
+			        <p id="viewTaluka"></p>
+			    </div>
+
+			    <div class="detail-box full-width">
+			        <label>Address</label>
+			        <p id="viewAddress"></p>
+			    </div>
+
+			</div>
+
+
+			<!-- COURSE DETAILS -->
+
+			<div class="section-title">
+			    📚 Course Details
+			</div>
+
+			<div class="details-grid">
+
+			    <div class="detail-box">
+			        <label>Course Name</label>
+			        <p id="viewCourseName"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Course Status</label>
+			        <p id="viewCourseStatus"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Admission Date</label>
+			        <p id="viewAdmissionDate"></p>
+			    </div>
+
+				<div class="detail-box">
+				    <label>Course Duration</label>
+				    <p id="viewCourseDuration"></p>
+				</div>
+
+			</div>
+
+
+			<!-- HOURS DETAILS -->
+
+			<div class="section-title">
+			    ⏳ Hours Progress
+			</div>
+
+			<div class="details-grid">
+
+			    <div class="detail-box">
+			        <label>Total Hours</label>
+			        <p id="viewTotalHours"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Completed Hours</label>
+			        <p id="viewCompletedHours"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Remaining Hours</label>
+			        <p id="viewRemainingHours"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Progress</label>
+			        <p id="viewProgress"></p>
+			    </div>
+
+			</div>
+
+
+			<!-- FEE DETAILS -->
+
+			<div class="section-title">
+			    💰 Fee Details
+			</div>
+
+			<div class="details-grid">
+
+			    <div class="detail-box">
+			        <label>Total Fee</label>
+			        <p id="viewTotalFee"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Paid Fee</label>
+			        <p id="viewPaidFee"></p>
+			    </div>
+
+			    <div class="detail-box">
+			        <label>Remaining Fee</label>
+			        <p id="viewRemainingFee"></p>
+			    </div>
+
+			</div>
+			
+			<!-- DOCUMENT DETAILS -->
+
+			<div class="section-title">
+			    📄 Documents Status
+			</div>
+
+			<div class="document-table-wrapper">
+
+			    <table class="document-table">
+
+			        <thead>
+			            <tr>
+			                <th>Document Name</th>
+			                <th>Status</th>
+			            </tr>
+			        </thead>
+
+			        <tbody id="documentTableBody">
+
+			        </tbody>
+
+			    </table>
+
+			</div>
+
+
+			<!-- ACCOUNT STATUS -->
+
+			<div class="section-title">
+			    ⚙️ Account Status
+			</div>
+
+			<div class="details-grid">
+
+			    <div class="detail-box">
+			        <label>Student Status</label>
+			        <p id="viewStudentStatus"></p>
+			    </div>
+
+			</div>
+	    </div>
+
+	</div>
+	
+	<!-- student Fee Popup -->
+	<div id="feePopup" class="popup">
+
+	  <div class="popup-card">
+
+	    <div class="popup-header">
+	      <h3>Student Fee Details</h3>
+	      <button class="close-btn" onclick="closeFeePopup()">✖</button>
+	    </div>
+
+	    <table class="students-table">
+	      <thead>
+	        <tr>
+	          <th>ID</th>
+	          <th>Email</th>
+	          <th>Course</th>
+	          <th>Total Fee</th>
+	          <th>Paid</th>
+	          <th>Remaining</th>
+			  
+	         
+	        </tr>
+	      </thead>
+
+	      <tbody id="feeTable"></tbody>
+	    </table>
+
+	  </div>
+
+	</div>
+	
+	
+	
+	<!-- Course page  -->
+	<div id="coursesSection" style="display:none;" class="courses-wrapper">
+
+		<div class="courses-header">
+	
+		<h2>All Courses</h2>
+		
+		<input 
+		    type="text" 
+		    id="searchCourse" 
+		    placeholder="Search Course..." 
+		    onkeyup="searchCourse()" 
+		    class="search-input">
+	
+		<button onclick="showAddCourse()" class="add-btn">
+		Add Course
+		</button>
+	
+		</div>
+	
+		<div class="courses-card" style="overflow-x:auto;">
+	
+		<table class="courses-table">
+	
+		<thead>
+			<tr>
+			    <th>ID</th>
+			    <th>Course</th>
+			    <th>Total Seat</th>
+				<th>Duration (Months)</th>
+				<th>Daily Hours</th>
+				<th>Total Hours</th>
+			    <th>Fee</th>
+			    <th>Action</th>
+			</tr>
+		</thead>
+	
+		<tbody id="courseTable"></tbody>
+	
+		</table>
+		
+		
+	<!-- ADD COURSE POPUP -->
+
+		<div id="addCourseBox" class="popup">
+	
+			<div class="popup-card">
+		
+			<div class="popup-header">
+				<h3>Add Course</h3>
+			
+				<button class="close-btn" onclick="closeAddCourse()">✖</button>
+			</div>
+		
+				<input id="courseName" placeholder="Course Name" class="form-input">
+			
+				<input id="totalseat" placeholder="Total Seat" class="form-input">
+			
+				<input 
+				id="courseDurationMonths"
+				placeholder="Course Duration (Months)"
+				class="form-input">
+
+				<input 
+				id="dailyHours"
+				placeholder="Daily Class Hours"
+				class="form-input">
+			
+				<input id="free" placeholder="Fee" class="form-input">
+			
+				<textarea id="description" placeholder="Description" class="form-input"></textarea>
+		
+			<div class="popup-buttons">
+		
+				<button onclick="saveCourse()" class="save-btn">
+				Save Course
+				</button>
+		
+			</div>
+		
+			</div>
+	
+		</div>
+		
+		<!-- EDIT COURSE POPUP -->
+
+		<div id="editCourseBox" class="popup">
+
+		    <div class="popup-card">
+
+		        <div class="popup-header">
+		            <h3>Edit Course</h3>
+
+		            <button class="close-btn" onclick="closeEditCourse()">✖</button>
+		        </div>
+
+		        <input type="hidden" id="editId">
+
+		        <label class="form-label">Course Name</label>
+		        <input id="editCourseName" placeholder="Course Name" class="form-input">
+
+		        <label class="form-label">Total Seat</label>
+		        <input id="editTotalseat" placeholder="Total Seat" class="form-input">
+
+		        <label class="form-label">Course Duration (Months)</label>
+		        <input
+		        id="editCourseDurationMonths"
+		        placeholder="Course Duration (Months)"
+		        class="form-input">
+
+		        <label class="form-label">Daily Class Hours</label>
+		        <input
+		        id="editDailyHours"
+		        placeholder="Daily Class Hours"
+		        class="form-input">
+
+		        <label class="form-label">Course Fee</label>
+		        <input id="editFree" placeholder="Fee" class="form-input">
+
+		        <label class="form-label">Course Description</label>
+		        <textarea id="editDescription"
+		            placeholder="Description"
+		            class="form-input"></textarea>
+
+		        <div class="popup-buttons">
+
+		            <button onclick="updateCourse()" class="save-btn">
+		                Update Course
+		            </button>
+
+		        </div>
+
+		    </div>
+
+		</div>
+		</div>
+	
+	</div>
+	
+		<!-- Exam page  -->
+		
+
+		<div id="examPage" class="page-section" style="display:none;">
+
+			<div class="courses-header">
+				
+				
+
+			    <h3>All Exams</h3>
+				
+				<input type="text" id="searchCourse" 
+				              placeholder="Search by Course..." 
+				              class="search-input"
+				              onkeyup="searchExam()" />
+
+			    <div class="btn-group">
+			        <button onclick="openExamPopup()" class="add-btn">Add Exam</button>
+			        <button onclick="openAttemptExamPopup()" class="add-btn">Exam Attempted </button>
+			    </div>
+
+			</div>
+
+
+		<div class="courses-card">
+
+		<table class="courses-table">
+
+		<thead>
+
+		<tr>
+		<th>ID</th>
+		<th>Title</th>
+		<th>Course</th>
+		<th>Duration</th>
+		<th>Action</th>
+		</tr>
+
+		</thead>
+
+		<tbody id="examTable"></tbody>
+
+		</table>
+
+		</div>
+
+		</div>
+
+
+		<!-- ADD EXAM POPUP -->
+
+		<div id="examPopup" class="popup">
+
+		  <div class="popup-card" style="width:900px; max-height:90vh; overflow:auto;">
+
+		    <div class="popup-header">
+		     
+		      <button class="close-btn" onclick="closeExamPopup()">✖</button>
+		    </div>
+
+		    <!-- ✅ EXAM DETAILS -->
+		    <div class="form-section">Exam Details</div>
+
+		    <label class="form-label">Exam Title</label>
+		    <input id="examTitle" placeholder="Enter exam title" class="form-input">
+
+		    <label class="form-label">Course Name</label>
+		    <input id="examCourse" placeholder="Enter course name" class="form-input">
+
+		    <label class="form-label">Duration (Minutes)</label>
+		    <input id="examDuration" placeholder="Enter duration" class="form-input">
+
+		    <hr>
+
+		    <!-- ✅ ADD QUESTION -->
+		    <div class="form-section">Add Question</div>
+
+		    <label class="form-label">Question</label>
+		    <input id="questionText" placeholder="Enter question" class="form-input">
+
+		    <label class="form-label">Marks</label>
+		    <input id="questionMarks" placeholder="Enter marks" class="form-input">
+
+		    <label class="form-label">Option 1</label>
+		    <input id="option1" placeholder="Enter option 1" class="form-input">
+
+		    <label class="form-label">Option 2</label>
+		    <input id="option2" placeholder="Enter option 2" class="form-input">
+
+		    <label class="form-label">Option 3</label>
+		    <input id="option3" placeholder="Enter option 3" class="form-input">
+
+		    <label class="form-label">Option 4</label>
+		    <input id="option4" placeholder="Enter option 4" class="form-input">
+
+		    <!-- ✅ CORRECT OPTION -->
+		    <label class="form-label">Select Correct Answer</label>
+		    <div style="margin:10px 0;">
+		      <label><input type="radio" name="correct" value="0"> Option 1</label><br>
+		      <label><input type="radio" name="correct" value="1"> Option 2</label><br>
+		      <label><input type="radio" name="correct" value="2"> Option 3</label><br>
+		      <label><input type="radio" name="correct" value="3"> Option 4</label>
+		    </div>
+
+		    <button onclick="addQuestion()" class="save-btn">+ Add Question</button>
+
+		    <hr>
+
+		    <!-- ✅ QUESTION LIST -->
+		    <div class="form-section">Added Questions</div>
+
+		    <div id="questionListPreview"></div>
+
+		    <!-- ✅ FINAL SUBMIT -->
+		    <div class="popup-buttons">
+		      <button onclick="createExam()" class="save-btn">Create Exam</button>
+		    </div>
+
+		  </div>
+		</div>
+		
+		<!-- ATTEMPT EXAM POPUP -->
+
+		<div id="attemptPopup" class="popup">
+
+		  <div class="popup-card">
+
+		    <div class="popup-header">
+		      <h3>Exam Attempted Students</h3>
+		      <button class="close-btn" onclick="closeAttemptPopup()">✖</button>
+		    </div>
+			
+			<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+			  
+			  <!-- LEFT -->
+			  <input 
+			    type="text" 
+			    id="emailFilter" 
+			    placeholder="🔍 Filter by Email..." 
+			    onkeyup="filterByEmail()"
+			    style="width:250px; padding:8px; border-radius:5px; border:1px solid #ccc;"
+			  >
+
+
+			</div>
+
+		    <table class="students-table">
+		      <thead>
+		        <tr>
+		          <th>ID</th>
+				  <th>Exam Title</th>
+		          <th>Email</th>
+		          <th>Score</th>
+				  <th>Percenatge</th>
+				  <th>Grade</th>
+		        </tr>
+		      </thead>
+
+		      <tbody id="attemptTable"></tbody>
+
+		    </table>
+
+		  </div>
+
+		</div>
+		
+		
+		<!-- Edit Popue -->
+		<div id="editExamPopup" class="popup">
+
+		  <div class="popup-card" style="width:900px; max-height:90vh; overflow-y:auto;">
+
+		    <div class="popup-header">
+		      <h3>Edit Exam</h3>
+		      <button class="close-btn" onclick="closeEditPopup()">✖</button>
+		    </div>
+
+		    <input type="hidden" id="editExamId">
+
+		    <!-- ✅ Exam Details -->
+		    <div class="form-section">Exam Details</div>
+
+		    <label class="form-label">Exam Title</label>
+		    <input id="editExamTitle" class="form-input" placeholder="Enter exam title">
+
+		    <label class="form-label">Course Name</label>
+		    <input id="editExamCourse" class="form-input" placeholder="Enter course name">
+
+		    <label class="form-label">Duration (Minutes)</label>
+		    <input id="editExamDuration" type="number" class="form-input" placeholder="Enter duration">
+
+		    <hr>
+
+		    <!-- ✅ Questions -->
+		    <div class="form-section">Questions</div>
+
+		    <div id="editQuestionsContainer"></div>
+
+		    <!-- ✅ Add Question Button TOP bhi hona chahiye -->
+		    <div style="margin-bottom:15px;">
+		      <button onclick="addNewEditQuestion()" class="save-btn">+ Add Question</button>
+		    </div>
+
+		    <!-- ✅ Buttons -->
+		    <div class="popup-buttons">
+		      <button onclick="updateExam()" class="save-btn">Update Exam</button>
+		      <button onclick="closeEditPopup()" class="cancel-btn">Cancel</button>
+		    </div>
+
+		  </div>
+		</div>
+
+		
+		<!-- REPORT PAGE -->
+		<div id="reportSection" style="display:none;" class="students-wrapper">
+
+			<div class="report-header">
+				<h2>
+				    <i class="fa-solid fa-chart-line"></i> Reports Dashboard
+				</h2>
+			        <p>Select report type & filter data</p>
+			    </div>
+
+		    <!-- REPORT TYPE CARDS -->
+		    <div style="display:flex; gap:20px; margin:20px 0;">
+				<div class="report-card" onclick="selectReport('ADMISSION')">
+				    <i class="fa-solid fa-user-graduate"></i>
+				    <span>Admission Report</span>
+				</div>
+
+				<div class="report-card" onclick="selectReport('FEE')">
+				    <i class="fa-solid fa-money-bill-wave"></i>
+				    <span>Fee Report</span>
+				</div>
+
+				<div class="report-card" onclick="selectReport('EXPENSE')">
+				    <i class="fa-solid fa-chart-line"></i>
+				    <span>Expense Report</span>
+				</div>
+
+				<div class="report-card" onclick="selectReport('EXAM')">
+				    <i class="fa-solid fa-file-pen"></i>
+				    <span>Exam Report</span>
+				</div>
+				<div class="report-card" onclick="selectReport('CERTIFICATE')">
+				    <i class="fa-solid fa-certificate"></i>
+				    <span>Certificate Report</span>
+				</div>
+		    </div>
+
+		    <!-- DATE FILTER (HIDDEN FIRST) -->
+		    <div id="dateSection" style="display:none; margin-bottom:20px;">
+		        From: <input type="date" id="fromDate">
+		        To: <input type="date" id="toDate">
+		        <button class="add-btn" onclick="loadReport()">Get Report</button>
+				<button class="add-btn" onclick="printReport()" style="background:#16a34a;"> 🖨 Print </button>
+		    </div>
+
+		    <!-- TABLE -->
+		    <div class="students-card">
+		        <table class="students-table">
+		            <thead id="reportHead"></thead>
+		            <tbody id="reportBody"></tbody>
+		        </table>
+		    </div>
+
+		</div>
+	
+		<!-- EXPENSE SECTION -->
+		<div id="expenseSection" style="display:none;" class="students-wrapper">
+
+		    <div class="students-header">
+		        <h2>Expense Management</h2>
+				
+				
+
+		        <div style="display:flex; gap:10px;">
+					<button onclick="openExpensePopup()" class="add-btn">
+											           Add Expense
+											        </button>
+		            <select id="expenseFilter" class="form-input" onchange="filterExpense()">
+		                <option value="">All Types</option>
+		                <option value="ADMINISTRATIVE">ADMINISTRATIVE</option>
+		                <option value="STUDENT_FEE">STUDENT_FEE</option>
+		                <option value="EVENT">EVENT</option>
+		                <option value="MAINTENANCE">MAINTENANCE</option>
+		            </select>
+
+		        </div>
+		    </div>
+
+		    <div class="students-card">
+		        <table class="students-table">
+		            <thead>
+		                <tr>
+		                    <th>ID</th>
+		                    <th>Type</th>
+		                    <th>Description</th>
+		                    <th>Amount</th>
+		                    <th>Paid To</th>
+		                    <th>Bill No</th>
+		                    <th>Date</th>
+		                    <th>Action</th>
+		                </tr>
+		            </thead>
+
+		            <tbody id="expenseTable"></tbody>
+		        </table>
+		    </div>
+
+		</div>
+		
+		<!-- Payment mode SECTION -->
+		
+		<div id="paymentModePopup" class="popup">
+
+		  <div class="popup-card">
+
+		    <div class="popup-header">
+		      <h3>Select Payment Mode</h3>
+		      <button class="close-btn" onclick="closePaymentMode()">✖</button>
+		    </div>
+
+		    <div class="payment-options">
+		      <button class="pay-btn online" onclick="goOnline()">Online Payment</button>
+		      <button class="pay-btn offline" onclick="openOfflinePopup()">Offline Payment</button>
+		    </div>
+
+		  </div>
+
+		</div>
+		
+		<div id="offlinePopup" class="popup">
+
+		  <div class="popup-card">
+
+		    <div class="popup-header">
+		      <h3>Offline Payment</h3>
+		      <button class="close-btn" onclick="closeOfflinePopup()">✖</button>
+		    </div>
+
+		    <input type="email" id="offEmail" placeholder="Student Email" class="form-input">
+		    <input type="text" id="offCourse" placeholder="Course Name" class="form-input">
+		    <input type="number" id="offAmount" placeholder="Paid Amount" class="form-input">
+
+		    <button class="save-btn" onclick="payOffline()">Submit</button>
+
+		  </div>
+
+		</div>
+		
+		
+		<!--ADD EXPENSE POPUP -->
+		<div id="expensePopup" class="popup">
+
+		    <div class="popup-card expense-popup-card">
+
+		        <!-- HEADER -->
+
+		        <div class="popup-header">
+		            <h3 id="expensePopupTitle">
+		                Add Expense
+		            </h3>
+
+		            <button
+		                class="close-btn"
+		                onclick="closeExpensePopup()">
+		                ✖
+		            </button>
+		        </div>
+
+		        <!-- HIDDEN ID -->
+
+		        <input type="hidden" id="expenseId">
+
+		        <!-- EXPENSE TYPE -->
+
+		        <div class="form-group">
+		            <label>Expense Type</label>
+
+					<select id="expenseType" class="form-input">
+
+					    <option value="">
+					        Select Expense Type
+					    </option>
+
+					    <option value="ADMINISTRATIVE">
+					        Administrative
+					    </option>
+
+					    <option value="SALARY">
+					        Salary
+					    </option>
+
+					    <option value="RENT">
+					        Rent
+					    </option>
+
+					    <option value="ELECTRICITY">
+					        Electricity Bill
+					    </option>
+
+					    <option value="INTERNET">
+					        Internet Expense
+					    </option>
+
+					    <option value="SOFTWARE">
+					        Software Subscription
+					    </option>
+
+					    <option value="MARKETING">
+					        Marketing
+					    </option>
+
+					    <option value="EVENT">
+					        Event Expense
+					    </option>
+
+					    <option value="MAINTENANCE">
+					        Maintenance
+					    </option>
+
+					    <option value="EQUIPMENT">
+					        Equipment Purchase
+					    </option>
+
+					    <option value="CERTIFICATE">
+					        Certificate Printing
+					    </option>
+
+					    <option value="STUDENT_REFUND">
+					        Student Refund
+					    </option>
+
+					    <option value="TRAVEL">
+					        Travel Expense
+					    </option>
+
+					    <option value="OTHER">
+					        Other
+					    </option>
+
+					</select>
+		        </div>
+
+		        <!-- TITLE -->
+
+		        <div class="form-group">
+		            <label>Expense Title</label>
+
+		            <input
+		                id="title"
+		                placeholder="Enter Expense Title"
+		                class="form-input"
+		            >
+		        </div>
+
+		        <!-- DESCRIPTION -->
+
+		        <div class="form-group">
+		            <label>Description</label>
+
+		            <textarea
+		                id="expenseDescription"
+		                placeholder="Enter Full Description"
+		                class="form-input textarea-input"
+		            ></textarea>
+		        </div>
+
+		        <!-- AMOUNT -->
+
+		        <div class="form-group">
+		            <label>Amount</label>
+
+		            <input
+		                id="amount"
+		                placeholder="Enter Amount"
+		                type="number"
+		                class="form-input"
+		            >
+		        </div>
+
+		        <!-- PAID TO -->
+
+		        <div class="form-group">
+		            <label>Paid To</label>
+
+		            <input
+		                id="paidTo"
+		                placeholder="Paid To"
+		                class="form-input"
+		            >
+		        </div>
+
+		        <!-- PAYMENT METHOD -->
+
+		        <div class="form-group">
+		            <label>Payment Method</label>
+
+		            <select
+		                id="paymentMethod"
+		                class="form-input">
+
+		                <option value="">
+		                    Select Payment Method
+		                </option>
+
+		                <option value="CASH">
+		                    CASH
+		                </option>
+
+		                <option value="UPI">
+		                    UPI
+		                </option>
+
+		                <option value="BANK_TRANSFER">
+		                    BANK TRANSFER
+		                </option>
+
+		                <option value="CARD">
+		                    CARD
+		                </option>
+
+		            </select>
+		        </div>
+
+		        <!-- BILL NUMBER -->
+
+		        <div class="form-group">
+		            <label>Bill Number</label>
+
+		            <input
+		                id="billNumber"
+		                placeholder="Bill Number"
+		                class="form-input"
+		            >
+		        </div>
+
+		        <!-- EXPENSE DATE -->
+
+		        <div class="form-group">
+		            <label>Expense Date</label>
+
+		            <input
+		                type="date"
+		                id="expenseDate"
+		                class="form-input"
+		            >
+		        </div>
+
+		        <!-- RECEIPT FILE -->
+
+		        <div class="form-group">
+		            <label>Receipt File</label>
+
+		            <input
+		                type="file"
+		                id="receiptFile"
+		                class="form-input"
+		            >
+		        </div>
+
+		        <!-- BUTTONS -->
+
+		        <div class="popup-buttons">
+
+		            <button
+		                onclick="saveExpense()"
+		                class="save-btn">
+		                Save Expense
+		            </button>
+
+		        </div>
+
+		    </div>
+
+		</div>
+		
+		<!-- ================= CERTIFICATE SECTION ================= -->
+		<div id="certificateSection" style="display:none; padding:20px;">
+
+		  <div class="courses-header">
+		    <h2>Certificates</h2>
+			
+			<!-- SEARCH BOX -->
+			<div class="search-box">
+			    <input type="text"
+			           id="certificateSearch"
+			           placeholder="Search by Course Name..."
+			           onkeyup="searchCertificate()">
+			</div>
+
+		    <!-- TOP RIGHT BUTTON -->
+		    <button class="add-btn" onclick="openCertificatePopup()">
+		      + Generate Certificate
+		    </button>
+		  </div>
+
+		  <div class="courses-card">
+
+		    <!-- TABLE -->
+		    <table class="courses-table">
+		      <thead>
+		        <tr>
+		          <th>Name</th>
+		          <th>Email</th>
+		          <th>Course</th>
+				  <th>Certificate No.</th>
+		          <th>Date</th>
+		          <th>Action</th>
+		        </tr>
+		      </thead>
+
+		      <tbody id="certificateTableBody"></tbody>
+		    </table>
+
+		  </div>
+
+		</div>
+		
+		<!-- ================= Generate Certificate ================= -->
+		
+		<div id="certificatePopup" class="popup">
+
+		  <div class="popup-card">
+
+		    <div class="popup-header">
+		      <h3>Generate Certificate</h3>
+		      <button class="close-btn" onclick="closeCertificatePopup()">X</button>
+		    </div>
+			
+			<input type="text" id="pEmail" placeholder="Email" class="form-input" onblur="fetchStudentDetails()">
+
+			<input type="text" id="pName" placeholder="Student Name" class="form-input" readonly>
+
+			<select id="pCourse" class="form-input">
+			  <option value="">Select Course</option>
+			</select>
+
+		    <button class="save-btn" onclick="generateCertificate()">Generate</button>
+
+		  </div>
+
+		</div>
+		
+		
+		<!-- SEND NOTIFICATION POPUP -->
+		<div id="notificationPopup" class="popup">
+
+		  <div class="popup-card">
+
+		    <div class="popup-header">
+		      <h3>Send Notification</h3>
+		      <button class="close-btn" onclick="closeNotificationPopup()">✖</button>
+		    </div>
+
+		    <input id="notifyEmail" class="form-input" placeholder="Student Email">
+
+		    <input id="notifyTitle" class="form-input" placeholder="Title">
+
+		    <textarea id="notifyMessage" class="form-input" placeholder="Message"></textarea>
+
+		    <select id="notifyType" class="form-input">
+		      <option value="">Select Type</option>
+		      <option value="ADMISSION">ADMISSION</option>
+		      <option value="PAYMENT">PAYMENT</option>
+		      <option value="DOCUMENT">DOCUMENT</option>
+		      <option value="EXAM">EXAM</option>
+		    </select>
+
+		    <div class="popup-buttons">
+		      <button class="save-btn" onclick="sendNotification()">Send</button>
+		    </div>
+
+		  </div>
+
+		</div>
+		
+		<div id="reminderPopup" class="popup">
+
+		  <div class="popup-card">
+		    
+		    <div class="popup-header">
+		      <h3>Send Fee Reminder</h3>
+		      <button class="close-btn" onclick="closeReminderPopup()">✖</button>
+		    </div>
+
+		    <input type="email" id="reminderEmail" placeholder="Enter Student Email" class="form-input">
+
+		    <div class="popup-buttons">
+		      <button class="save-btn" onclick="sendFeeReminder()">Send Reminder</button>
+		    </div>
+
+		    <p id="reminderMsg"></p>
+
+		  </div>
+
+		</div>
+		
+		<!-- RECENT ACTIVITY POPUP -->
+		<div id="recentPopup" class="popup">
+
+		  <div class="popup-card">
+
+		    <!-- HEADER -->
+		    <div class="popup-header">
+		      <h3>
+		        <i class="fi fi-rr-clock"></i> Add Recent Activity
+		      </h3>
+		      <button class="close-btn" onclick="closeRecentPopup()">✖</button>
+		    </div>
+
+		    <!-- FORM -->
+		    <form id="recentForm">
+
+		      <!-- EMAIL -->
+		      <label class="form-section">Student Email</label>
+		      <input type="email" id="rEmail" class="form-input" placeholder="Enter student email" required>
+
+		      <!-- ACTIVITY TEXT -->
+		      <label class="form-section">Activity</label>
+		      <input type="text" id="rText" class="form-input" placeholder="Enter activity text" required>
+
+		      <!-- DATE -->
+		      <label class="form-section">Date</label>
+		      <input type="date" id="rDate" class="form-input" required>
+
+		      <!-- BUTTONS -->
+		      <div class="popup-buttons">
+		        <button type="button" class="cancel-btn" onclick="closeRecentPopup()">Cancel</button>
+		        <button type="submit" class="save-btn">Save</button>
+		      </div>
+
+		    </form>
+
+		  </div>
+		</div>
+		
+		
+		
+		<!-- SETTINGS SECTION -->
+		<div id="settingsSection" style="display:none;" class="students-wrapper">
+
+		    <h2 style="margin-bottom:20px;">Settings</h2>
+
+		    <!-- CARDS -->
+		    <div class="settings-cards">
+
+		        <div class="settings-card" onclick="openSetting('profile')">
+		            <h3>👤 Profile Settings</h3>
+		            <p>Update admin profile details</p>
+		        </div>
+
+		        <div class="settings-card" onclick="openSetting('password')">
+		            <h3>🔐 Change Password</h3>
+		            <p>Update your login password</p>
+		        </div>
+
+		        <div class="settings-card" onclick="openSetting('institute')">
+		            <h3>🏫 Institute Settings</h3>
+		            <p>Manage institute details</p>
+		        </div>
+
+		        <div class="settings-card" onclick="openSetting('academic')">
+		            <h3>🎓 Academic Settings</h3>
+		            <p>Manage exam rules & config</p>
+		        </div>
+
+		    </div>
+
+		    <!-- DYNAMIC CONTENT -->
+		    <div id="settingsContent" style="margin-top:30px;"></div>
+
+		</div>
+		
+		
+</div>
+
+<script>
+	
+	function toggleDropdown(element){
+
+	  var parent = element.parentElement;
+	  var submenu = parent.querySelector(".submenu");
+	  var arrow = element.querySelector(".arrow");
+
+	  var isOpen = submenu.style.display === "block";
+
+	  // Sab close karo pehle
+	  document.querySelectorAll(".submenu").forEach(function(menu){
+	    menu.style.display = "none";
+	  });
+
+	  document.querySelectorAll(".arrow").forEach(function(a){
+	    a.style.transform = "rotate(0deg)";
+	  });
+
+	  // Agar already open tha → close hi rehne do
+	  if(!isOpen){
+	    submenu.style.display = "block";
+	    arrow.style.transform = "rotate(180deg)";
+	  }
+
+	}
+	
+	
+
+	
+	loadDashboard();
+	loadRecentAdmissions();
+	loadCoursePopularityChart();
+	loadKPIChart();
+
+	function loadDashboard(){
+
+		fetch("http://localhost:8080/Admin-dashboard/card")
+		.then(res => res.json())
+		.then(data => {
+	
+		document.getElementById("students").innerText = data.totalStudents;
+	
+		document.getElementById("admissions").innerText = data.currentAdmissions;
+	
+		document.getElementById("courses").innerText = data.totalCourses;
+	
+		document.getElementById("exams").innerText = data.totalExams;
+	
+		document.getElementById("pendingFees").innerText = "₹ " + data.pendingFees;
+	
+		document.getElementById("income").innerText = "₹ " + data.monthlyIncome;
+	
+		document.getElementById("expense").innerText = "₹ " + data.monthlyExpense;
+		
+		document.getElementById("certificate").innerText=data.totalcertificate;
+
+	})
+	.catch(error => console.log(error));
+
+	}
+	
+	function openStudentPopup(){
+
+	    document.getElementById("studentPopup").style.display = "flex";
+
+	    fetch("http://localhost:8080/student/register-get")
+	    .then(res => res.json())
+	    .then(data => {
+
+	        let body = document.getElementById("studentTableBody");
+	        body.innerHTML = "";
+
+	        data.forEach(s => {
+	            body.innerHTML += `
+	                <tr>
+	                    <td>${s.sname}</td>
+	                    <td>${s.email}</td>
+	                </tr>
+	            `;
+	        });
+
+	    })
+	    .catch(err => console.log(err));
+	}
+	
+	function closeStudentPopup(){
+	    document.getElementById("studentPopup").style.display = "none";
+	}
+	
+	window.onclick = function(e){
+	    let popup = document.getElementById("studentPopup");
+	    if(e.target === popup){
+	        popup.style.display = "none";
+	    }
+	}
+	
+	function openStudentsSection(){
+
+	    // sab sections hide karo
+	    document.getElementById("dashboardSection").style.display = "none";
+	    document.getElementById("studentsSection").style.display = "block";
+
+	    // agar aur sections hai to unko bhi hide karo
+	    // document.getElementById("coursesSection").style.display = "none";
+
+	    // data load karo
+	    loadStudents();
+	}
+	
+	function openCourseSection(){
+
+		    // sab sections hide karo
+		    document.getElementById("dashboardSection").style.display = "none";
+		    document.getElementById("coursesSection").style.display = "block";
+
+		    // agar aur sections hai to unko bhi hide karo
+		    // document.getElementById("coursesSection").style.display = "none";
+
+		    // data load karo
+		    loadCourses();
+	}
+		
+	function openExamSection(){
+
+				    // sab sections hide karo
+			document.getElementById("dashboardSection").style.display = "none";
+			document.getElementById("examPage").style.display = "block";
+
+				    // agar aur sections hai to unko bhi hide karo
+				    // document.getElementById("coursesSection").style.display = "none";
+
+				    // data load karo
+			loadExams();
+	}
+	
+	function openCertificateSection(){
+
+					    // sab sections hide karo
+				document.getElementById("dashboardSection").style.display = "none";
+				document.getElementById("certificateSection").style.display = "block";
+
+					    // agar aur sections hai to unko bhi hide karo
+					    // document.getElementById("coursesSection").style.display = "none";
+
+					    // data load karo
+				loadCertificates();
+	}
+		
+		function openPendingPopup(){
+
+		    document.getElementById("pendingPopup").style.display = "flex";
+
+		    let body = document.getElementById("pendingTableBody");
+		    body.innerHTML = `<tr><td colspan="6">Loading...</td></tr>`;
+
+		    fetch("http://localhost:8080/admission/get")
+		    .then(res => res.json())
+		    .then(data => {
+
+		        body.innerHTML = "";
+
+		        if(data.length === 0){
+		            body.innerHTML = `<tr><td colspan="6">No Pending Fees</td></tr>`;
+		            return;
+		        }
+
+		        data.forEach(f => {
+					body.innerHTML += `
+					<tr>
+					    <td>${f.email}</td>
+					    <td>${f.courseName}</td>
+					    <td>₹ ${f.totalfree}</td>
+					    <td>₹ ${f.paidfree}</td>
+					    <td style="color:red;font-weight:bold;">₹ ${f.remainingfree}</td>
+
+					    <td>
+					        <button class="assign-btn"
+					            onclick="sendReminder('${f.email}')">
+					            Send Reminder
+					        </button>
+					    </td>
+					</tr>
+					`;
+		        });
+
+		    })
+		    .catch(err => console.log(err));
+		}
+		
+		function openReportSection(){
+
+							    // sab sections hide karo
+						document.getElementById("dashboardSection").style.display = "none";
+						document.getElementById("reportSection").style.display = "block";
+
+							    // agar aur sections hai to unko bhi hide karo
+							    // document.getElementById("coursesSection").style.display = "none";
+
+							    // data load karo
+						loadReport();
+		}
+		
+		function openExpenseSection(){
+
+							    // sab sections hide karo
+						document.getElementById("dashboardSection").style.display = "none";
+						document.getElementById("expenseSection").style.display = "block";
+
+							    // agar aur sections hai to unko bhi hide karo
+							    // document.getElementById("coursesSection").style.display = "none";
+
+							    // data load karo
+						loadExpenses();	
+		}
+		
+
+		function sendReminder(email){
+
+		    if(!confirm("Send reminder to " + email + " ?")) return;
+
+		    fetch(`http://localhost:8080/Student-free/send-feereminder?email=${email}`,{
+		        method:"POST"
+		    })
+		    .then(res => res.json())
+		    .then(data => {
+		        alert(data.message);
+		    })
+		    .catch(err => {
+		        console.error(err);
+		        alert("Error sending reminder");
+		    });
+		}		
+		
+		function closePendingPopup(){
+		    document.getElementById("pendingPopup").style.display = "none";
+		}
+	
+	
+
+	function loadRecentAdmissions(){
+
+		fetch("http://localhost:8080/Admin-dashboard/recent-admissions")
+		.then(res => res.json())
+		.then(data => {
+	
+		let table = document.getElementById("recentAdmissions");
+	
+		table.innerHTML = "";
+	
+		data.forEach(adm => {
+	
+		table.innerHTML += `
+		<tr>
+		<td>${adm.sname}</td>
+		<td>${adm.email}</td>
+		<td>${adm.courseName}</td>
+		<td>${adm.createdAt}</td>
+		</tr>
+		`;
+	
+		});
+
+	})
+	.catch(err => console.log(err));
+
+	}
+	
+	
+
+	let courseChart = null;
+
+	function loadCoursePopularityChart(){
+
+	fetch("http://localhost:8080/Admin-dashboard/course-popularity")
+	.then(res=>res.json())
+	.then(data=>{
+
+	let courses=[];
+	let students=[];
+
+	data.forEach(c=>{
+
+	let label = c.courseName.split(" "); 
+
+	courses.push(label);
+
+	students.push(c.students);
+
+	});
+
+	const ctx=document.getElementById("courseChart").getContext("2d");
+
+	/* destroy old chart */
+	if(courseChart){
+	courseChart.destroy();
+	}
+
+	/* gradient color */
+	const gradient=ctx.createLinearGradient(0,0,0,400);
+	gradient.addColorStop(0,"#6366f1");
+	gradient.addColorStop(1,"#3b82f6");
+
+	courseChart=new Chart(ctx,{
+	type:"bar",
+
+	data:{
+	labels:courses,
+
+	datasets:[{
+	label:"Students Enrolled",
+	data:students,
+	barThickness:45,
+	categoryPercentage:0.6,
+	barPercentage:0.8,
+	backgroundColor:gradient,
+	borderRadius:10,
+	borderSkipped:false,
+	barThickness:40,
+	hoverBackgroundColor:"#4f46e5"
+	}]
+	},
+
+	options:{
+	responsive:true,
+	maintainAspectRatio:false,
+
+	animation:{
+	duration:1200,
+	easing:"easeOutQuart"
+	},
+	
+	layout:{
+	padding:{
+	bottom:20,
+	left:10,
+	right:10
+	}
+	},
+
+	plugins:{
+	legend:{display:false},
+
+	tooltip:{
+	backgroundColor:"#111827",
+	titleColor:"#fff",
+	bodyColor:"#fff",
+	padding:12,
+	cornerRadius:8
+	}
+	},
+
+	scales:{
+
+	x:{
+	grid:{display:false},
+	ticks:{
+	color:"#374151",
+	font:{
+	size:12,
+	weight:"600"
+	},
+	maxRotation:0,
+	minRotation:0,
+	autoSkip:false
+	}
+	},
+
+	y:{
+	beginAtZero:true,
+	grid:{
+	color:"#eef2f7"
+	},
+	ticks:{
+	color:"#6b7280",
+	stepSize:1
+	}
+	}
+
+	}
+
+	}
+
+	});
+
+	});
+
+	}
+	
+	let kpiChart = null;
+
+	function loadKPIChart(){
+
+	    let year = new Date().getFullYear();
+
+	    fetch(`http://localhost:8080/Admin-dashboard/monthly-IncomeExpense/${year}`)
+	    .then(res => res.json())
+	    .then(data => {
+
+	        let months = [];
+	        let income = [];
+	        let expense = [];
+	        let profit = [];
+
+	        data.forEach(d => {
+	            months.push(d.Month);
+	            income.push(d.Income);
+	            expense.push(d.Expense);
+	            profit.push(d.Profit);
+	        });
+
+	        const ctx = document.getElementById("kpiChart").getContext("2d");
+			
+			
+
+	        if(kpiChart){
+	            kpiChart.destroy();
+	        }
+
+	        kpiChart = new Chart(ctx, {
+	            type: "line",
+	            data: {
+	                labels: months,
+					datasets: [
+					{
+					    label: "Income",
+					    data: income,
+					    borderColor: "#22c55e",
+						borderWidth: 1,  
+					    backgroundColor: "rgba(34,197,94,0.15)",
+					    fill: true,
+					    tension: 0.4,
+					    pointRadius: 4,
+					    pointHoverRadius: 6
+					},
+					{
+					    label: "Expense",
+					    data: expense,
+					    borderColor: "#ef4444",
+						borderWidth: 1,  
+					    backgroundColor: "rgba(239,68,68,0.15)",
+					    fill: true,
+					    tension: 0.4,
+					    pointRadius: 4
+					},
+					{
+					    label: "Profit",
+					    data: profit,
+					    borderColor: "#3b82f6",
+						borderWidth: 1,  
+					    backgroundColor: "rgba(59,130,246,0.15)",
+					    fill: true,
+					    tension: 0.4,
+					    pointRadius: 4
+					}
+					]
+	            },
+				options: {
+				    responsive: true,
+				    maintainAspectRatio: false,
+
+					plugins: {
+					        legend: {
+					            position: 'right',
+								align: 'start', 
+					            labels: {
+					                usePointStyle: true,   // 🔥 important
+					                pointStyle: 'rect',   // 🔥 square box
+					                boxWidth: 10,
+					                boxHeight: 10
+					            }
+					        }
+					    },
+
+				    scales: {
+				        x: {
+				            grid: { display: false },
+				            ticks: {
+				                color: "#6b7280"
+				            }
+				        },
+				        y: {
+				            grid: {
+				                color: "#eef2f7"
+				            },
+				            ticks: {
+				                color: "#6b7280"
+				            }
+				        }
+				    }
+				}
+	        });
+
+	    })
+	    .catch(err => console.log(err));
+	}
+	
+	function showSection(section){
+
+	document.getElementById("dashboardSection").style.display="none";
+	document.getElementById("studentsSection").style.display="none";
+	document.getElementById("coursesSection").style.display="none";
+	document.getElementById("examPage").style.display="none";
+	document.getElementById("expenseSection").style.display="none";
+	document.getElementById("reportSection").style.display="none"; 
+	document.getElementById("settingsSection").style.display="none";
+	document.getElementById("certificateSection").style.display="none";
+	
+	document.getElementById(section).style.display="block";
+
+	if(section==="studentsSection"){
+	loadStudents();
+	}
+	
+	if(section==="coursesSection"){
+	loadCourses();
+	}
+	
+	if(section==="examPage"){
+		loadExams();
+	}
+	
+	if(section==="expenseSection"){
+	    loadExpenses();
+	}
+	
+	if(section==="certificateSection"){
+		    loadCertificates();
+		}
+
+
+	}
+	
+	let allStudents = [];
+
+	function loadStudents(){
+
+	    fetch("http://localhost:8080/admission/students-progress")
+
+	    .then(res=>res.json())
+
+	    .then(data=>{
+
+	        allStudents = data;
+
+	        renderStudents(data);
+
+	    });
+
+	}
+	
+	function renderStudents(data){
+
+	    let table = document.getElementById("studentTable");
+	    table.innerHTML = "";
+
+	    if(!data || data.length === 0){
+	        table.innerHTML = `
+	            <tr>
+	                <td colspan="10" style="text-align:center; color:red;">
+	                    No Student Found
+	                </td>
+	            </tr>
+	        `;
+	        return;
+	    }
+
+	    data.forEach(s => {
+
+	        table.innerHTML += `
+	        <tr>
+	            <td>${s.id}</td>
+	            <td>${s.sname}</td>
+	            <td>${s.email}</td>
+	            <td>${s.mobno}</td>
+				<td>${s.courseName}</td>
+				<td>${s.createdAt}</td>
+				<td>${s.totalHours}</td>
+				<td>${s.completedHours}</td>
+				<td>${s.remainingHours}</td>
+				<td>
+				    <div class="progress-bar">
+				        <div class="fill"
+				             style="width:${s.progress}%">
+				        </div>
+				    </div>
+
+				    ${Math.round(s.progress)}%
+				</td>
+	            <td>
+					
+					<button class="view-btn"
+					    onclick="viewStudent(${s.id})">
+
+					    <i class="fi fi-rr-eye"></i>
+
+					</button>
+	                <button class="edit-btn" onclick="editStudent(${s.id})">
+	                    ✏️ Edit
+	                </button>
+
+	                <button 
+	                    class="${s.isActive ? 'active-btn' : 'inactive-btn'}"
+	                    onclick="toggleStatus(${s.id})">
+	                    
+	                    ${s.isActive ? 'Active' : 'Inactive'}
+	                </button>
+					
+				<button 
+
+					class="
+					${s.courseStatus === 'COMPLETED'
+					? 'completed-btn'
+
+					: s.courseStatus === 'IN_PROGRESS'
+					? 'progress-btn'
+
+					: 'pending-btn'}
+					"
+
+					onclick="updateCourseStatus('${s.email}','${s.courseName}')">
+
+					${
+					s.courseStatus === 'FORM_FEE_PENDING'
+					? 'Start Course'
+
+					: s.courseStatus === 'IN_PROGRESS'
+					? 'Mark Complete'
+
+					: 'Reopen Course'
+					}
+
+				</button>
+
+	            </td>
+	        </tr>
+	        `;
+	    });
+	}
+	
+	function searchStudent(){
+
+	    let keyword = document.getElementById("searchEmail").value.toLowerCase();
+
+	    let filtered = allStudents.filter(s => 
+	        s.email.toLowerCase().includes(keyword)
+	    );
+
+	    renderStudents(filtered);
+	}
+	
+	function toggleStatus(id){
+
+	  fetch(`http://localhost:8080/admission/toggle-status/${id}`,{
+	    method:"PUT"
+	  })
+	  .then(res=>res.text())
+	  .then(msg=>{
+	    alert(msg);
+	    loadStudents(); // 🔥 refresh table
+	  })
+	  .catch(err=>{
+	    console.error(err);
+	    alert("Status update failed");
+	  });
+
+	}
+	
+	async function uploadExcel(){
+
+	    const fileInput =
+	        document.getElementById("excelFile");
+
+	    const file = fileInput.files[0];
+
+	    // 🔥 FILE CHECK
+	    if(!file){
+
+	        alert("Please Select Excel File");
+
+	        return;
+	    }
+
+	    // 🔥 FORM DATA
+	    const formData = new FormData();
+
+	    formData.append("file", file);
+
+	    // 🔥 SHOW LOADER
+	    document.getElementById("importLoader")
+	            .style.display = "flex";
+
+	    try{
+
+	        const response = await fetch(
+
+	            "http://localhost:8080/admission/import",
+
+	            {
+	                method : "POST",
+	                body : formData
+	            }
+	        );
+
+	        const result = await response.text();
+
+	        // 🔥 HIDE LOADER
+	        document.getElementById("importLoader")
+	                .style.display = "none";
+
+	        // 🔥 SUCCESS MESSAGE
+	        alert(result);
+
+	        // 🔥 RELOAD TABLE
+	        loadStudents();
+
+	        // 🔥 RESET INPUT
+	        fileInput.value = "";
+
+	    }catch(error){
+
+	        console.error(error);
+
+	        // 🔥 HIDE LOADER
+	        document.getElementById("importLoader")
+	                .style.display = "none";
+
+	        alert("Import Failed");
+	    }
+	}
+	
+	function viewStudent(id){
+
+	    fetch(`http://localhost:8080/Admin-dashboard/student-full-details/${id}`)
+
+	    .then(res => res.json())
+
+	    .then(s => {
+
+	        console.log(s);
+
+	        // OPEN POPUP
+	        document.getElementById("viewStudentPopup")
+	            .style.display = "flex";
+
+	        // SET VALUES
+
+	        document.getElementById("viewName")
+	            .innerText = s.sname;
+
+	        document.getElementById("viewCourse")
+	            .innerText = s.courseName;
+
+	        document.getElementById("viewEmail")
+	            .innerText = s.email;
+
+	        document.getElementById("viewMobile")
+	            .innerText = s.mobno;
+
+	        document.getElementById("viewState")
+	            .innerText = s.state;
+
+	        document.getElementById("viewDistrict")
+	            .innerText = s.district;
+
+	        document.getElementById("viewTaluka")
+	            .innerText = s.taluka;
+
+	        document.getElementById("viewDob")
+	            .innerText = s.dob;
+				
+				document.getElementById("viewGender")
+				    .innerText = s.gender;
+
+				document.getElementById("viewCourseName")
+				    .innerText = s.courseName;
+
+				document.getElementById("viewProgress")
+				    .innerText = Math.round(s.progress) + "%";
+
+	        document.getElementById("viewAddress")
+	            .innerText = s.address;
+
+	        document.getElementById("viewTotalHours")
+	            .innerText = s.totalHours;
+
+	        document.getElementById("viewCompletedHours")
+	            .innerText = s.completedHours;
+
+	        document.getElementById("viewRemainingHours")
+	            .innerText = s.remainingHours;
+
+	        document.getElementById("viewTotalFee")
+	            .innerText = s.totalfree;
+
+	        document.getElementById("viewPaidFee")
+	            .innerText = s.paidfree;
+
+	        document.getElementById("viewRemainingFee")
+	            .innerText = s.remainingfree;
+
+	        document.getElementById("viewCourseStatus")
+	            .innerText = s.courseStatus;
+
+	        document.getElementById("viewAdmissionDate")
+	            .innerText = s.createdAt;
+
+				document.getElementById("viewCourseDuration")
+				    .innerText = s.courseDuration + " Months";
+
+	        document.getElementById("viewStudentStatus")
+	            .innerText = s.isActive
+	                ? "Active"
+	                : "Inactive";
+					
+					// DOCUMENT STATUS TABLE
+
+					document.getElementById("documentTableBody").innerHTML = `
+
+					<tr>
+					    <td>Student Photo</td>
+					    <td>${getDocumentStatus(s.photopath)}</td>
+					</tr>
+
+					<tr>
+					    <td>Signature Photo</td>
+					    <td>${getDocumentStatus(s.signaturePhoto)}</td>
+					</tr>
+
+					<tr>
+					    <td>Aadhar Card</td>
+					    <td>${getDocumentStatus(s.adharCradPhoto)}</td>
+					</tr>
+
+					<tr>
+					    <td>Marksheet</td>
+					    <td>${getDocumentStatus(s.marksheet)}</td>
+					</tr>
+
+					`;
+
+	        // PHOTO
+
+	        if(s.photopath){
+
+				let fileName = s.photopath.split("\\").pop();
+
+				document.getElementById("viewPhoto").src =
+				    "http://localhost:8080/uploads/" + fileName;
+
+	        }else{
+
+	            document.getElementById("viewPhoto").src =
+	                "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+	        }
+			
+			
+
+	    })
+
+	    .catch(err => {
+
+	        console.log(err);
+
+	        alert("Data not loading");
+
+	    });
+
+	}
+	
+	function getDocumentStatus(value){
+
+	    if(value && value !== null && value !== ""){
+
+	        return `
+	            <span class="uploaded-status">
+	                Uploaded
+	            </span>
+	        `;
+	    }
+
+	    return `
+	        <span class="not-uploaded-status">
+	            Not Uploaded
+	        </span>
+	    `;
+	}
+
+	function closeViewPopup(){
+
+	    document.getElementById("viewStudentPopup")
+	        .style.display = "none";
+
+	}
+	
+	function printStudentDetails(){
+
+	    let printContent =
+	        document.querySelector(".view-popup").innerHTML;
+
+	    let newWindow =
+	        window.open("", "", "width=1000,height=700");
+
+	    newWindow.document.write(`
+	        <html>
+	        <head>
+	            <title>Student Details</title>
+
+	            <style>
+
+	                body{
+	                    font-family:Arial;
+	                    padding:20px;
+	                }
+
+	                .student-photo{
+	                    width:100px;
+	                    height:100px;
+	                    border-radius:50%;
+	                    object-fit:cover;
+	                    border:3px solid #0b3b75;
+	                }
+
+	                .details-grid{
+	                    display:grid;
+	                    grid-template-columns:1fr 1fr;
+	                    gap:15px;
+	                    margin-top:20px;
+	                }
+
+	                .detail-box{
+	                    border:1px solid #ddd;
+	                    padding:12px;
+	                    border-radius:8px;
+	                }
+
+	                .detail-box label{
+	                    display:block;
+	                    font-size:13px;
+	                    color:#666;
+	                    margin-bottom:5px;
+	                }
+
+	                .detail-box p{
+	                    margin:0;
+	                    font-weight:bold;
+	                }
+
+	                .popup-actions,
+	                .close-btn{
+	                    display:none;
+	                }
+
+	            </style>
+
+	        </head>
+
+	        <body>
+
+	            ${printContent}
+
+	        </body>
+
+	        </html>
+	    `);
+
+	    newWindow.document.close();
+
+	    newWindow.print();
+	}
+	
+	function updateCourseStatus(email, courseName){
+
+	    fetch(`http://localhost:8080/course/update-status?email=${email}&courseName=${courseName}`,{
+
+	        method:"PUT"
+
+	    })
+
+	    .then(res=>res.text())
+
+	    .then(msg=>{
+
+	        alert(msg);
+
+	        loadStudents();
+
+	    })
+
+	    .catch(err=>{
+
+	        console.error(err);
+
+	        alert("Status update failed");
+
+	    });
+
+	}
+	
+	
+	let currentStudent = null;
+	
+	document.addEventListener("DOMContentLoaded", function(){
+
+	    document.getElementById("closeBtn").addEventListener("click", function(){
+	        document.getElementById("editPopup").style.display = "none";
+	    });
+
+	});
+	
+	function editStudent(id){
+
+		fetch(`http://localhost:8080/admission/get/${id}`)
+		.then(res=>res.json())
+		.then(s=>{
+
+			currentStudent = s;  
+			
+		document.getElementById("editId").value = s.id;
+		document.getElementById("editIdDisplay").value = s.id; 
+		document.getElementById("editName").value = s.sname;
+		document.getElementById("editMobile").value = s.mobno;
+		document.getElementById("editAddress").value = s.address;
+		document.getElementById("editState").value = s.state;
+		document.getElementById("editDistrict").value = s.district;
+		document.getElementById("editTaluka").value = s.taluka;
+		document.getElementById("editDob").value = s.dob;
+
+		document.getElementById("editPopup").style.display = "flex";
+
+		});
+	}
+	
+	function updateStudent(){
+
+		let id = document.getElementById("editId").value;
+
+		let formData = new FormData();
+
+		formData.append("sname", document.getElementById("editName").value);
+		formData.append("mobno", document.getElementById("editMobile").value);
+		formData.append("address", document.getElementById("editAddress").value);
+		formData.append("state", document.getElementById("editState").value);
+		formData.append("district", document.getElementById("editDistrict").value);
+		formData.append("taluka", document.getElementById("editTaluka").value);
+		formData.append("dob", document.getElementById("editDob").value);
+
+		let photo = document.getElementById("editPhoto").files[0];
+		if(photo){
+		    formData.append("photo", photo);
+		}
+
+		fetch(`http://localhost:8080/admission/update/${id}`,{
+		    method:"PUT",
+		    body:formData
+		})
+		.then(res=>res.text())
+		.then(msg=>{
+		    alert(msg);
+		    closePopup();
+		    loadStudents(); // refresh table
+		})
+		.catch(err=>{
+		    console.error(err);
+		    alert("Update Failed");
+		});
+	}
+	
+	function viewDoc(type){
+
+	    let baseUrl = "http://localhost:8080/uploads/";
+	    let filePath = "";
+
+	    if(type === "photo"){
+	        filePath = currentStudent.photopath;
+	    }
+	    else if(type === "sign"){
+	        filePath = currentStudent.signaturePhoto;
+	    }
+	    else if(type === "adhar"){
+	        filePath = currentStudent.adharCradPhoto;
+	    }
+	    else if(type === "marksheet"){
+	        filePath = currentStudent.Marksheet; // ⚠️ capital M
+	    }
+
+	    // ❌ agar file nahi hai
+	    if(!filePath){
+	        alert("Document not uploaded");
+	        return;
+	    }
+
+	    // 🔥 open document
+	    window.open(baseUrl + filePath, "_blank");
+	}
+	
+	function closePopup(){
+	    console.log("clicked"); // 👈 add this
+	    document.getElementById("editPopup").style.display="none";
+	}
+	
+	
+	
+	function openfeeDetailsPopup(){
+
+	    document.getElementById("feePopup").style.display = "flex";
+
+	    loadFeeTable(); // 🔥 data load
+	}
+
+	function closeFeePopup(){
+	    document.getElementById("feePopup").style.display = "none";
+	}
+	
+	function loadFeeTable(){
+
+	    fetch("http://localhost:8080/admission/get")
+	    .then(res => res.json())
+	    .then(data => {
+
+	        let table = document.getElementById("feeTable");
+	        table.innerHTML = "";
+
+	        if(data.length === 0){
+	            table.innerHTML = "<tr><td colspan='7'>No Data Found</td></tr>";
+	            return;
+	        }
+
+	        data.forEach((item, index) => {
+
+	            let row = `
+	                <tr>
+	                    <td>${index + 1}</td>
+	                    <td>${item.email}</td>
+	                    <td>${item.courseName}</td>
+	                    <td>${item.totalfree ?? 0}</td>
+	                    <td>${item.paidfree ?? 0}</td>
+	                    <td>${item.remainingfree ?? 0}</td>
+	                  
+	                </tr>
+	            `;
+
+	            table.innerHTML += row;
+	        });
+
+	    })
+	    .catch(err => console.error(err));
+	}
+	
+
+	
+
+	//Course JS
+	function loadCourses(){
+
+	fetch("http://localhost:8080/course/get")
+	.then(res=>res.json())
+	.then(data=>{
+
+	let table=document.getElementById("courseTable");
+
+	table.innerHTML="";
+
+	data.forEach(c=>{
+
+	table.innerHTML+=`
+
+	<tr>
+	<td>${c.id}</td>
+	<td>${c.courseName}</td>
+	<td>${c.totalseat}</td>
+	<td>${c.courseDurationMonths} Months</td>
+	<td>${c.dailyHours} Hours</td>
+	<td>${c.totalHours}</td>
+	<td>${c.free}</td>
+
+	<td>
+
+		<button class="edit-btn" 		onclick="openEditCourse(
+		${c.id},
+		'${c.courseName}',
+		'${c.totalseat}',
+		'${c.courseDurationMonths}',
+		'${c.dailyHours}',
+		'${c.free}',
+		'${c.description || ""}'
+		)">Edit</button>
+
+	<button class="delete-btn" onclick="deleteCourse(${c.id})">Delete</button>
+
+	</td>
+
+	</tr>
+
+	`;
+
+	});
+
+	});
+
+	}
+	
+	function showAddCourse(){
+
+	document.getElementById("addCourseBox").style.display="flex";
+
+	}
+
+	function closeAddCourse(){
+
+	document.getElementById("addCourseBox").style.display="none";
+
+	}
+	
+	function saveCourse(){
+
+		let course={
+	
+		courseName:document.getElementById("courseName").value,
+		totalseat:document.getElementById("totalseat").value,
+		courseDurationMonths:document.getElementById("courseDurationMonths").value,
+		dailyHours:document.getElementById("dailyHours").value,
+		free:document.getElementById("free").value,
+		description:document.getElementById("description").value
+	
+		};
+	
+		fetch("http://localhost:8080/course/add",{
+	
+		method:"POST",
+		headers:{
+		"Content-Type":"application/json"
+		},
+	
+		body:JSON.stringify(course)
+	
+		})
+		.then(res=>res.text())
+		.then(msg=>{
+	
+		alert(msg);
+	
+		document.getElementById("addCourseBox").style.display="none";
+	
+		loadCourses();
+	
+		});
+
+	}
+	
+	function deleteCourse(id){
+
+		if(!confirm("Delete this course?")) return;
+	
+		fetch("http://localhost:8080/course/delete/"+id,{
+		method:"DELETE"
+		})
+		.then(res=>res.text())
+		.then(msg=>{
+	
+		alert(msg);
+	
+		loadCourses();
+	
+		});
+
+	}
+	
+	function openEditCourse(id,courseName,totalseat,courseDurationMonths,dailyHours,free,description){
+
+	document.getElementById("editCourseBox").style.display="flex";
+
+	document.getElementById("editId").value=id;
+	document.getElementById("editCourseName").value=courseName;
+	document.getElementById("editTotalseat").value=totalseat;
+	document.getElementById("editCourseDurationMonths").value=courseDurationMonths;
+	document.getElementById("editDailyHours").value=dailyHours;
+	document.getElementById("editFree").value=free;
+	document.getElementById("editDescription").value=description;
+
+	}
+
+	function closeEditCourse(){
+
+	document.getElementById("editCourseBox").style.display="none";
+
+	}
+	
+	function updateCourse(){
+
+	let course={
+
+	id:document.getElementById("editId").value,
+	courseName:document.getElementById("editCourseName").value,
+	totalseat:document.getElementById("editTotalseat").value,
+	courseDurationMonths: document.getElementById("editCourseDurationMonths" ).value,
+	dailyHours: document.getElementById("editDailyHours").value,
+	free:document.getElementById("editFree").value,
+	description:document.getElementById("editDescription").value
+
+	};
+
+	fetch("http://localhost:8080/course/edit/" + course.id,{
+
+	method:"PUT",
+
+	headers:{
+	"Content-Type":"application/json"
+	},
+
+	body:JSON.stringify(course)
+
+	})
+	.then(res=>res.text())
+	.then(msg=>{
+
+	alert(msg);
+
+	closeEditCourse();
+
+	loadCourses();
+
+	});
+
+	}
+	
+	//Exam JS
+	let allExams = [];
+
+	function loadExams(){
+
+	    fetch("http://localhost:8080/exam/get")
+	    .then(res => res.json())
+	    .then(data => {
+
+	        allExams = data;   // store data
+	        renderExams(data); // render only once
+
+	    });
+	}
+	
+	function renderExams(data){
+
+	    let table = document.getElementById("examTable");
+	    table.innerHTML = "";
+
+	    if(!data || data.length === 0){
+	        table.innerHTML = `
+	            <tr>
+	                <td colspan="5" style="text-align:center; color:red;">
+	                    No Exam Found
+	                </td>
+	            </tr>
+	        `;
+	        return;
+	    }
+
+	    data.forEach(e => {
+
+	        table.innerHTML += `
+	        <tr>
+	            <td>${e.examId}</td>
+	            <td>${e.title}</td>
+	            <td>${e.courseName}</td>
+	            <td>${e.durationMinutes} min</td>
+
+	            <td class="action-cell">
+
+	                <button class="edit-btn"
+	                onclick="openEditExam(${e.examId},
+	                '${e.title}',
+	                '${e.courseName}',
+	                '${e.durationMinutes}')">
+	                    Edit
+	                </button>
+
+	                <button class="delete-btn"
+	                onclick="deleteExam(${e.examId})">
+	                    Delete
+	                </button>
+
+	                <button class="assign-btn"
+	                onclick="assignExam(${e.examId})">
+	                    Assign
+	                </button>
+
+	            </td>
+	        </tr>
+	        `;
+	    });
+	}
+	
+	function searchExam(){
+
+	    let keyword = document.getElementById("searchCourse").value.toLowerCase().trim();
+
+	    let filtered = allExams.filter(e => 
+	        (e.courseName || "").toLowerCase().includes(keyword)
+	    );
+
+	    renderExams(filtered);
+	}
+	
+	function assignExam(examId){
+
+	    let email = prompt("Enter Student Email");
+
+	    if(!email){
+	        alert("Email required");
+	        return;
+	    }
+
+	    fetch(`http://localhost:8080/exam-assign/student?examId=${examId}&email=${email}`,{
+	        method:"POST"
+	    })
+	    .then(res=>res.text())
+	    .then(msg=>{
+	        alert(msg);
+	    })
+	    .catch(err=>{
+	        console.error(err);
+	        alert("Error assigning exam");
+	    });
+	}
+	
+	function showAddExam(){
+
+	document.getElementById("addExamBox").style.display="flex";
+
+	}
+
+	function closeAddExam(){
+
+	document.getElementById("addExamBox").style.display="none";
+
+	}
+	
+	function deleteExam(id){
+
+	if(!confirm("Delete this exam?")) return;
+
+	fetch("http://localhost:8080/exam/"+id,{
+
+	method:"DELETE"
+
+	})
+	.then(res=>res.text())
+	.then(msg=>{
+
+	alert(msg);
+
+	loadExams();
+
+	});
+
+	}
+	
+	
+	
+	function openExamPopup(){
+
+	document.getElementById("examPopup").style.display="flex";
+
+	document.getElementById("step1").style.display="block";
+	document.getElementById("step2").style.display="none";
+	document.getElementById("step3").style.display="none";
+
+	}
+	
+	function goToQuestionStep(){
+
+	document.getElementById("step1").style.display="none";
+	document.getElementById("step2").style.display="block";
+	document.getElementById("step3").style.display="none";
+
+	}
+	
+	function goToOptionStep(){
+
+	document.getElementById("step2").style.display="none";
+	document.getElementById("step3").style.display="block";
+
+	}
+	
+	let questions = [];
+
+	// ✅ ADD QUESTION
+	function addQuestion(){
+
+		let question = document.getElementById("questionText").value.trim();
+		let marks = document.getElementById("questionMarks").value;
+
+		let correctIndex = document.querySelector('input[name="correct"]:checked')?.value;
+
+		let op1 = document.getElementById("option1").value.trim();
+		let op2 = document.getElementById("option2").value.trim();
+		let op3 = document.getElementById("option3").value.trim();
+		let op4 = document.getElementById("option4").value.trim();
+
+		// ✅ validation
+		if(!question || !marks || correctIndex === undefined || !op1 || !op2 || !op3 || !op4){
+			alert("All fields required!");
+			return;
+		}
+
+		let q = {
+			question: question,
+			marks: parseInt(marks),
+			correctOptionIndex: parseInt(correctIndex),
+			optionList: [
+				{ optionText: op1 },
+				{ optionText: op2 },
+				{ optionText: op3 },
+				{ optionText: op4 }
+			]
+		};
+
+		questions.push(q);
+
+		clearQuestionFields();
+		renderQuestions();
+	}
+
+	// ✅ RENDER QUESTIONS LIST
+	function renderQuestions(){
+
+		let container = document.getElementById("questionListPreview");
+		container.innerHTML = "";
+
+		questions.forEach((q, i) => {
+
+			container.innerHTML += `
+			<div style="border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:8px;">
+				<b>Q${i+1}: ${q.question}</b> (${q.marks} marks)<br>
+
+				1. ${q.optionList[0].optionText}<br>
+				2. ${q.optionList[1].optionText}<br>
+				3. ${q.optionList[2].optionText}<br>
+				4. ${q.optionList[3].optionText}<br>
+
+				<b style="color:green;">Correct: Option ${q.correctOptionIndex + 1}</b><br>
+
+				<button onclick="deleteQuestion(${i})" class="cancel-btn">Delete</button>
+			</div>
+			`;
+		});
+	}
+
+	// ✅ DELETE QUESTION
+	function deleteQuestion(index){
+		if(confirm("Delete this question?")){
+			questions.splice(index,1);
+			renderQuestions();
+		}
+	}
+
+	// ✅ CLEAR INPUTS
+	function clearQuestionFields(){
+		document.getElementById("questionText").value="";
+		document.getElementById("questionMarks").value="";
+		document.getElementById("option1").value="";
+		document.getElementById("option2").value="";
+		document.getElementById("option3").value="";
+		document.getElementById("option4").value="";
+
+		document.querySelectorAll('input[name="correct"]').forEach(r => r.checked = false);
+	}
+
+	// ✅ FINAL CREATE EXAM
+	function createExam(){
+
+		let title = document.getElementById("examTitle").value.trim();
+		let courseName = document.getElementById("examCourse").value.trim();
+		let duration = document.getElementById("examDuration").value;
+
+		if(!title || !courseName || !duration){
+			alert("Fill exam details!");
+			return;
+		}
+
+		if(questions.length === 0){
+			alert("Add at least one question!");
+			return;
+		}
+
+		let exam = {
+			title: title,
+			courseName: courseName,
+			durationMinutes: parseInt(duration),
+			questionList: questions
+		};
+
+		fetch("http://localhost:8080/exam/create",{
+			method:"POST",
+			headers:{
+				"Content-Type":"application/json"
+			},
+			body: JSON.stringify(exam)
+		})
+		.then(res=>res.json())
+		.then(data=>{
+			alert("Exam Created Successfully 🎉");
+
+			questions = [];
+			renderQuestions();
+
+			document.getElementById("examTitle").value="";
+			document.getElementById("examCourse").value="";
+			document.getElementById("examDuration").value="";
+
+			closeExamPopup();
+			loadExams();
+		})
+		.catch(err=>{
+			console.error(err);
+			alert("Error ❌");
+		});
+	}
+
+	// ✅ CLOSE POPUP
+	function closeExamPopup(){
+		document.getElementById("examPopup").style.display="none";
+	}
+	
+	let editQuestions = [];
+
+	// ✅ OPEN EDIT EXAM
+	function openEditExam(id){
+
+		fetch("http://localhost:8080/exam/" + id)
+		.then(res => res.json())
+		.then(e => {
+
+			document.getElementById("editExamPopup").style.display = "flex";
+
+			document.getElementById("editExamId").value = e.examId;
+			document.getElementById("editExamTitle").value = e.title;
+			document.getElementById("editExamCourse").value = e.courseName;
+			document.getElementById("editExamDuration").value = e.durationMinutes;
+
+			// ✅ SAFE COPY
+			editQuestions = (e.questionList || []).map(q => ({
+			    questionId: q.questionId,   // ✅ MUST
+			    question: q.question,
+			    marks: q.marks,
+			    correctOptionIndex: q.correctOptionIndex,
+			    optionList: q.optionList.map(op => ({
+			        optionId: op.optionId,
+			        optionText: op.optionText
+			    }))
+			}));
+
+			renderEditQuestions();
+		});
+	}
+
+	// ✅ RENDER
+	function renderEditQuestions(){
+
+		let container = document.getElementById("editQuestionsContainer");
+		container.innerHTML = "";
+
+		editQuestions.forEach((q, index) => {
+
+			container.innerHTML += `
+			<div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:10px;">
+
+				<h4>Question ${index + 1}</h4>
+
+				<input class="form-input" placeholder="Question"
+				value="${q.question}"
+				oninput="updateEditQuestion(${index}, 'question', this.value)">
+
+				<input class="form-input" placeholder="Marks"
+				value="${q.marks}"
+				oninput="updateEditQuestion(${index}, 'marks', this.value)">
+
+				<input class="form-input" placeholder="Option 1"
+				value="${q.optionList[0].optionText}"
+				oninput="updateEditOption(${index},0,this.value)">
+
+				<input class="form-input" placeholder="Option 2"
+				value="${q.optionList[1].optionText}"
+				oninput="updateEditOption(${index},1,this.value)">
+
+				<input class="form-input" placeholder="Option 3"
+				value="${q.optionList[2].optionText}"
+				oninput="updateEditOption(${index},2,this.value)">
+
+				<input class="form-input" placeholder="Option 4"
+				value="${q.optionList[3].optionText}"
+				oninput="updateEditOption(${index},3,this.value)">
+
+				<input class="form-input" placeholder="Correct Index (0-3)"
+				value="${q.correctOptionIndex}"
+				oninput="updateEditQuestion(${index}, 'correctOptionIndex', this.value)">
+
+				<button onclick="deleteEditQuestion(${index})" class="cancel-btn">Delete</button>
+
+			</div>
+			`;
+		});
+	}
+
+	// ✅ UPDATE QUESTION
+	function updateEditQuestion(index, field, value){
+
+	    if(field === "marks" || field === "correctOptionIndex"){
+	        let num = parseInt(value);
+	        editQuestions[index][field] = isNaN(num) ? 0 : num;
+	    }else{
+	        editQuestions[index][field] = value;
+	    }
+	}
+
+	// ✅ UPDATE OPTION
+	function updateEditOption(qIndex, opIndex, value){
+
+		editQuestions[qIndex].optionList[opIndex].optionText = value;
+	}
+
+	// ✅ ADD NEW QUESTION
+	function addNewEditQuestion(){
+
+		let newQ = {
+			question: "",
+			marks: 0,
+			correctOptionIndex: 0,
+			optionList: [
+				{ optionText: "" },
+				{ optionText: "" },
+				{ optionText: "" },
+				{ optionText: "" }
+			]
+		};
+
+		editQuestions.push(newQ);
+
+		renderEditQuestions();
+	}
+
+	// ✅ DELETE
+	function deleteEditQuestion(index){
+
+	    if(editQuestions.length === 1){
+	        alert("At least one question required");
+	        return;
+	    }
+
+	    if(!confirm("Delete this question?")) return;
+
+	    editQuestions.splice(index, 1);
+	    renderEditQuestions();
+	}
+
+	// ✅ FINAL UPDATE
+	function updateExam(){
+
+	    if(editQuestions.length === 0){
+	        alert("Add at least one question");
+	        return;
+	    }
+
+	    // ✅ VALIDATION
+	    for(let q of editQuestions){
+
+	        if(!q.question || q.optionList.some(o => !o.optionText)){
+	            alert("Fill all fields!");
+	            return;
+	        }
+
+	        if(q.correctOptionIndex < 0 || q.correctOptionIndex > 3){
+	            alert("Correct index must be 0-3");
+	            return;
+	        }
+	    }
+
+	    // ✅ CLEAN JSON (VERY IMPORTANT)
+	    let cleanQuestions = editQuestions.map(q => {
+
+	        let cleanQ = {
+	            question: q.question,
+	            marks: parseInt(q.marks) || 0,
+	            correctOptionIndex: parseInt(q.correctOptionIndex) || 0,
+	            optionList: q.optionList.map(op => ({
+	                optionText: op.optionText
+	            }))
+	        };
+
+	        // ✅ only if EXISTING
+	        if(q.questionId){
+	            cleanQ.questionId = q.questionId;
+	        }
+
+	        return cleanQ;
+	    });
+
+	    let exam = {
+	        examId: parseInt(document.getElementById("editExamId").value),
+	        title: document.getElementById("editExamTitle").value.trim(),
+	        courseName: document.getElementById("editExamCourse").value.trim(),
+	        durationMinutes: parseInt(document.getElementById("editExamDuration").value) || 0,
+	        questionList: cleanQuestions
+	    };
+
+	    fetch("http://localhost:8080/exam/update",{
+	        method:"PUT",
+	        headers:{
+	            "Content-Type":"application/json"
+	        },
+	        body: JSON.stringify(exam)
+	    })
+	    .then(res => {
+	        if(!res.ok) throw new Error("Update failed");
+	        return res.json();
+	    })
+	    .then(data => {
+
+	        alert("Exam Updated Successfully ✅");
+
+	        closeEditPopup();
+	        loadExams();
+
+	    })
+	    .catch(err=>{
+	        console.error(err);
+	        alert("Update Failed ❌");
+	    });
+	}
+
+	// ✅ CLOSE
+	function closeEditPopup(){
+		document.getElementById("editExamPopup").style.display="none";
+	}
+	
+	
+	let allAttempts = []; 
+	function openAttemptExamPopup(){
+
+	    document.getElementById("attemptPopup").style.display = "flex";
+
+	    fetch("http://localhost:8080/submission/get")
+	    .then(res => res.json())
+	    .then(data => {
+
+	        allAttempts = data; // ✅ store data
+	        renderTable(data);  // ✅ initial render
+
+	    })
+	    .catch(err => console.error(err));
+	}
+	
+	function renderTable(data){
+
+	    let table = document.getElementById("attemptTable");
+	    table.innerHTML = "";
+
+	    data.forEach((item, index) => {
+
+	        let row = `
+	            <tr>
+	                <td>${index + 1}</td>
+	                <td>${item.exam?.title || "N/A"}</td>
+	                <td>${item.email || "N/A"}</td>
+	                <td>${item.totalScore || 0}</td>
+	                <td>${item.percentage || 0}</td>
+	                <td>${item.grade || "N/A"}</td>
+	            </tr>
+	        `;
+
+	        table.innerHTML += row;
+	    });
+	}
+	
+	function filterByEmail(){
+
+	    let input = document.getElementById("emailFilter").value.toLowerCase();
+
+	    let filteredData = allAttempts.filter(item => 
+	        item.email && item.email.toLowerCase().includes(input)
+	    );
+
+	    renderTable(filteredData);
+	}
+
+	function closeAttemptPopup(){
+	    document.getElementById("attemptPopup").style.display = "none";
+	    document.getElementById("emailFilter").value = ""; // clear input
+	}
+	
+	//Certificate JS
+	
+	function openCertificatePopup(){
+	  document.getElementById("certificatePopup").style.display = "flex";
+	}
+
+	
+	let allCertificates = [];	
+	function loadCertificates(){
+
+	  fetch("http://localhost:8080/api/student/certificate/get")
+	  .then(res => res.json())
+	  .then(data => {
+
+	    allCertificates = data; // ✅ store all data
+
+	    renderCertificates(data);
+
+	  });
+
+	}
+	
+	function renderCertificates(data){
+
+	    let table = document.getElementById("certificateTableBody");
+	    table.innerHTML = "";
+
+	    if(!data || data.length === 0){
+	        table.innerHTML =
+	        "<tr><td colspan='6'>No Certificates Found</td></tr>";
+	        return;
+	    }
+
+	    data.forEach(c => {
+
+	        table.innerHTML += `
+	        <tr>
+	            <td>${c.studentName}</td>
+	            <td>${c.email}</td>
+	            <td>${c.courseName}</td>
+	            <td>${c.certificateNo}</td>
+	            <td>${c.issuedate}</td>
+
+	            <td>
+	                <button class="edit-btn"
+	                onclick="downloadCert('${c.email}','${c.courseName}')">
+	                    Download
+	                </button>
+	            </td>
+	        </tr>
+	        `;
+	    });
+
+	}
+	
+	function searchCertificate(){
+
+	    let keyword =
+	    document.getElementById("certificateSearch")
+	    .value
+	    .toLowerCase();
+
+	    let filtered = allCertificates.filter(c =>
+
+	        c.courseName.toLowerCase().includes(keyword)
+
+	    );
+
+	    renderCertificates(filtered);
+	}
+	
+	function downloadCert(email, course){
+
+	  fetch(`http://localhost:8080/api/student/certificate/download?email=${email}&courseName=${course}`)
+	  .then(res => res.blob())
+	  .then(blob => {
+
+	    let url = window.URL.createObjectURL(blob);
+	    let a = document.createElement("a");
+	    a.href = url;
+	    a.download = "certificate.pdf";
+	    a.click();
+
+	  });
+
+	}
+	
+	function fetchStudentDetails(){
+
+	  let email = document.getElementById("pEmail").value;
+
+	  if(!email) return;
+
+	  fetch(`http://localhost:8080/api/student/certificate/details?email=${email}`)
+	  .then(res => res.json())
+	  .then(data => {
+
+	    // ✅ Name auto-fill
+	    document.getElementById("pName").value = data.name;
+
+	    // ✅ Course dropdown fill
+	    let courseDropdown = document.getElementById("pCourse");
+	    courseDropdown.innerHTML = "<option value=''>Select Course</option>";
+
+	    data.courses.forEach(c => {
+	      let option = document.createElement("option");
+	      option.value = c.courseName;
+	      option.textContent = c.courseName;
+	      courseDropdown.appendChild(option);
+	    });
+
+	  })
+	  .catch(() => {
+	    alert("Student not found");
+	  });
+	}
+	
+	function generateCertificate(){
+
+	  let email = document.getElementById("pEmail").value;
+	  let name = document.getElementById("pName").value;
+	  let course = document.getElementById("pCourse").value;
+
+	  fetch(`http://localhost:8080/api/student/certificate/view?email=${email}&studentName=${name}&courseName=${course}`)
+	  .then(async res => {
+
+	    let text = await res.text(); // ✅ always read response
+
+	    if(!res.ok){
+	      throw new Error(text);     // ✅ backend ka exact message
+	    }
+
+	    return text ? JSON.parse(text) : {};
+	  })
+	  .then(() => {
+	    alert("✅ Certificate Generated Successfully");
+	    closeCertificatePopup();
+	    loadCertificates();
+	  })
+	  .catch(err => {
+	    alert("❌ " + err.message);  // ✅ SAME backend message show
+	  });
+	}
+	
+	function closeCertificatePopup(){
+
+	  // popup hide
+	  document.getElementById("certificatePopup").style.display = "none";
+
+	  // clear fields
+	  document.getElementById("pName").value = "";
+	  document.getElementById("pEmail").value = "";
+
+	  // dropdown reset
+	  let courseDropdown = document.getElementById("pCourse");
+	  courseDropdown.innerHTML = "<option value=''>Select Course</option>";
+	}
+	
+	//Report JS	
+	let selectedReportType = "";
+
+	function selectReport(type){
+
+	    selectedReportType = type;
+
+	    // show date section AFTER selecting report
+	    document.getElementById("dateSection").style.display = "block";
+
+	    // optional highlight selected card
+	    document.querySelectorAll(".report-card").forEach(card=>{
+	        card.style.background = "white";
+	        card.style.color = "black";
+	    });
+
+	    event.target.style.background = "#00356a";
+	    event.target.style.color = "white";
+
+	}
+	
+	function loadReport(){
+
+	    let from = document.getElementById("fromDate").value;
+	    let to = document.getElementById("toDate").value;
+
+	    if(!selectedReportType){
+	        alert("Select report type");
+	        return;
+	    }
+
+	    fetch(`http://localhost:8080/api/report/data?reportType=${selectedReportType}&from=${from}&to=${to}`)
+	    .then(res => res.json())
+	    .then(data => {
+
+	        if(selectedReportType === "ADMISSION"){
+	            renderAdmissionReport(data);
+	        }
+
+	        if(selectedReportType === "FEE"){
+	            renderFeeReport(data);
+	        }
+
+	        if(selectedReportType === "EXPENSE"){
+	            renderExpenseReport(data);
+	        }
+			
+			if(selectedReportType === "EXAM"){
+				renderExamReport(data);
+			}
+			
+			if(selectedReportType === "CERTIFICATE"){
+			    renderCertificateReport(data);
+			}
+
+	    })
+	    .catch(err => console.log(err));
+
+	}
+	
+	function renderAdmissionReport(data){
+
+	    let head = document.getElementById("reportHead");
+	    let body = document.getElementById("reportBody");
+
+	    head.innerHTML = `
+	        <tr>
+	            <th>Student Name</th>
+	            <th>Email</th>
+	            <th>Course</th>
+	            <th>Date</th>
+	        </tr>
+	    `;
+
+	    body.innerHTML = "";
+		
+		if(!data || data.length === 0){
+		        body.innerHTML = `
+		            <tr>
+		                <td colspan="3" style="text-align:center; color:red; font-weight:600;">
+		                    No Admission Data Found
+		                </td>
+		            </tr>
+		        `;
+		        return;
+		    }
+
+	    data.forEach(r => {
+	        body.innerHTML += `
+	            <tr>
+	                <td>${r.sname}</td>
+	                <td>${r.email}</td>
+	                <td>${r.courseName}</td>
+	                <td>${r.createdAt}</td>
+	            </tr>
+	        `;
+	    });
+	}
+	
+	function renderFeeReport(data){
+
+	    let head = document.getElementById("reportHead");
+	    let body = document.getElementById("reportBody");
+
+	    head.innerHTML = `
+	        <tr>
+	            <th>StudentEmail</th>
+	            <th>Amount</th>
+	            <th>Date</th>
+	        </tr>
+	    `;
+
+	    body.innerHTML = "";
+		
+		if(!data || data.length === 0){
+		        body.innerHTML = `
+		            <tr>
+		                <td colspan="3" style="text-align:center; color:red; font-weight:600;">
+		                    No Fee Data Found
+		                </td>
+		            </tr>
+		        `;
+		        return;
+		    }
+
+	    data.forEach(f => {
+			
+	        body.innerHTML += `
+	            <tr>
+	                <td>${f.email}</td>
+	                <td>₹ ${f.paidfee}</td>
+	                <td>${f.paymentdate}</td>
+	            </tr>
+	        `;
+	    });
+	}
+	
+	function renderExpenseReport(data){
+
+	    let head = document.getElementById("reportHead");
+	    let body = document.getElementById("reportBody");
+
+	    head.innerHTML = `
+	        <tr>
+	            <th>Expense Type</th>
+	            <th>Title</th>
+	            <th>Amount</th>
+	            <th>Paid To</th>
+	            <th>Payment Method</th>
+	            <th>Bill Number</th>
+	            <th>Date</th>
+	        </tr>
+	    `;
+
+	    body.innerHTML = "";
+
+	    if(!data || data.length === 0){
+
+	        body.innerHTML = `
+	            <tr>
+	                <td colspan="7"
+	                style="text-align:center;
+	                color:red;
+	                font-weight:600;">
+	                    No Expense Data Found
+	                </td>
+	            </tr>
+	        `;
+
+	        return;
+	    }
+
+	    data.forEach(e => {
+
+	        body.innerHTML += `
+	            <tr>
+	                <td>${e.expenseType}</td>
+	                <td>${e.title}</td>
+	                <td>₹ ${e.amount}</td>
+	                <td>${e.paidTo}</td>
+	                <td>${e.paymentMethod}</td>
+	                <td>${e.billNumber}</td>
+	                <td>${e.expenseDate}</td>
+	            </tr>
+	        `;
+	    });
+	}
+	
+	function renderExamReport(data){
+
+	    let head = document.getElementById("reportHead");
+	    let body = document.getElementById("reportBody");
+
+	    // ✅ Table Header
+	    head.innerHTML = `
+	        <tr>
+	            <th>Email</th>
+	            <th>Exam Name</th>
+	            <th>Score</th>
+	            <th>Total Marks</th>
+	            <th>Percentage</th>
+	            <th>Grade</th>
+	            <th>Date</th>
+	        </tr>
+	    `;
+
+	    body.innerHTML = "";
+
+	    // ✅ No Data Case
+	    if(!data || data.length === 0){
+	        body.innerHTML = `
+	            <tr>
+	                <td colspan="7" style="text-align:center; color:red; font-weight:600;">
+	                    No Exam Data Found
+	                </td>
+	            </tr>
+	        `;
+	        return;
+	    }
+
+	    // ✅ Loop Data
+	    data.forEach(e => {
+
+	        body.innerHTML += `
+	            <tr>
+	                <td>${e.email}</td>
+	                <td>${e.exam ? e.exam.title : "-"}</td>
+	                <td>${e.totalScore}</td>
+	                <td>${e.totalMarks}</td>
+	                <td>${e.percentage}%</td>
+	                <td>${e.grade}</td>
+	                <td>${formatDateTime(e.submittedAt)}</td>
+	            </tr>
+	        `;
+	    });
+	}
+	
+	function formatDateTime(dateTime){
+
+	    if(!dateTime) return "-";
+
+	    let d = new Date(dateTime);
+
+	    return d.toLocaleString("en-IN", {
+	        day: "2-digit",
+	        month: "short",
+	        year: "numeric",
+	        hour: "2-digit",
+	        minute: "2-digit"
+	    });
+	}
+	
+	function renderCertificateReport(data){
+
+	    let head = document.getElementById("reportHead");
+	    let body = document.getElementById("reportBody");
+
+	    head.innerHTML = `
+	        <tr>
+	            <th>Student Name</th>
+	            <th>Email</th>
+	            <th>Course</th>
+	            <th>Certificate No</th>
+	            <th>Issue Date</th>
+	        </tr>
+	    `;
+
+	    body.innerHTML = "";
+
+	    if(!data || data.length === 0){
+	        body.innerHTML = `
+	            <tr>
+	                <td colspan="5" style="text-align:center; color:red; font-weight:600;">
+	                    No Certificate Data Found
+	                </td>
+	            </tr>
+	        `;
+	        return;
+	    }
+
+	    data.forEach(c => {
+	        body.innerHTML += `
+	            <tr>
+	                <td>${c.studentName}</td>
+	                <td>${c.email}</td>
+	                <td>${c.courseName}</td>
+	                <td>${c.certificateNo}</td>
+	                <td>${c.issuedate}</td>
+	            </tr>
+	        `;
+	    });
+	}
+	
+	function printReport(){
+
+	    let head = document.getElementById("reportHead").innerHTML;
+	    let body = document.getElementById("reportBody").innerHTML;
+
+	    let from = document.getElementById("fromDate").value;
+	    let to = document.getElementById("toDate").value;
+
+	    const win = window.open('', '', 'width=900,height=700');
+
+	    win.document.write(`
+	        <html>
+	        <head>
+	            <title>Report</title>
+	            <style>
+	                body{font-family:Arial;padding:20px;}
+	                h2{text-align:center;margin-bottom:10px;}
+	                p{text-align:center;margin-bottom:20px;}
+
+	                table{
+	                    width:100%;
+	                    border-collapse:collapse;
+	                }
+
+	                th, td{
+	                    border:1px solid #ccc;
+	                    padding:8px;
+	                    text-align:left;
+	                }
+
+	                th{
+	                    background:#00356a;
+	                    color:white;
+	                }
+	            </style>
+	        </head>
+
+	        <body>
+
+	            <h2>${selectedReportType} Report</h2>
+	            <p>From: ${from} | To: ${to}</p>
+
+	            <table>
+	                <thead>${head}</thead>
+	                <tbody>${body}</tbody>
+	            </table>
+
+	        </body>
+	        </html>
+	    `);
+
+	    win.document.close();
+	    win.focus();
+
+	    setTimeout(() => {
+	        win.print();
+	    }, 500);
+	}
+	
+	//Expenses JS	
+	function loadExpenses(){
+
+	fetch("http://localhost:8080/api/expense/all")
+	.then(res=>res.json())
+	.then(data=>{
+
+	let table=document.getElementById("expenseTable");
+
+	table.innerHTML="";
+
+	data.forEach(e=>{
+
+	table.innerHTML+=`
+
+	<tr>
+	<td>${e.id}</td>
+	<td>${e.expenseType}</td>
+	<td>${e.description}</td>
+	<td>₹ ${e.amount}</td>
+	<td>${e.paidTo}</td>
+	<td>${e.billNumber}</td>
+	<td>${e.expenseDate}</td>
+
+	<td>
+		<button class="edit-btn"
+		onclick="editExpense(${e.id})">
+		Edit
+		</button>
+
+	<button class="delete-btn" onclick="deleteExpense(${e.id})">Delete</button>
+	</td>
+
+	</tr>
+
+	`;
+
+	});
+
+	});
+
+	}
+	
+	function openExpensePopup(){
+	document.getElementById("expensePopup").style.display="flex";
+	}
+
+	function closeExpensePopup(){
+	document.getElementById("expensePopup").style.display="none";
+	}
+
+	
+	
+	function deleteExpense(id){
+
+	if(!confirm("Delete this expense?")) return;
+
+	fetch("http://localhost:8080/api/expense/delete/"+id,{
+	method:"DELETE"
+	})
+	.then(res=>res.text())
+	.then(msg=>{
+	alert(msg);
+	loadExpenses();
+	});
+
+	}
+	
+	function editExpense(id){
+
+	fetch("http://localhost:8080/api/expense/"+id)
+
+	.then(res=>res.json())
+
+	.then(data=>{
+
+	document.getElementById("expenseId").value=data.id;
+
+	document.getElementById("expenseType").value=data.expenseType;
+
+	document.getElementById("title").value=data.title;
+
+	document.getElementById("expenseDescription").value=data.description;
+
+	document.getElementById("amount").value=data.amount;
+
+	document.getElementById("paidTo").value=data.paidTo;
+
+	document.getElementById("paymentMethod").value=data.paymentMethod;
+
+	document.getElementById("billNumber").value=data.billNumber;
+
+	document.getElementById("expenseDate").value=data.expenseDate;
+
+	document.getElementById("expensePopupTitle")
+	.innerText="Update Expense";
+
+	openExpensePopup();
+
+	});
+
+	}
+	
+	function openAddExpensePopup(){
+
+	    document.getElementById("expenseId").value="";
+
+	    document.getElementById("expensePopupTitle")
+	    .innerText="Add Expense";
+
+	    document.getElementById("expenseType").value="";
+	    document.getElementById("title").value="";
+	    document.getElementById("expenseDescription").value="";
+	    document.getElementById("amount").value="";
+	    document.getElementById("paidTo").value="";
+	    document.getElementById("paymentMethod").value="";
+	    document.getElementById("billNumber").value="";
+	    document.getElementById("expenseDate").value="";
+
+	    openExpensePopup();
+	}
+
+
+	function saveExpense(){
+
+	    let id = document.getElementById("expenseId").value;
+
+	    let expense = {
+
+	        expenseType:
+	        document.getElementById("expenseType").value,
+
+	        title:
+	        document.getElementById("title").value,
+
+			description:
+			document.getElementById("expenseDescription").value,
+
+	        amount:
+	        parseFloat(document.getElementById("amount").value),
+
+	        paidTo:
+	        document.getElementById("paidTo").value,
+
+	        paymentMethod:
+	        document.getElementById("paymentMethod").value,
+
+	        billNumber:
+	        document.getElementById("billNumber").value,
+
+	        expenseDate:
+	        document.getElementById("expenseDate").value
+	    };
+		
+		console.log(expense);
+
+	    // VALIDATION
+
+	    if(
+	        expense.expenseType === "" ||
+	        expense.title === "" ||
+	        expense.amount === ""
+	    ){
+	        alert("Please fill required fields");
+	        return;
+	    }
+
+	    // UPDATE
+
+	    if(id){
+
+	        fetch("http://localhost:8080/api/expense/update/" + id, {
+
+	            method:"PUT",
+
+	            headers:{
+	                "Content-Type":"application/json"
+	            },
+
+	            body:JSON.stringify(expense)
+
+	        })
+
+	        .then(res => {
+
+	            if(!res.ok){
+	                throw new Error("Update Failed");
+	            }
+
+	            return res.json();
+	        })
+
+	        .then(data => {
+
+	            alert("Expense Updated Successfully");
+
+	            closeExpensePopup();
+
+	            loadExpenses();
+
+	        })
+
+	        .catch(err => {
+
+	            console.log(err);
+
+	            alert("Error Updating Expense");
+	        });
+
+	    }
+
+	    // ADD
+
+	    else{
+
+	        fetch("http://localhost:8080/api/expense/upload", {
+
+	            method:"POST",
+
+	            headers:{
+	                "Content-Type":"application/json"
+	            },
+
+	            body:JSON.stringify(expense)
+
+	        })
+
+	        .then(res => {
+
+	            if(!res.ok){
+	                throw new Error("Add Failed");
+	            }
+
+	            return res.json();
+	        })
+
+	        .then(data => {
+
+	            alert("Expense Added Successfully");
+
+	            closeExpensePopup();
+
+	            loadExpenses();
+
+	        })
+
+	        .catch(err => {
+
+	            console.log(err);
+
+	            alert("Error Adding Expense");
+	        });
+
+	    }
+	}
+	
+
+	function filterExpense(){
+
+	let type=document.getElementById("expenseFilter").value;
+
+	if(type===""){
+	loadExpenses();
+	return;
+	}
+
+	fetch("http://localhost:8080/api/expense/type/"+type)
+	.then(res=>res.json())
+	.then(data=>{
+
+	let table=document.getElementById("expenseTable");
+	table.innerHTML="";
+
+	data.forEach(e=>{
+
+	table.innerHTML+=`
+	<tr>
+	<td>${e.id}</td>
+	<td>${e.expenseType}</td>
+	<td>${e.description}</td>
+	<td>₹ ${e.amount}</td>
+	<td>${e.paidTo}</td>
+	<td>${e.billNumber}</td>
+	<td>${e.expenseDate}</td>
+	<td>-</td>
+	</tr>
+	`;
+
+	});
+
+	});
+
+	}
+	
+	function openSetting(type){
+
+	  let content = document.getElementById("settingsContent");
+
+	  // PROFILE
+	  if(type === "profile"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Profile Settings</h3>
+
+	        <input type="text" placeholder="Full Name"><br><br>
+	        <input type="email" placeholder="Email"><br><br>
+	        <input type="text" placeholder="Phone"><br><br>
+	        <input type="file"><br><br>
+
+	        <button onclick="saveProfile()">Save</button>
+	      </div>
+	    `;
+	  }
+
+	  // PASSWORD
+	  if(type === "password"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Change Password</h3>
+
+	        <input type="password" placeholder="Current Password"><br><br>
+	        <input type="password" placeholder="New Password"><br><br>
+	        <input type="password" placeholder="Confirm Password"><br><br>
+
+	        <button onclick="changePassword()">Update</button>
+	      </div>
+	    `;
+	  }
+
+	  // INSTITUTE
+	  if(type === "institute"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Institute Settings</h3>
+
+	        <input type="text" placeholder="Institute Name"><br><br>
+	        <input type="text" placeholder="Address"><br><br>
+	        <input type="email" placeholder="Email"><br><br>
+	        <input type="text" placeholder="Phone"><br><br>
+	        <input type="file"><br><br>
+
+	        <button onclick="saveInstitute()">Save</button>
+	      </div>
+	    `;
+	  }
+
+	  // ACADEMIC
+	  if(type === "academic"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Academic Settings</h3>
+
+	        <input type="number" placeholder="Passing Marks (%)"><br><br>
+	        <input type="number" placeholder="Max Exam Attempts"><br><br>
+	        <input type="number" placeholder="Course Duration (Months)"><br><br>
+
+	        <button onclick="saveAcademic()">Save</button>
+	      </div>
+	    `;
+	  }
+
+	}
+	
+	function openSetting(type){
+
+	  let content = document.getElementById("settingsContent");
+
+	  document.querySelector("#settingsSection h2").innerText = "Settings / " + type;
+
+	  if(type === "profile"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Profile Settings</h3>
+	        <input type="text" placeholder="Full Name"><br><br>
+	        <input type="email" placeholder="Email"><br><br>
+	        <input type="text" placeholder="Phone"><br><br>
+	        <button onclick="saveProfile()">Save</button>
+	      </div>
+	    `;
+	  }
+
+	  if(type === "password"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Change Password</h3>
+	        <input type="password" placeholder="Current Password"><br><br>
+	        <input type="password" placeholder="New Password"><br><br>
+	        <input type="password" placeholder="Confirm Password"><br><br>
+	        <button onclick="changePassword()">Update</button>
+	      </div>
+	    `;
+	  }
+
+	  if(type === "institute"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Institute Settings</h3>
+	        <input type="text" placeholder="Institute Name"><br><br>
+	        <input type="text" placeholder="Address"><br><br>
+	        <input type="text" placeholder="Phone"><br><br>
+	        <button onclick="saveInstitute()">Save</button>
+	      </div>
+	    `;
+	  }
+
+	  if(type === "academic"){
+	    content.innerHTML = `
+	      <div class="form-card">
+	        <h3>Academic Settings</h3>
+	        <input type="number" placeholder="Passing Marks"><br><br>
+	        <input type="number" placeholder="Max Attempts"><br><br>
+	        <button onclick="saveAcademic()">Save</button>
+	      </div>
+	    `;
+	  }
+	}
+	function saveProfile(){
+	  alert("Profile Saved");
+	}
+
+	function changePassword(){
+	  alert("Password Updated");
+	}
+
+	function saveInstitute(){
+	  alert("Institute Saved");
+	}
+
+	function saveAcademic(){
+	  alert("Academic Settings Saved");
+	}
+	
+	function openNotificationPopup(){
+	  document.getElementById("notificationPopup").style.display = "flex";
+	}
+
+	function closeNotificationPopup(){
+	  document.getElementById("notificationPopup").style.display = "none";
+	}
+	
+	function sendNotification(){
+
+	    let email = document.getElementById("notifyEmail").value;
+	    let title = document.getElementById("notifyTitle").value;
+	    let message = document.getElementById("notifyMessage").value;
+	    let type = document.getElementById("notifyType").value;
+
+	    if(!email || !title || !message || !type){
+	        alert("All fields required");
+	        return;
+	    }
+
+	    fetch(`http://localhost:8080/api/admin/Notification/send-notify?email=${email}&title=${title}&message=${message}&type=${type}`,{
+	        method:"POST"
+	    })
+	    .then(res=>res.json())
+	    .then(data=>{
+	        alert("Notification Sent ✅");
+
+	        // clear form
+	        document.getElementById("notifyEmail").value="";
+	        document.getElementById("notifyTitle").value="";
+	        document.getElementById("notifyMessage").value="";
+	        document.getElementById("notifyType").value="";
+	    })
+	    .catch(err=>{
+	        console.log(err);
+	        alert("Error sending notification ❌");
+	    });
+
+	}
+	
+	window.onclick = function(e){
+	  let popup1 = document.getElementById("notificationPopup");
+	  let popup2 = document.getElementById("reminderPopup");
+
+	  if(e.target === popup1){
+	    popup1.style.display = "none";
+	  }
+
+	  if(e.target === popup2){
+	    popup2.style.display = "none";
+	  }
+	}
+
+	function openReminderPopup(){
+	  document.getElementById("reminderPopup").style.display = "flex";
+	}
+
+	function closeReminderPopup(){
+	  document.getElementById("reminderPopup").style.display = "none";
+	}
+	
+	function sendFeeReminder(){
+
+	  let email = document.getElementById("reminderEmail").value;
+
+	  if(!email){
+	    alert("Please enter email");
+	    return;
+	  }
+
+	  fetch(`http://localhost:8080/Student-free/send-feereminder?email=${email}`,{
+	    method:"POST"
+	  })
+	  .then(res=>res.json())
+	  .then(data=>{
+	    
+	    document.getElementById("reminderMsg").innerText = data.message;
+
+	    // optional auto close
+	    setTimeout(()=>{
+	      closeReminderPopup();
+	    },2000);
+
+	  })
+	  .catch(err=>{
+	    console.error(err);
+	    alert("Error sending reminder");
+	  });
+	}
+	
+	function openPaymentMode(){
+	  document.getElementById("paymentModePopup").style.display="flex";
+	}
+
+	function closePaymentMode(){
+	  document.getElementById("paymentModePopup").style.display="none";
+	}
+
+	// 👉 ONLINE
+	function goOnline(){
+	  window.location.href="fee.html";
+	}
+
+	// 👉 OFFLINE
+	function openOfflinePopup(){
+	  document.getElementById("paymentModePopup").style.display="none";
+	  document.getElementById("offlinePopup").style.display="flex";
+	}
+
+	function closeOfflinePopup(){
+	  document.getElementById("offlinePopup").style.display="none";
+	}
+	
+	function payOffline(){
+
+	  let data = {
+	    email: document.getElementById("offEmail").value,
+	    courseName: document.getElementById("offCourse").value,
+	    paidfee: document.getElementById("offAmount").value
+	  };
+
+	  fetch("http://localhost:8080/Student-free/offline-payment",{
+	    method:"POST",
+	    headers:{
+	      "Content-Type":"application/json"
+	    },
+	    body:JSON.stringify(data)
+	  })
+	  .then(res=>res.text())
+	  .then(msg=>{
+	    alert(msg);
+	    closeOfflinePopup();
+	  })
+	  .catch(err=>{
+	    alert("Error: "+err);
+	  });
+
+	}
+	
+	function openUpcomingActivityPopup(){
+	    document.getElementById("upcomingPopup").style.display = "flex";
+	}
+
+	function closePopup(){
+	    document.getElementById("upcomingPopup").style.display = "none";
+	}
+	
+	document.getElementById("upcomingForm").addEventListener("submit", function(e){
+	    e.preventDefault();
+	    saveUpcoming();
+	});
+
+	function saveUpcoming(){
+
+	    let data = {
+	        title: document.getElementById("title").value,
+	        description: document.getElementById("description").value,
+	        eventDate: document.getElementById("date").value,
+	        email: document.getElementById("email").value.trim()
+	    };
+
+	    console.log("Sending:", data);
+
+	    fetch("http://localhost:8080/api/upcoming/create",{
+	        method:"POST",
+	        headers:{
+	            "Content-Type":"application/json"
+	        },
+	        body: JSON.stringify(data)
+	    })
+	    .then(res=>{
+	        console.log("Status:", res.status);
+	        return res.json();
+	    })
+	    .then(()=>{
+	        alert("Saved Successfully ✅");
+	        closePopup();
+	        document.getElementById("upcomingForm").reset();
+	    })
+	    .catch(err=>{
+	        console.error("Error:", err);
+	        alert("Error ❌");
+	    });
+	}
+	
+	function openRecentActivityPopup(){
+	    document.getElementById("recentPopup").style.display = "flex";
+	}
+
+	function closeRecentPopup(){
+	    document.getElementById("recentPopup").style.display = "none";
+	}
+	
+	document.getElementById("recentForm").addEventListener("submit", function(e){
+	    e.preventDefault();
+	    saveRecentActivity();
+	});
+
+	function saveRecentActivity(){
+
+	    let data = {
+	        email: document.getElementById("rEmail").value,
+	        text: document.getElementById("rText").value,
+	        activityDate: document.getElementById("rDate").value
+	    };
+
+	    fetch("http://localhost:8080/api/activity/add",{
+	        method:"POST",
+	        headers:{
+	            "Content-Type":"application/json"
+	        },
+	        body: JSON.stringify(data)
+	    })
+	    .then(res=>res.text()) // ✅ FIX
+	    .then(()=>{
+	        alert("Recent Activity Saved ✅");
+	        closeRecentPopup();
+	        document.getElementById("recentForm").reset();
+	    })
+	    .catch(err=>{
+	        console.error(err);
+	        alert("Error ❌");
+	    });
+	}
+	
+	function searchCourse(){
+	    let input = document.getElementById("searchCourse").value.toLowerCase();
+	    let table = document.getElementById("courseTable");
+	    let rows = table.getElementsByTagName("tr");
+
+	    for(let i = 0; i < rows.length; i++){
+	        let courseCell = rows[i].getElementsByTagName("td")[1]; // Course column
+
+	        if(courseCell){
+	            let courseName = courseCell.textContent.toLowerCase();
+
+	            if(courseName.includes(input)){
+	                rows[i].style.display = "";
+	            } else {
+	                rows[i].style.display = "none";
+	            }
+	        }
+	    }
+	}
+	
+	
+function logout(){
+
+let confirmLogout = confirm("Are you sure you want to logout?");
+
+if(confirmLogout){
+window.location.href="admin-auth.html";
+}
+
+}
+
+function goTo(page){
+    window.location.href = page;
+}
+
+</script>
+
+</body>
+</html>

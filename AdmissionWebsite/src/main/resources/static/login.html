@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Login</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Segoe UI;
+    background:#fff8f2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.card{
+    background:white;
+    width:380px;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    position:relative;
+}
+
+h2{
+    text-align:center;
+    color:#f28c28;
+}
+
+/* CROSS BUTTON */
+.close-btn{
+    position:absolute;
+    top:15px;
+    right:20px;
+    font-size:22px;
+    cursor:pointer;
+    color:#999;
+    font-weight:bold;
+    transition:0.2s;
+}
+
+.close-btn:hover{
+    color:#f28c28;
+    transform:scale(1.2);
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+input:focus{
+    outline:none;
+    border-color:#f28c28;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#f28c28;
+    border:none;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+button:hover{
+    background:#d97412;
+}
+
+p{
+    text-align:center;
+}
+
+a{
+    color:#f28c28;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.message{
+    text-align:center;
+    margin-top:10px;
+}
+
+/* SHOW PASSWORD ALIGNMENT */
+.showpass{
+display:flex;
+align-items:center;
+gap:6px;
+font-size:13px;
+margin-top:3px;
+margin-bottom:8px;
+}
+
+.showpass input{
+width:auto;
+margin:0;
+}
+
+/* FORGOT PASSWORD */
+.forget{
+font-size:13px;
+text-align:right;
+cursor:pointer;
+color:#f28c28;
+margin-bottom:10px;
+}
+
+.forget:hover{
+text-decoration:underline;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<span class="close-btn" onclick="goBack()">&times;</span>
+
+<h2>Student Login</h2>
+
+<input type="email" id="email" placeholder="Enter Email">
+
+<input type="password" id="password" placeholder="Enter Password">
+
+<!-- SHOW PASSWORD -->
+<div class="showpass">
+<input type="checkbox" onclick="togglePassword()">
+<label>Show Password</label>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div class="forget" onclick="forgetPassword()">Forgot Password?</div>
+
+<button onclick="login()">Login</button>
+
+<p>Don't have account? <a href="register.html">Register</a></p>
+
+<div class="message" id="msg"></div>
+
+</div>
+
+<script>
+
+function goBack(){
+    window.location.href="homepage.html";
+}
+
+function togglePassword(){
+
+let pass=document.getElementById("password");
+
+if(pass.type==="password"){
+pass.type="text";
+}else{
+pass.type="password";
+}
+
+}
+
+function login(){
+
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+
+fetch("student/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email,password})
+})
+.then(res=>res.text())
+.then(data=>{
+
+let msgBox = document.getElementById("msg");  // ✅ ADD THIS
+
+msgBox.innerText = data;
+
+if(data.toLowerCase().includes("success")){
+
+    msgBox.style.color="green";
+
+    sessionStorage.setItem("studentEmail",email);
+
+    setTimeout(()=>{
+        window.location.href="Student-dash.html";
+    },1000);
+
+}else{
+
+    msgBox.style.color="red";
+
+    setTimeout(()=>{
+        msgBox.innerText = "";   // ✅ NOW IT WORKS
+    },5000);
+
+}
+
+})
+.catch(()=>{
+alert("Server error");
+});
+
+}
+
+function forgetPassword(){
+
+let email=prompt("Enter your registered email");
+let newPass=prompt("Enter new password");
+
+if(email==null || newPass==null){
+return;
+}
+
+fetch("student/forgetpass",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email:email,
+password:newPass
+})
+})
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("msg").style.color="green";
+document.getElementById("msg").innerText=data;
+})
+.catch(()=>{
+alert("Password reset failed");
+});
+
+}
+
+</script>
+
+</body>
+</html>

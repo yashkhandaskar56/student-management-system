@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Fee Payment</title>
+
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Segoe UI',Tahoma,sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+      linear-gradient(
+      135deg,
+      #f4f7fb,
+      #eaf2ff
+      );
+      padding:20px;
+    }
+
+    .container{
+      width:100%;
+      max-width:430px;
+      background:#fff;
+      border-radius:24px;
+      padding:35px;
+      box-shadow:
+      0 10px 35px rgba(0,0,0,0.08);
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* TOP DESIGN */
+
+    .top-strip{
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:6px;
+      background:linear-gradient(
+      90deg,
+      #0d6efd,
+      #4f9cff
+      );
+    }
+
+    .payment-icon{
+      width:75px;
+      height:75px;
+      border-radius:50%;
+      background:#eef5ff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:34px;
+      margin:0 auto 18px;
+      color:#0d6efd;
+    }
+
+    h2{
+      text-align:center;
+      color:#1e293b;
+      font-size:28px;
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    .subtitle{
+      text-align:center;
+      color:#64748b;
+      font-size:14px;
+      margin-bottom:30px;
+    }
+
+    .form-group{
+      margin-bottom:20px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-size:14px;
+      font-weight:600;
+      color:#334155;
+    }
+
+    input{
+      width:100%;
+      height:52px;
+      padding:0 16px;
+      border:1px solid #dbe3ee;
+      border-radius:14px;
+      background:#f8fbff;
+      font-size:15px;
+      transition:0.3s;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:#0d6efd;
+      background:#fff;
+      box-shadow:
+      0 0 0 4px rgba(13,110,253,0.08);
+    }
+
+    input::placeholder{
+      color:#94a3b8;
+    }
+
+    .pay-btn{
+      width:100%;
+      height:54px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(
+      90deg,
+      #0d6efd,
+      #3d8bfd
+      );
+      color:#fff;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s;
+      margin-top:10px;
+    }
+
+    .pay-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:
+      0 8px 20px rgba(13,110,253,0.25);
+    }
+
+    .msg{
+      margin-top:18px;
+      text-align:center;
+      font-size:14px;
+      font-weight:600;
+      color:#dc2626;
+      min-height:20px;
+    }
+
+    .bottom-area{
+      margin-top:22px;
+      text-align:center;
+    }
+
+    .back-btn{
+      background:none;
+      border:none;
+      color:#0d6efd;
+      font-size:15px;
+      cursor:pointer;
+      font-weight:600;
+      transition:0.3s;
+    }
+
+    .back-btn:hover{
+      color:#084298;
+      text-decoration:underline;
+    }
+
+    /* PAYMENT INFO */
+
+    .payment-info{
+      background:#f8fbff;
+      border:1px solid #e2ecff;
+      border-radius:14px;
+      padding:14px;
+      margin-bottom:25px;
+    }
+
+    .payment-info p{
+      font-size:13px;
+      color:#475569;
+      line-height:22px;
+    }
+
+    .payment-info strong{
+      color:#0f172a;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="top-strip"></div>
+
+    <div class="payment-icon">
+      💳
+    </div>
+
+    <h2>Course Fee Payment</h2>
+
+    <p class="subtitle">
+      Secure online payment for student admission
+    </p>
+
+    <div class="payment-info">
+      <p>
+        <strong>Note:</strong>
+        Please verify your email, course name and fee amount before proceeding to payment.
+      </p>
+    </div>
+
+    <form id="paymentForm">
+
+      <div class="form-group">
+        <label>Email Address</label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Course Name</label>
+
+        <input
+          type="text"
+          id="courseName"
+          placeholder="Enter course name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Payment Amount (INR)</label>
+
+        <input
+          type="number"
+          step="0.01"
+          id="amount"
+          placeholder="Enter amount"
+          required
+        />
+      </div>
+
+      <button type="submit" class="pay-btn">
+        Proceed To Pay
+      </button>
+
+    </form>
+
+    <p class="msg" id="message"></p>
+
+    <div class="bottom-area">
+      <button onclick="goBack()" class="back-btn">
+        ← Back
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+
+    const stripe = Stripe("pk_test_51RhlcTFMYHH1zHB8ykLLaMiLXmNxh8h1gGurAdbUJ7BmEUvtOScR9phXaSR1mvM2Nn9o8hcyric6Kfq10l0xfXLA00V7IEe1FT");
+
+    document.getElementById("paymentForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const courseName = document.getElementById("courseName").value;
+      const paidfee = parseFloat(document.getElementById("amount").value);
+
+      if (isNaN(paidfee) || paidfee <= 0) {
+        document.getElementById("message").innerText =
+        "⚠️ Enter a valid amount greater than 0";
+        return;
+      }
+
+      document.getElementById("message").innerText =
+      "Creating payment session...";
+
+      try {
+
+        const response = await fetch("/Student-free/add", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            courseName,
+            paidfee
+          })
+        });
+
+        const data = await response.json();
+
+        console.log("Server Response:", data);
+
+        if (data.checkoutUrl) {
+
+          window.location.href = data.checkoutUrl;
+
+        } else {
+
+          document.getElementById("message").innerText =
+          "❌ Payment session failed: " +
+          (data.message || "Unknown error");
+
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("message").innerText =
+        "⚠️ Server error!";
+
+      }
+
+    });
+
+    window.onload = function(){
+
+      const email =
+      sessionStorage.getItem("payEmail");
+
+      const course =
+      sessionStorage.getItem("payCourse");
+
+      const amount =
+      sessionStorage.getItem("payAmount");
+
+      if(email)
+      document.getElementById("email").value = email;
+
+      if(course)
+      document.getElementById("courseName").value = course;
+
+      if(amount)
+      document.getElementById("amount").value = amount;
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exam Instructions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f3f4f6;
+}
+
+.container{
+    max-width:900px;
+    margin:60px auto;
+    background:#fff;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.08);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.title{
+    font-size:24px;
+    font-weight:600;
+}
+
+.subtitle{
+    color:#6b7280;
+    margin-top:5px;
+}
+
+/* INFO BOX */
+.info-box{
+    background:#eef2ff;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+}
+
+.info{
+    margin:5px 0;
+    font-weight:500;
+}
+
+/* INSTRUCTIONS */
+.instructions{
+    margin-top:20px;
+}
+
+.instructions h3{
+    margin-bottom:10px;
+}
+
+.instructions ul{
+    padding-left:20px;
+    color:#374151;
+}
+
+.instructions li{
+    margin-bottom:8px;
+}
+
+/* AGREEMENT */
+.agree{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+}
+
+.agree input{
+    margin-right:10px;
+    width:18px;
+    height:18px;
+}
+
+/* BUTTON */
+.start-btn{
+    margin-top:25px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:white;
+    opacity:0.6;
+    pointer-events:none;
+    transition:0.3s;
+}
+
+.start-btn.active{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.start-btn:hover{
+    transform:translateY(-1px);
+}
+
+/* BACK */
+.back-btn{
+    margin-bottom:15px;
+    background:#e5e7eb;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.back-btn:hover{
+    background:#d1d5db;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <button class="back-btn" onclick="goBack()">← Back</button>
+
+    <div class="header">
+        <div class="title" id="examTitle">Loading...</div>
+        <div class="subtitle">Please read instructions carefully before starting</div>
+    </div>
+
+    <div class="info-box">
+        <div class="info">⏱ Duration: <span id="duration">--</span> minutes</div>
+        <div class="info">❓ Questions: <span id="totalQ">--</span></div>
+    </div>
+
+    <div class="instructions">
+        <h3>Instructions</h3>
+        <ul>
+            <li>Read each question carefully before answering.</li>
+            <li>You can navigate between questions using Next/Previous buttons.</li>
+            <li>Once selected, answers can be changed before submission.</li>
+            <li>Do not refresh or close the browser during the exam.</li>
+            <li>The exam will auto-submit when time is over.</li>
+            <li>Make sure you have stable internet connection.</li>
+        </ul>
+    </div>
+
+    <div class="agree">
+        <input type="checkbox" id="agreeCheck" onchange="toggleStart()">
+        <label for="agreeCheck">I have read and agree to the instructions</label>
+    </div>
+
+    <button class="start-btn" id="startBtn" onclick="startExam()">
+        Start Exam
+    </button>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const examId = params.get("id");
+
+const email = sessionStorage.getItem("studentEmail");
+
+if(!email){
+    alert("Session Expired. Login again.");
+    window.location.href="homepage.html";
+}
+
+// LOAD EXAM DETAILS
+window.onload = function(){
+
+    let exam = JSON.parse(sessionStorage.getItem("currentExam"));
+
+    if(!exam){
+        alert("Unable to load exam");
+        window.location.href="student-dash.html";
+        return;
+    }
+
+    document.getElementById("examTitle").innerText = exam.title;
+    document.getElementById("duration").innerText = exam.durationMinutes;
+    document.getElementById("totalQ").innerText = exam.questionList.length;
+};
+
+// ENABLE BUTTON
+function toggleStart(){
+    const check = document.getElementById("agreeCheck");
+    const btn = document.getElementById("startBtn");
+
+    if(check.checked){
+        btn.classList.add("active");
+    }else{
+        btn.classList.remove("active");
+    }
+}
+
+// START EXAM
+function startExam(){
+    window.location.href = `exam-page.html?id=${examId}`;
+}
+
+// BACK
+function goBack(){
+    window.location.href="student-dash.html";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Courses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            margin: 40px auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .course-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .course-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+
+        .course-info {
+            font-size: 14px;
+            margin: 6px 0;
+            color: #555;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .free {
+            background-color: #2ecc71;
+        }
+
+        .paid {
+            background-color: #e74c3c;
+        }
+
+        .error {
+            text-align: center;
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Available Courses</h1>
+    <div class="course-grid" id="courseGrid"></div>
+    <div class="error" id="errorMessage"></div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const grid = document.getElementById("courseGrid");
+    const errorMessage = document.getElementById("errorMessage");
+
+    // Clear container before loading
+    grid.innerHTML = "";
+
+    fetch("http://localhost:8080/course/get")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            console.log("API called successfully");
+
+            if (data.length === 0) {
+                grid.innerHTML = "<p>No courses available.</p>";
+                return;
+            }
+
+            data.forEach(course => {
+
+                const card = document.createElement("div");
+                card.className = "course-card";
+
+                const typeClass = course.free === 0 ? "free" : "paid";
+                const typeText = course.free === 0 ? "FREE" : "PAID";
+
+                card.innerHTML = `
+                    <div class="course-title">${course.courseName}</div>
+                    <div class="course-info"><strong>Duration:</strong> ${course.duration}</div>
+                    <div class="course-info"><strong>Seats:</strong> ${course.availableSeat ?? 0}/${course.totalseat}</div>
+                    <div class="course-info"><strong>Eligibility:</strong> ${course.eligibility}</div>
+                    <div class="course-info"><strong>Description:</strong> ${course.description}</div>
+                    <div class="badge ${typeClass}">${typeText}</div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            errorMessage.textContent = "Unable to load courses. Please check backend.";
+        });
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exam Certificate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box;font-family:Poppins,Arial}
+body{margin:0;background:linear-gradient(135deg,#6dd5fa,#ffffff);min-height:100vh;}
+.certificate{max-width:800px;margin:40px auto;background:#fff;padding:40px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.15);border:6px solid #1e3c72;text-align:center;}
+.certificate h1{font-size:32px;color:#1e3c72;margin-bottom:8px;}
+.certificate h2{font-size:24px;color:#1e3c72;margin-bottom:30px;}
+.certificate p{font-size:18px;margin:12px 0;}
+.certificate .highlight{font-weight:700;color:#ff9800;}
+button{padding:10px 18px;background:#1e3c72;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;margin-top:20px;}
+button:hover{background:#007bff}
+</style>
+</head>
+<body>
+
+<div class="certificate" id="certificateDiv">
+  <h1>🎓 Certificate of Achievement</h1>
+  <h2 id="certExam">Exam Name</h2>
+  <p>This is to certify that</p>
+  <p class="highlight" id="certName">Student Name</p>
+  <p>with email <span id="certEmail">student@example.com</span></p>
+  <p>has successfully completed the exam on <span id="certDate">DD/MM/YYYY</span></p>
+  <p>Score: <span id="certScore">0</span> / <span id="certTotal">0</span></p>
+  <p>Percentage: <span id="certPercentage">0</span>%</p>
+  <p>Grade: <span id="certGrade">—</span></p>
+  <button onclick="downloadCertificate()">📥 Download Certificate</button>
+  <button onclick="goBack()">🔙 Back</button>
+</div>
+
+<script>
+const BASE_URL = "http://localhost:8080";
+const params = new URLSearchParams(window.location.search);
+const submissionId = params.get("submissionId");
+
+if(!submissionId){
+  alert("Invalid Certificate Access!");
+  window.location.href = "student-dash.html";
+}
+
+window.onload = loadCertificate;
+
+async function loadCertificate(){
+  try{
+    const res = await fetch(`${BASE_URL}/submission/scoreCard/${submissionId}`);
+    if(!res.ok) throw "Certificate data not found";
+    const data = await res.json();
+
+    document.getElementById("certName").innerText = data.name;
+    document.getElementById("certEmail").innerText = data.email;
+    document.getElementById("certExam").innerText = data.examName;
+    document.getElementById("certDate").innerText = new Date(data.date).toLocaleString();
+    document.getElementById("certScore").innerText = data.score;
+    document.getElementById("certTotal").innerText = data.totalmarks;
+    document.getElementById("certPercentage").innerText = data.percentage.toFixed(2);
+    document.getElementById("certGrade").innerText = data.gradel;
+
+  }catch(err){
+    alert("Unable to load certificate!");
+    console.error(err);
+  }
+}
+
+async function downloadCertificate(){
+  const div = document.getElementById('certificateDiv');
+
+  // Use html2canvas
+  const canvas = await html2canvas(div, {scale:2});
+  const imgData = canvas.toDataURL('image/png');
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('landscape', 'pt', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  // Fit image inside PDF
+  const imgProps = pdf.getImageProperties(imgData);
+  const pdfWidth = pageWidth - 40;
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  pdf.addImage(imgData, 'PNG', 20, 20, pdfWidth, pdfHeight);
+  pdf.save(`Certificate_${document.getElementById('certName').innerText}.pdf`);
+}
+
+function goBack(){
+    // student ko result page par bhejega
+    const params = new URLSearchParams(window.location.search);
+    const submissionId = params.get("submissionId");
+    if(submissionId){
+        window.location.href = `exam-result.html?submissionId=${submissionId}`;
+    } else {
+        window.location.href = "student-dash.html";
+    }
+}
+
+</script>
+
+</body>
+</html>

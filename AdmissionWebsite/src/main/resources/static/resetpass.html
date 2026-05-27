@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #333;
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #06d6a0;
+      box-shadow: 0 0 8px rgba(6, 214, 160, 0.3);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #06d6a0;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #118ab2;
+    }
+
+    .alert {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      font-weight: 600;
+    }
+
+    .alert.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .alert.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .link {
+      margin-top: 15px;
+      display: block;
+      color: #118ab2;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🔐 Reset Password</h2>
+    <form id="resetForm">
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter your registered email" required>
+
+      <label for="newpass">New Password:</label>
+      <input type="password" id="newpass" placeholder="Enter new password" required>
+
+      <button type="submit">Reset Password</button>
+    </form>
+
+    <div id="alert" class="alert"></div>
+    <a href="login.html" class="link">⬅ Back to Login</a>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8080/student";
+    const form = document.getElementById("resetForm");
+    const alertBox = document.getElementById("alert");
+    const button = form.querySelector("button");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const newpass = document.getElementById("newpass").value.trim();
+
+      if (!email || !newpass) {
+        showAlert("⚠️ Please fill in all fields.", false);
+        return;
+      }
+
+      try {
+        button.disabled = true;
+        button.textContent = "Processing...";
+
+        const response = await fetch(`${API_BASE}/forgetpass`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, newpass })
+        });
+
+        const message = await response.text();
+
+        if (response.ok) {
+          showAlert(`✅ ${message || "Password reset successfully!"}`, true);
+
+          // Clear fields but stay on same page
+          document.getElementById("email").value = "";
+          document.getElementById("newpass").value = "";
+
+        } else {
+          showAlert(`❌ ${message || "Failed to reset password!"}`, false);
+        }
+
+      } catch (err) {
+        showAlert(`❌ Error: ${err.message}`, false);
+      } finally {
+        button.disabled = false;
+        button.textContent = "Reset Password";
+      }
+    });
+
+    function showAlert(message, success) {
+      alertBox.textContent = message;
+      alertBox.className = success ? "alert success" : "alert error";
+      alertBox.style.display = "block";
+      setTimeout(() => (alertBox.style.display = "none"), 4000);
+    }
+  </script>
+
+</body>
+</html>

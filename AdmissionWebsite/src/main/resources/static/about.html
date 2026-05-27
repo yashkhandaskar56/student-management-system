@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About Us | ISESS Technologies</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+    background: #f5f7fb;
+    color: #222;
+}
+
+/* ================= HEADER ================= */
+header {
+    height: 70px;
+    background: #0a7cff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo img {
+    height: 36px;
+}
+
+.logo span {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+nav a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* ================= HERO ================= */
+.hero {
+    display: flex;
+    padding: 80px 60px;
+    background: linear-gradient(135deg, #eaf3ff, #ffffff);
+}
+
+.hero-text {
+    flex: 1;
+}
+
+.hero-text h1 {
+    font-size: 42px;
+    margin-bottom: 16px;
+}
+
+.hero-text p {
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 520px;
+    color: #555;
+}
+
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-image img {
+    width: 90%;
+    max-width: 420px;
+}
+
+/* ================= SECTION ================= */
+.section {
+    padding: 70px 60px;
+    background: #fff;
+}
+
+.section h2 {
+    font-size: 30px;
+    margin-bottom: 18px;
+}
+
+.section p {
+    max-width: 900px;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* ================= FEATURES ================= */
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.feature-box {
+    background: #f8fbff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #e1ebff;
+}
+
+.feature-box h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #0a7cff;
+}
+
+.feature-box p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* ================= FOOTER ================= */
+footer {
+    background: #0a7cff;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column;
+        padding: 50px 25px;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        padding: 0 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+    <div class="logo">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK7xrouMnQROY0c08ckilxzOYDvzD37fdIKg&s" alt="ISESS Logo" alt="ISESS Logo">
+        <span>ISESS Technologies</span>
+    </div>
+
+    <nav>
+        <a href="public-home.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="public-homeContact.html">Contact</a>
+    </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+    <div class="hero-text">
+        <h1>About ISESS Technologies</h1>
+        <p>
+            ISESS Technologies is a modern learning and technology platform dedicated to
+            empowering students and professionals with industry-ready skills.
+            We believe in practical education, innovation, and career growth.
+        </p>
+    </div>
+
+    <div class="hero-image">
+        <img src="https://illustrations.popsy.co/blue/education.svg" alt="About Illustration">
+    </div>
+</section>
+
+<!-- ================= ABOUT CONTENT ================= -->
+<section class="section">
+    <h2>Who We Are</h2>
+    <p>
+        At ISESS Technologies, we provide high-quality training programs, expert mentorship,
+        and hands-on projects designed to bridge the gap between education and industry.
+        Our mission is to help learners gain confidence, skills, and real-world experience.
+    </p>
+
+    <div class="features">
+        <div class="feature-box">
+            <h3>Industry-Focused Courses</h3>
+            <p>
+                Carefully designed courses aligned with current industry requirements.
+            </p>
+        </div>
+
+        <div class="feature-box">
+            <h3>Expert Mentors</h3>
+            <p>
+                Learn directly from professionals with real-world experience.
+            </p>
+        </div>
+
+        <div class="feature-box">
+            <h3>Career Growth</h3>
+            <p>
+                Build skills that help you grow, switch, or advance your career.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+    © 2026 ISESS Technologies. All rights reserved.
+</footer>
+
+</body>
+</html>

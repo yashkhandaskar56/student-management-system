@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exam Attempt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#eef2f7;
+}
+
+/* MAIN LAYOUT */
+.container{
+    max-width:1100px;
+    margin:40px auto;
+    display:flex;
+    gap:25px;
+}
+
+/* LEFT PANEL */
+.exam-section{
+    flex:3;
+    background:#fff;
+    padding:30px;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
+
+/* RIGHT PANEL */
+.navigator{
+    flex:1;
+    background:#fff;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:25px;
+}
+
+.title{
+    font-size:18px;
+    font-weight:600;
+    color:#111827;
+}
+
+/* TIMER */
+.timer{
+    background:#ffe4e6;
+    color:#dc2626;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:600;
+}
+
+/* BACK BUTTON */
+.back-btn{
+    background:#f3f4f6;
+    border:none;
+    padding:6px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:500;
+}
+
+.back-btn:hover{
+    background:#e5e7eb;
+}
+
+/* QUESTION CARD */
+.question-box{
+    background:#f9fafb;
+    padding:20px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+}
+
+.question{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+/* OPTIONS */
+.option{
+    display:flex;
+    align-items:center;
+    padding:12px;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#eef2ff;
+    border-color:#6366f1;
+}
+
+.option input{
+    margin-right:10px;
+    accent-color:#6366f1;
+}
+
+/* BUTTONS */
+.actions{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.btn{
+    padding:8px 16px;
+    border:none;
+    border-radius:6px;
+    font-size:14px;
+    cursor:pointer;
+    font-weight:500;
+}
+
+.prev{
+    background:#9ca3af;
+    color:white;
+}
+
+.next{
+    background:#4f46e5;
+    color:white;
+}
+
+.submit{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(135deg,#ff7a00,#ff4d00);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* NAVIGATOR */
+.navigator h3{
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+.nav-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.nav-item{
+    padding:10px;
+    text-align:center;
+    border-radius:8px;
+    background:#e5e7eb;
+    cursor:pointer;
+    font-weight:500;
+    transition:0.2s;
+}
+
+.nav-item.active{
+    background:#4f46e5;
+    color:white;
+}
+
+.nav-item.answered{
+    background:#10b981;
+    color:white;
+}
+
+/* LEGEND */
+.legend{
+    margin-top:15px;
+    font-size:13px;
+}
+
+.legend span{
+    display:block;
+    margin-bottom:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="exam-section">
+
+        <div class="header">
+            <button onclick="goBack()" class="back-btn">← Back</button>
+            <div class="title" id="examTitle">Loading...</div>
+            <div class="timer" id="timer">00:00</div>
+        </div>
+
+        <div id="questionArea"></div>
+
+        <div class="actions">
+            <button class="btn prev" onclick="prevQuestion()">Previous</button>
+            <button class="btn next" onclick="nextQuestion()">Next</button>
+        </div>
+
+       <button id="submitBtn" class="submit" onclick="submitExam()">Submit Exam</button>
+
+    </div>
+
+    <div class="navigator">
+        <h3>Questions</h3>
+        <div class="nav-grid" id="navGrid"></div>
+
+        <div class="legend">
+            <span>🟦 Current</span>
+            <span>🟩 Answered</span>
+            <span>⬜ Not Answered</span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+	
+	let currentIndex = 0;
+	let questions = [];
+	let answers = [];
+	let durationSeconds = 0;
+	
+	const params = new URLSearchParams(window.location.search);
+	const examId = params.get("id");
+	const email = sessionStorage.getItem("studentEmail");
+
+	console.log("Exam ID:", examId);
+	console.log("Email:", email);
+
+	if(!email){
+	    alert("Session Expired. Login again.");
+	    window.location.href="homepage.html";
+	}
+
+	if(!examId){
+	    alert("Invalid exam access");
+	    window.location.href="student-dash.html";
+	}
+
+	window.onload = function(){
+
+	    fetch(`http://localhost:8080/exam/start/${examId}?email=${email}`)
+	    .then(res => {
+	        if(!res.ok){
+	            return res.text().then(msg => { throw new Error(msg); });
+	        }
+	        return res.json();
+	    })
+	    .then(data => {
+
+	        document.getElementById("examTitle").innerText = data.title;
+
+	        durationSeconds = data.durationMinutes * 60;
+
+	        questions = data.questionList;
+
+	        createNavigator();
+	        showQuestion();
+	        startTimer();
+
+	    })
+	    .catch(err => {
+
+	        if(err.message.toLowerCase().includes("attempt")){
+	            alert("❌ You already attempted this exam");
+	            window.location.href="student-dash.html";
+	            return;
+	        }
+
+	        alert(err.message || "Cannot start exam");
+	        window.location.href="student-dash.html";
+	    });
+	};
+
+function showQuestion(){
+
+    const q = questions[currentIndex];
+
+    let html = `<div class="question-box">
+        <div class="question">
+            Q${currentIndex+1}. ${q.question}
+        </div>`;
+
+    q.optionList.forEach((opt,index) => {
+
+        let checked = "";
+        const saved = answers.find(a=>a.questionId===q.questionId);
+
+        if(saved && saved.selectedOptionIndex===index){
+            checked="checked";
+        }
+
+        html += `
+        <label class="option">
+            <input type="radio"
+             name="option-${q.questionId}"
+             value="${index}"
+             ${checked}
+             onchange="saveAnswer(${q.questionId}, ${index})">
+            ${opt.optionText}
+        </label>`;
+    });
+
+    html += `</div>`;
+
+    document.getElementById("questionArea").innerHTML = html;
+    updateNavigator();
+}
+
+function saveAnswer(questionId, selectedOptionIndex){
+    let existing = answers.find(a=>a.questionId===questionId);
+
+    if(existing){
+        existing.selectedOptionIndex = selectedOptionIndex;
+    }else{
+        answers.push({
+            questionId:questionId,
+            selectedOptionIndex:selectedOptionIndex
+        });
+    }
+
+    updateNavigator();
+}
+
+function nextQuestion(){
+    if(currentIndex < questions.length-1){
+        currentIndex++;
+        showQuestion();
+    }
+}
+
+function prevQuestion(){
+    if(currentIndex > 0){
+        currentIndex--;
+        showQuestion();
+    }
+}
+
+function createNavigator(){
+    const grid = document.getElementById("navGrid");
+    grid.innerHTML="";
+
+    questions.forEach((q,index)=>{
+        grid.innerHTML += `
+            <div class="nav-item"
+                 onclick="goTo(${index})"
+                 id="nav-${index}">
+                 ${index+1}
+            </div>`;
+    });
+}
+
+function goTo(index){
+    currentIndex = index;
+    showQuestion();
+}
+
+function updateNavigator(){
+    questions.forEach((q,index)=>{
+        const nav = document.getElementById(`nav-${index}`);
+        nav.classList.remove("active","answered");
+
+        if(index===currentIndex){
+            nav.classList.add("active");
+        }
+
+        if(answers.find(a=>a.questionId===q.questionId)){
+            nav.classList.add("answered");
+        }
+    });
+}
+
+function startTimer(){
+
+    const timerEl = document.getElementById("timer");
+
+    const interval = setInterval(()=>{
+
+        let m = Math.floor(durationSeconds/60);
+        let s = durationSeconds%60;
+
+        timerEl.innerText =
+        `${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
+
+        durationSeconds--;
+
+        if(durationSeconds<0){
+            clearInterval(interval);
+            alert("Time Up!");
+            submitExam();
+        }
+
+    },1000);
+}
+
+function submitExam(){
+	
+	const btn = document.getElementById("submitBtn");
+	    btn.disabled = true;
+	    btn.innerText = "Submitting...";
+
+	    if(answers.length === 0){
+	        alert("Please answer at least one question");
+	        btn.disabled = false;
+	        btn.innerText = "Submit Exam";
+	        return;
+	    }
+
+    let data = {
+        examId: examId,
+        email: email,
+        answers: answers
+    };
+
+    fetch("http://localhost:8080/submission/submit",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify(data)
+    })
+    .then(res => {
+        if(!res.ok){
+            return res.text().then(msg => { throw new Error(msg); });
+        }
+        return res.json();
+    })
+    .then(result => {
+
+        alert("Exam Submitted Successfully");
+
+        window.location.href =
+        "exam-result.html?submissionId=" + result.submissionId;
+
+    })
+	.catch(err=>{
+
+	    // ✅ ALREADY ATTEMPTED HANDLE
+	    if(err.message.includes("already attempted")){
+	        alert("❌ You have already attempted this exam");
+
+	        window.location.href = "student-dash.html";
+	        return;
+	    }
+
+	    // OTHER ERROR
+	    alert(err.message || "Submission Failed");
+
+	    // button re-enable
+	    const btn = document.getElementById("submitBtn");
+	    btn.disabled = false;
+	    btn.innerText = "Submit Exam";
+	});
+
+}
+
+function goBack(){
+    if(confirm("Exam progress will be lost. Are you sure?")){
+        window.location.href = "student-dash.html";
+    }
+}
+</script>
+
+</body>
+</html>

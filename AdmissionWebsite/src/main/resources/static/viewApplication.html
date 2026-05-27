@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View My Admission - ISEES TECHNOLOGIES</title>
+<style>
+  /* 🌈 Global Styling */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #d0f0f7, #fefefe);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 100px;
+  }
+
+  h1 {
+    color: #00796b;
+    margin-bottom: 25px;
+    font-size: 32px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  /* 📋 Form Section */
+  .form-box {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    width: 420px;
+    text-align: center;
+    transition: transform 0.3s ease;
+	margin-bottom: 50px;
+  }
+
+  .form-box:hover {
+    transform: translateY(-3px);
+  }
+
+  label {
+    font-weight: 600;
+    color: #333;
+    display: block;
+    text-align: left;
+    margin-bottom: 6px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+  }
+
+  input:focus {
+    border-color: #00796b;
+    box-shadow: 0 0 8px rgba(0, 121, 107, 0.3);
+    outline: none;
+  }
+
+  button {
+    background: linear-gradient(45deg, #00796b, #00bfa5);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(45deg, #00bfa5, #00796b);
+    transform: scale(1.05);
+  }
+
+  /* 🧾 Table Section */
+  .result-box {
+    margin-top: 40px;
+    width: 90%;
+    max-width: 800px;
+    display: none;
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  th {
+    background: #00796b;
+    color: white;
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+
+  td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f1f1f1;
+    color: #333;
+    font-size: 15px;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover {
+    background: #f9f9f9;
+  }
+
+  img {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .no-record {
+    color: red;
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  footer {
+     margin-top: 80px; 
+    background: #00796b;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 12px;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+
+  <h1>🎓 View My Admission</h1>
+
+  <div class="form-box">
+    <form id="viewForm" onsubmit="viewApplication(event)">
+      <label for="sname">Student Name</label>
+      <input type="text" id="sname" placeholder="Enter your name" required>
+
+      <label for="courseName">Course Name</label>
+      <input type="text" id="courseName" placeholder="Enter course name" required>
+
+      <button type="submit">Search Application</button>
+    </form>
+  </div>
+
+  <div id="result" class="result-box"></div>
+  
+  <div style="text-align:center; margin-top:20px;">
+    <button onclick="goBack()" style="
+      padding:12px 25px;
+      background:linear-gradient(45deg,#06d6a0,#118ab2);
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s ease;
+    ">Back</button>
+  </div>
+
+  <footer>
+    © 2025 ISEES TECHNOLOGIES | info@iseestechnologies.com | +91 7057328701
+  </footer>
+
+<script>
+async function viewApplication(event) {
+  event.preventDefault();
+  const sname = document.getElementById("sname").value.trim();
+  const course = document.getElementById("courseName").value.trim();
+  const resultDiv = document.getElementById("result");
+
+  try {
+    const response = await fetch("http://localhost:8080/admission/get");
+    if (!response.ok) throw new Error("Network response was not ok");
+    const data = await response.json();
+
+    const record = data.find(app =>
+      app.sname.toLowerCase() === sname.toLowerCase() &&
+      app.courseName.toLowerCase() === course.toLowerCase()
+    );
+
+    if (record) {
+      resultDiv.innerHTML = `
+        <table>
+          <tr><th colspan="2">Admission Details</th></tr>
+          <tr><th>Photo</th><td><img src="${record.photopath ? 'file:///' + record.photopath : ''}" alt="Photo"></td></tr>
+          <tr><th>Name</th><td>${record.sname}</td></tr>
+          <tr><th>Course</th><td>${record.courseName}</td></tr>
+          <tr><th>Email</th><td>${record.email || 'N/A'}</td></tr>
+          <tr><th>Mobile</th><td>${record.mobno}</td></tr>
+          <tr><th>Gender</th><td>${record.gender || 'N/A'}</td></tr>
+          <tr><th>Date of Birth</th><td>${record.dob}</td></tr>
+          <tr><th>Address</th><td>${record.address || 'N/A'}</td></tr>
+          <tr><th>Application Date</th><td>${record.datetime}</td></tr>
+        </table>
+      `;
+      resultDiv.style.display = "block";
+    } else {
+      resultDiv.innerHTML = `<div class="no-record">No admission record found for <strong>${sname}</strong> in course <strong>${course}</strong>.</div>`;
+      resultDiv.style.display = "block";
+    }
+  } catch (error) {
+    resultDiv.innerHTML = `<div class="no-record">Error fetching data: ${error.message}</div>`;
+    resultDiv.style.display = "block";
+  }
+}
+
+function goBack() {
+  window.history.back();
+}
+</script>
+</body>
+</html>

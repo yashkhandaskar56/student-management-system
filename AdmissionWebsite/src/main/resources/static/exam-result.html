@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Exam Result</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:linear-gradient(90deg,#6fbad0,#a8d2e0);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.card{
+background:white;
+padding:40px;
+border-radius:15px;
+width:500px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+color:#2c4a7a;
+}
+
+.row{
+margin:10px 0;
+font-size:16px;
+}
+
+.progress{
+height:12px;
+background:#eee;
+border-radius:10px;
+margin-top:20px;
+overflow:hidden;
+}
+
+.progress-bar{
+height:100%;
+background:linear-gradient(90deg,green,yellow,red);
+width:0%;
+}
+
+.btns{
+margin-top:30px;
+text-align:center;
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:8px;
+margin:5px;
+cursor:pointer;
+}
+
+.dashboard{
+background:#555;
+color:white;
+}
+
+.certificate{
+background:#2d4f8f;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>🎉 Exam Result</h2>
+
+<div class="row">Email: <span id="email"></span></div>
+<div class="row">Date: <span id="date"></span></div>
+
+<hr>
+
+<div class="row">Score: <span id="score"></span></div>
+<div class="row">Percentage: <span id="percentage"></span>%</div>
+<div class="row">Grade: <span id="grade"></span></div>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="btns">
+<button class="dashboard" onclick="goDashboard()">🏠 Dashboard</button>
+</div>
+
+</div>
+
+<script>
+
+const urlParams = new URLSearchParams(window.location.search);
+const submissionId = urlParams.get("submissionId");
+
+if(!submissionId){
+    alert("Invalid Result Access");
+    window.location.href="student-dash.html";
+}
+fetch("http://localhost:8080/submission/result/" + submissionId)
+.then(res => res.json())
+.then(data => {
+
+
+document.getElementById("email").innerText = data.email;
+document.getElementById("date").innerText = data.submittedAt;
+
+document.getElementById("score").innerText =
+data.totalScore + " / " + data.totalMarks;
+
+document.getElementById("percentage").innerText =
+data.percentage.toFixed(2);
+
+document.getElementById("grade").innerText = data.grade;
+
+document.getElementById("progressBar").style.width =
+data.percentage + "%";
+
+})
+
+function goDashboard(){
+window.location.href="student-dash.html"
+}
+
+</script>
+
+</body>
+</html>

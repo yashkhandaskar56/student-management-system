@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Profile</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    color: #333;
+  }
+
+  header {
+    background: linear-gradient(135deg, #118ab2, #06d6a0);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+
+  input[type="email"] {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid #06d6a0;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 10px 20px;
+    background: #06d6a0;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease;
+  }
+
+  button:hover {
+    background: #118ab2;
+  }
+
+  .profile-card {
+    background: #f7fff9;
+    border-left: 5px solid #06d6a0;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+
+  th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background: #06d6a0;
+    color: white;
+  }
+
+  td {
+    background: #f9f9f9;
+  }
+
+  .no-data {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    padding: 15px;
+  }
+</style>
+</head>
+<body>
+
+<header>🎓 Student Profile Dashboard</header>
+
+<div class="container">
+  <div class="search-box">
+    <input type="email" id="emailInput" placeholder="Enter your registered email..." />
+    <button onclick="fetchProfile()">Search</button>
+  </div>
+
+  <div id="profileSection" style="display:none;">
+    <div class="profile-card">
+      <h2 id="studentName">Name: </h2>
+      <p id="studentEmail">Email: </p>
+    </div>
+
+    <h3>📚 Enrolled Courses</h3>
+    <table id="courseTable">
+      <thead>
+        <tr>
+          <th>Course Name</th>
+          <th>Fee</th>
+          <th>Duration</th>
+          <th>Admission Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+	
+  </div>
+
+  <div id="noProfile" class="no-data" style="display:none;">No student found with this email.</div>
+  
+  <button class="btn" onclick="goToDashboard()">Go to Dashboard</button>
+  
+</div>
+
+<script>
+const API_BASE = "http://localhost:8080/student/profile";
+
+async function fetchProfile() {
+  const email = document.getElementById("emailInput").value.trim();
+  if (!email) {
+    alert("Please enter your email!");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}?email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+
+    if (!data || !data.email) {
+      document.getElementById("profileSection").style.display = "none";
+      document.getElementById("noProfile").style.display = "block";
+      return;
+    }
+
+    document.getElementById("profileSection").style.display = "block";
+    document.getElementById("noProfile").style.display = "none";
+
+    document.getElementById("studentName").textContent = "Name: " + data.sname;
+    document.getElementById("studentEmail").textContent = "Email: " + data.email;
+
+    const tbody = document.querySelector("#courseTable tbody");
+    tbody.innerHTML = data.courses.length
+      ? data.courses.map(c => `
+        <tr>
+          <td>${c.courseName}</td>
+          <td>${c.fee || '0.0'}</td>
+          <td>${c.duration}</td>
+          <td>${new Date(c.datetime).toLocaleString()}</td>
+        </tr>
+      `).join('')
+      : `<tr><td colspan="4" class="no-data">No enrolled courses yet.</td></tr>`;
+
+  } catch (err) {
+    console.error("❌ Error fetching profile:", err);
+    alert("Something went wrong. Please try again later.");
+  }
+  
+}
+function goToDashboard() {
+  window.location.href = "student-dashboard.html"; // make sure file name is correct
+}
+
+</script>
+
+</body>
+</html>

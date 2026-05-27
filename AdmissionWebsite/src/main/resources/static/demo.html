@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Student Multi Course Dashboard</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI;
+  background:#f4f6fb;
+}
+
+/* Header */
+.header{
+  background:#1e3c72;
+  color:white;
+  padding:20px 40px;
+  font-size:22px;
+  font-weight:600;
+}
+
+/* Layout */
+.container{
+  padding:30px 40px;
+}
+
+/* Student Info */
+.profile-card{
+  background:white;
+  padding:20px 25px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.08);
+  margin-bottom:30px;
+}
+
+.profile-name{
+  font-size:22px;
+  font-weight:700;
+}
+
+.profile-email{
+  color:#555;
+}
+
+/* Course Cards Grid */
+.course-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;
+}
+
+/* Course Card */
+.course-card{
+  background:white;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.1);
+  cursor:pointer;
+  transition:0.3s ease;
+  border-top:5px solid #f28c28;
+}
+
+.course-card:hover{
+  transform:translateY(-6px);
+}
+
+.course-card.active{
+  border-top:5px solid #28a745;
+}
+
+.course-title{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:15px;
+}
+
+.stats{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+}
+
+.stat-box{
+  text-align:center;
+}
+
+.stat-box h3{
+  margin:5px 0;
+  font-size:18px;
+}
+
+.stat-box span{
+  color:#777;
+  font-size:12px;
+}
+
+/* Detailed Section */
+.detail-section{
+  margin-top:30px;
+  background:white;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.08);
+}
+
+.detail-title{
+  font-size:18px;
+  font-weight:600;
+  margin-bottom:15px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+🎓 Student Multi-Course Dashboard
+</div>
+
+<div class="container">
+
+  <!-- Profile -->
+  <div class="profile-card">
+    <div class="profile-name" id="studentName">Loading...</div>
+    <div class="profile-email" id="studentEmail"></div>
+  </div>
+
+  <!-- Course Cards -->
+  <div class="course-grid" id="courseGrid">
+    Loading courses...
+  </div>
+
+  <!-- Selected Course Detail -->
+  <div class="detail-section" id="courseDetail" style="display:none;">
+    <div class="detail-title" id="detailCourseName"></div>
+    <div id="detailContent"></div>
+  </div>
+
+</div>
+
+<script>
+
+const BASE = "http://localhost:8080/api/student";
+let studentEmail = sessionStorage.getItem("studentEmail");
+
+if(!studentEmail){
+  window.location.href="login.html";
+}
+
+let studentCourses = [];
+let selectedIndex = 0;
+
+/* LOAD DASHBOARD */
+async function loadDashboard(){
+
+  try{
+
+    const res = await fetch(`${BASE}/details/${encodeURIComponent(studentEmail)}`);
+    const data = await res.json();
+
+    if(!Array.isArray(data) || data.length === 0){
+      document.getElementById("courseGrid").innerHTML =
+        "<div>No course records found</div>";
+      return;
+    }
+
+    studentCourses = data;
+
+    // Fill profile
+    document.getElementById("studentName").innerText =
+      data[0].sname;
+
+    document.getElementById("studentEmail").innerText =
+      data[0].email;
+
+    renderCourseCards();
+    selectCourse(0);
+
+  }catch(err){
+    console.error(err);
+    alert("Failed to load dashboard");
+  }
+}
+
+/* RENDER COURSE CARDS */
+function renderCourseCards(){
+
+  const grid = document.getElementById("courseGrid");
+  grid.innerHTML = "";
+
+  studentCourses.forEach((c,index)=>{
+
+    const total = Number(c.totalfree)||0;
+    const paid = Number(c.paidfree)||0;
+    const remaining = Number(c.remainingfree)||0;
+
+    const card = document.createElement("div");
+    card.className="course-card";
+    card.onclick = ()=>selectCourse(index);
+
+    card.innerHTML=`
+      <div class="course-title">${c.courseName}</div>
+
+      <div class="stats">
+        <div class="stat-box">
+          <h3>₹${total}</h3>
+          <span>Total Fee</span>
+        </div>
+
+        <div class="stat-box">
+          <h3>₹${paid}</h3>
+          <span>Paid</span>
+        </div>
+
+        <div class="stat-box">
+          <h3>₹${remaining}</h3>
+          <span>Remaining</span>
+        </div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+
+  });
+}
+
+/* SELECT COURSE */
+function selectCourse(index){
+
+  selectedIndex = index;
+
+  document.querySelectorAll(".course-card")
+    .forEach(c=>c.classList.remove("active"));
+
+  document.querySelectorAll(".course-card")[index]
+    .classList.add("active");
+
+  renderCourseDetail();
+}
+
+/* DETAIL SECTION */
+function renderCourseDetail(){
+
+  const c = studentCourses[selectedIndex];
+
+  document.getElementById("courseDetail").style.display="block";
+
+  document.getElementById("detailCourseName").innerText =
+    "📘 " + c.courseName + " Details";
+
+  document.getElementById("detailContent").innerHTML=`
+    <p><strong>Student ID:</strong> ${c.id}</p>
+    <p><strong>Phone:</strong> ${c.mobno}</p>
+    <p><strong>Total Fee:</strong> ₹${c.totalfree}</p>
+    <p><strong>Paid Fee:</strong> ₹${c.paidfree}</p>
+    <p><strong>Remaining Fee:</strong> ₹${c.remainingfree}</p>
+  `;
+}
+
+/* INIT */
+loadDashboard();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Submit Assignment</title>
+<style>
+
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background:#f2f5f9;
+    margin:0;
+    padding:40px;
+}
+
+/* Card Container */
+.container{
+    background:white;
+    padding:35px;
+    border-radius:14px;
+    max-width:650px;
+    margin:auto;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    border-top:6px solid #ff7a00;
+}
+
+/* Heading */
+h2{
+    margin:0;
+    color:#333;
+    font-size:26px;
+}
+
+/* Course + Due */
+p{
+    margin:8px 0;
+    color:#555;
+    font-size:15px;
+}
+
+strong{
+    color:#ff7a00;
+}
+
+/* Divider */
+hr{
+    border:none;
+    height:1px;
+    background:#e5e7eb;
+    margin:20px 0;
+}
+
+/* Labels */
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:600;
+    color:#333;
+}
+
+/* Textarea */
+textarea{
+    width:100%;
+    height:150px;
+    padding:12px;
+    margin-top:8px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    font-size:14px;
+    resize:none;
+    transition:0.3s;
+}
+
+textarea:focus{
+    outline:none;
+    border-color:#ff7a00;
+    box-shadow:0 0 0 3px rgba(255,122,0,0.1);
+}
+
+/* File Input */
+input[type="file"]{
+    margin-top:10px;
+    font-size:14px;
+}
+
+/* Buttons */
+button{
+    margin-top:20px;
+    padding:12px 22px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+/* Submit Button */
+button:first-of-type{
+    background:#ff7a00;
+    color:white;
+}
+
+button:first-of-type:hover{
+    background:#e86f00;
+}
+
+/* Back Button */
+button:last-of-type{
+    background:#e5e7eb;
+    color:#333;
+    margin-left:10px;
+}
+
+button:last-of-type:hover{
+    background:#d1d5db;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2 id="title">Assignment</h2>
+    <p><strong>Course:</strong> <span id="course"></span></p>
+    <p><strong>Due Date:</strong> <span id="due"></span></p>
+
+    <hr>
+
+    <label>Write Your Answer:</label>
+    <textarea id="submissionText"></textarea>
+
+    <label>Upload File (optional):</label>
+    <input type="file" id="fileInput">
+
+    <br>
+    <button onclick="submitAssignment()">Submit Assignment</button>
+	<br>
+	    <button onclick="goBack()">Back</button>
+</div>
+
+<script>
+
+let assignmentId;
+
+window.onload = function(){
+
+    let params = new URLSearchParams(window.location.search);
+    assignmentId = params.get("id");
+
+    fetch("http://localhost:8080/assignment/get/student-Assignmnet?email=" 
+        + sessionStorage.getItem("studentEmail"))
+    .then(res => res.json())
+    .then(data => {
+
+        let assignment = data.find(a => a.id == assignmentId);
+
+        document.getElementById("title").innerText = assignment.title;
+        document.getElementById("course").innerText = assignment.courseName;
+        document.getElementById("due").innerText = assignment.dueDate;
+    });
+};
+
+function submitAssignment(){
+
+    let text = document.getElementById("submissionText").value;
+    let file = document.getElementById("fileInput").files[0];
+
+    let formData = new FormData();
+    formData.append("id", assignmentId);
+    formData.append("submissionText", text);
+
+    if(file){
+        formData.append("file", file);
+    }
+
+    fetch("http://localhost:8080/assignment/student/assignmnet-submit", {
+        method:"POST",
+        body:formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Assignment Submitted Successfully!");
+        window.location.href="Student-dash.html";
+    })
+    .catch(err => console.error(err));
+}
+
+
+function goBack(){
+    window.location.href="Student-dash.html";
+}
+
+</script>
+
+</body>
+</html>
