@@ -41,7 +41,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.var;
+
 
 @Service
 public class SubmissionService {
