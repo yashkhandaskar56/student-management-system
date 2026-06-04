@@ -1566,6 +1566,12 @@ html {
 </div>
 
 <script>
+
+	const BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8080"
+    : "https://student-management-system-jgiz.onrender.com";
+	
 // Mobile Menu Toggle
 function toggleMenu(){
     document.getElementById("navLinks").classList.toggle("active");
@@ -1610,7 +1616,7 @@ document.getElementById("contactForm").addEventListener("submit", function(e) {
 
 let allCourses = [];
 
-fetch("http://localhost:8080/course/get")
+fetch(`${BASE_URL}/course/get`)
 .then(res => res.json())
 .then(data => {
 
