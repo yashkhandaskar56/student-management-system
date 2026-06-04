@@ -506,6 +506,8 @@
 </div>
 
 <script>
+
+	const BASE_URL = "https://student-management-system-jgiz.onrender.com";
 	
 /*	const params = new URLSearchParams(window.location.search);
 	const studentEmail = params.get("email");
@@ -519,7 +521,7 @@
 
 	async function loadCourses(){
 
-	  const res = await fetch("http://localhost:8080/course/get");
+	  const res = await fetch(`${BASE_URL}/course/get`);
 
 	  const data = await res.json();
 
@@ -692,7 +694,7 @@ form.onsubmit = async e => {
 
   try{
 
-    const res = await fetch("http://localhost:8080/admission/apply",{
+    const res = await fetch("/admission/apply",{
       method:"POST",
       body:fd
     });
@@ -832,7 +834,7 @@ async function loadStudentData(email){
 
 try{
 
-const res = await fetch(`http://localhost:8080/admission/student/get-by-email?email=${email}`);
+const res = await fetch(`${BASE_URL}/admission/student/get-by-email?email=${email}`);
 
 if(res.status === 404){
     show("New Student - Please fill details", "error");
@@ -950,7 +952,7 @@ async function loadStudentByMobile(mob){
   console.log("📱 Mobile:", mob);
 
   try{
-    const res = await fetch(`http://localhost:8080/admission/get-by-mobile?mobno=${mob}`);
+    const res = await fetch(`${BASE_URL}/admission/get-by-mobile?mobno=${mob}`);
 
     console.log("📡 Status:", res.status);
 
