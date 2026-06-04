@@ -3195,6 +3195,8 @@ margin-left:5px;
 </div>
 
 <script>
+
+	const BASE_URL = "https://student-management-system-jgiz.onrender.com";
 	
 	function toggleDropdown(element){
 
@@ -3231,7 +3233,7 @@ margin-left:5px;
 
 	function loadDashboard(){
 
-		fetch("http://localhost:8080/Admin-dashboard/card")
+		fetch(`${BASE_URL}/Admin-dashboard/card`)
 		.then(res => res.json())
 		.then(data => {
 	
@@ -3260,7 +3262,7 @@ margin-left:5px;
 
 	    document.getElementById("studentPopup").style.display = "flex";
 
-	    fetch("http://localhost:8080/student/register-get")
+	    fetch(`${BASE_URL}/student/register-get`)
 	    .then(res => res.json())
 	    .then(data => {
 
@@ -3350,7 +3352,7 @@ margin-left:5px;
 		    let body = document.getElementById("pendingTableBody");
 		    body.innerHTML = `<tr><td colspan="6">Loading...</td></tr>`;
 
-		    fetch("http://localhost:8080/admission/get")
+		    fetch(`${BASE_URL}/admission/get`)
 		    .then(res => res.json())
 		    .then(data => {
 
@@ -3415,7 +3417,7 @@ margin-left:5px;
 
 		    if(!confirm("Send reminder to " + email + " ?")) return;
 
-		    fetch(`http://localhost:8080/Student-free/send-feereminder?email=${email}`,{
+		   fetch(`${BASE_URL}/Student-free/send-feereminder?email=${email}`,{
 		        method:"POST"
 		    })
 		    .then(res => res.json())
@@ -3436,7 +3438,7 @@ margin-left:5px;
 
 	function loadRecentAdmissions(){
 
-		fetch("http://localhost:8080/Admin-dashboard/recent-admissions")
+		fetch(`${BASE_URL}/Admin-dashboard/recent-admissions`)
 		.then(res => res.json())
 		.then(data => {
 	
@@ -3468,7 +3470,7 @@ margin-left:5px;
 
 	function loadCoursePopularityChart(){
 
-	fetch("http://localhost:8080/Admin-dashboard/course-popularity")
+	fetch(`${BASE_URL}/Admin-dashboard/course-popularity`)
 	.then(res=>res.json())
 	.then(data=>{
 
@@ -3589,7 +3591,7 @@ margin-left:5px;
 
 	    let year = new Date().getFullYear();
 
-	    fetch(`http://localhost:8080/Admin-dashboard/monthly-IncomeExpense/${year}`)
+	   fetch(`${BASE_URL}/Admin-dashboard/monthly-IncomeExpense/${year}`)
 	    .then(res => res.json())
 	    .then(data => {
 
