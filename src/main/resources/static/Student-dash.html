@@ -2709,6 +2709,7 @@ box-shadow:0 8px 20px rgba(0,0,0,0.15);
 </section>
 
 <script>
+const BASE_URL = "https://student-management-system-jgiz.onrender.com";
 	
 	let studentId = null;
 window.onload = function(){
@@ -2722,7 +2723,7 @@ window.onload = function(){
 
     document.getElementById("welcomeText").innerText = "Welcome, " + email;
 	
-	fetch("http://localhost:8080/admission/student/get-by-email?email=" + email)
+	fetch(`${BASE_URL}/admission/student/get-by-email?email=${email}`)
 	.then(res => res.json())
 	.then(data => {
 
@@ -2745,7 +2746,7 @@ window.onload = function(){
 	});
 
     // Dashboard Cards
-    fetch("http://localhost:8080/api/student/card?email=" + email)
+   fetch(`${BASE_URL}/api/student/card?email=${email}`)
     .then(res => res.json())
     .then(data => {
         document.getElementById("examAttempts").innerText = data.examAttempts ?? 0;
@@ -2761,7 +2762,7 @@ window.onload = function(){
 
    
     // Fee Table
-    fetch("http://localhost:8080/admission/get/enrollcourse?email=" + email)
+    fetch(`${BASE_URL}/admission/get/enrollcourse?email=${email}`)
     .then(res => res.json())
     .then(data => {
         let tableBody = document.getElementById("feeTableBody");
@@ -2802,7 +2803,7 @@ function loadCourseProgress(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/api/student/course-progress/" + email)
+    fetch(`${BASE_URL}/api/student/course-progress/${email}`)
     .then(res => res.json())
     .then(data => {
 
@@ -2857,7 +2858,7 @@ function toggleNotifications(){
 
 	    let email = sessionStorage.getItem("studentEmail");
 
-	    fetch("http://localhost:8080/api/student/notification/get-all?email=" + email)
+	    fetch(`${BASE_URL}/api/student/notification/get-all?email=${email}`)
 	    .then(res => res.json())
 	    .then(data => {
 
@@ -2893,7 +2894,7 @@ function toggleNotifications(){
 
 	    let email = sessionStorage.getItem("studentEmail");
 
-	    fetch("http://localhost:8080/api/student/notification/count?email=" + email)
+	    fetch(`${BASE_URL}/api/student/notification/count?email=${email}`)
 	    .then(res => res.json())
 	    .then(count => {
 
@@ -2911,7 +2912,7 @@ function toggleNotifications(){
 	}
 	function markAsRead(id){
 
-	    fetch("http://localhost:8080/api/student/notification/" + id + "/read",{
+	   fetch(`${BASE_URL}/api/student/notification/${id}/read`,{
 	        method:"PUT"
 	    })
 	    .then(() => {
@@ -2936,8 +2937,7 @@ function loadRecentActivity(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/api/activity/get/" + email)
-
+    fetch(`${BASE_URL}/api/activity/get/${email}`)
     .then(res => res.json())
 
     .then(data => {
@@ -3037,7 +3037,7 @@ function loadMyCourses(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/admission/student-progress/student?email=" + email)
+    fetch(`${BASE_URL}/admission/student-progress/student?email=${email}`)
 
     .then(res => res.json())
 
@@ -3176,7 +3176,7 @@ function loadExams(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/exam/student/" + email)
+    fetch(`${BASE_URL}/exam/student/${email}`)
     .then(res => res.json())
     .then(data => {
 
@@ -3236,7 +3236,7 @@ function openResultModal(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/submission/student/" + email + "/history")
+    fetch(`${BASE_URL}/submission/student/${email}/history`)
     .then(res => res.json())
     .then(data => {
 
@@ -3278,7 +3278,7 @@ function startExam(examId){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch(`http://localhost:8080/submission/check-attempt?email=${email}&examId=${examId}`)
+    fetch(`${BASE_URL}/submission/check-attempt?email=${email}&examId=${examId}`)
     .then(res => res.json())
     .then(alreadyAttempted => {
 
@@ -3287,7 +3287,7 @@ function startExam(examId){
             return;
         }
 
-        return fetch(`http://localhost:8080/exam/start/${examId}?email=${email}`);
+        return fetch(`${BASE_URL}/exam/start/${examId}?email=${email}`);
     })
     .then(async res => {
 
@@ -3340,7 +3340,7 @@ function loadCertificates() {
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/api/student/certificate/getByEmail?email=" + email)
+    fetch(`${BASE_URL}/api/student/certificate/getByEmail?email=${email}`)
     .then(res => res.json())
     .then(data => {
 
@@ -3382,19 +3382,19 @@ function loadCertificates() {
 
 function viewCertificate(email, name, course) {
 
-    let url = `http://localhost:8080/api/student/certificate/download?email=${email}&courseName=${course}`;
+   let url = `${BASE_URL}/api/student/certificate/download?email=${email}&courseName=${course}`;
 
     window.open(url, "_blank");
 }
 
 // View
 function viewCertificate(email, name, course) {
-    window.open(`http://localhost:8080/api/student/certificate/viewPdf?email=${email}&courseName=${course}`, "_blank");
+    window.open(`${BASE_URL}/api/student/certificate/viewPdf?email=${email}&courseName=${course}`)
 }
 
 // Download
 function downloadCertificate(email, course) {
-    window.open(`http://localhost:8080/api/student/certificate/download?email=${email}&courseName=${course}`);
+    window.open(`${BASE_URL}/api/student/certificate/download?email=${email}&courseName=${course}`)
 }
 
 //payment js code
@@ -3407,7 +3407,7 @@ function loadPaymentSummary(){
         return;
     }
 
-    fetch("http://localhost:8080/api/student/card?email=" + email)
+   fetch(`${BASE_URL}/api/student/card?email=${email}`)
     .then(res => res.json())
     .then(data => {
 
@@ -3445,7 +3445,7 @@ function loadPaymentDetails(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/admission/get/enrollcourse?email=" + email)
+    fetch(`${BASE_URL}/admission/get/enrollcourse?email=${email}`)
     .then(res => res.json())
     .then(data => {
 
@@ -3541,7 +3541,7 @@ function loadPaymentHistory(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/Student-free/fee-history?email=" + email)
+    fetch(`${BASE_URL}/Student-free/fee-history?email=${email}`)
 
     .then(res => res.json())
 
@@ -3696,7 +3696,7 @@ function openEditModal() {
 
     document.getElementById("editModal").style.display = "flex";
 
-    fetch(`http://localhost:8080/admission/get/${studentId}`)
+    fetch(`${BASE_URL}/admission/get/${studentId}`)
     .then(res => res.json())
     .then(data => {
 
@@ -3737,7 +3737,7 @@ function updateProfile() {
         formData.append("photo", file);
     }
 
-	fetch(`http://localhost:8080/admission/update/${studentId}`, {
+	fetch(`${BASE_URL}/admission/update/${studentId}`, {
 	    method: "PUT",
 	    body: formData
 	})
@@ -3753,7 +3753,7 @@ function checkAccountStatus(){
 
     let email = sessionStorage.getItem("studentEmail");
 
-    fetch("http://localhost:8080/admission/check-status?email=" + email)
+    fetch(`${BASE_URL}/admission/check-status?email=${email}`)
     .then(res => res.json())
     .then(isActive => {
 
