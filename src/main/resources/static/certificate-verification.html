@@ -765,8 +765,8 @@ async function verifyCertificate(){
     try{
 
         let response = await fetch(
-        `http://localhost:8080/api/student/certificate/verify?certificateNo=${code}`
-        );
+`/api/student/certificate/verify?certificateNo=${code}`
+);
 
         if(!response.ok){
 
@@ -806,9 +806,9 @@ async function verifyCertificate(){
 		.onclick = function(){
 
 		    window.open(
-		    `http://localhost:8080/api/student/certificate/download?email=${data.email}&courseName=${data.courseName}`,
-		    "_blank"
-		    );
+`/api/student/certificate/download?email=${data.email}&courseName=${data.courseName}`,
+"_blank"
+);
 		};
 
 		// VIEW BUTTON
@@ -816,10 +816,10 @@ async function verifyCertificate(){
 		document.getElementById("viewBtn")
 		.onclick = function(){
 
-		    window.open(
-		    `http://localhost:8080/api/student/certificate/viewPdf?email=${data.email}&courseName=${data.courseName}`,
-		    "_blank"
-		    );
+		   window.open(
+`/api/student/certificate/viewPdf?email=${data.email}&courseName=${data.courseName}`,
+"_blank"
+);
 		};
 
     }
