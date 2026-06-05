@@ -157,7 +157,7 @@ public class AdmissionSer {
 
 	    
 	 //  FILE UPLOAD
-        String uploadDir = "C:\\Users\\DELL\\OneDrive\\Desktop\\StudentAdmission";
+        String uploadDir = System.getProperty("java.io.tmpdir") + "/uploads";
         Files.createDirectories(Paths.get(uploadDir));
 
      // OLD DATA FETCH (IMPORTANT)
@@ -400,12 +400,24 @@ public class AdmissionSer {
 			return arepo.countInProgressStudents();
 		}
 		
-		private String saveFile(String dir, MultipartFile file) throws IOException {
-		    String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-		    String path = dir + File.separator + filename;
-		    file.transferTo(new File(path));
-		    return path;
-		}
+private String saveFile(String dir, MultipartFile file) throws IOException {
+
+    File uploadFolder = new File(dir);
+
+    if (!uploadFolder.exists()) {
+        uploadFolder.mkdirs();
+    }
+
+    String filename =
+            UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+    File destination =
+            new File(uploadFolder, filename);
+
+    file.transferTo(destination);
+
+    return destination.getAbsolutePath();
+}
 		
 		 public AdmissionApplication getCourseById(Long id) {
 
