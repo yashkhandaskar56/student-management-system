@@ -3648,7 +3648,9 @@ function logout(){
 
 function applyCourse(){
 
-   const email = localStorage.getItem("studentEmail");
+   const email =
+      sessionStorage.getItem("studentEmail") ||
+      localStorage.getItem("studentEmail");
 
    if(!email){
       alert("Student email not found. Please login again.");
@@ -3656,7 +3658,6 @@ function applyCourse(){
    }
 
    window.location.href = "admission.html?email=" + email;
-
 }
 
 function openFeedbackModal(){
