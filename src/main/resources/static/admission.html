@@ -707,31 +707,13 @@ form.onsubmit = e => {
 
 };
 
-document.getElementById("printBtn").onclick = () => {
+const printBtn = document.getElementById("printBtn");
 
-  let content = document.getElementById("popupContent").innerHTML;
-
-  let win = window.open("", "", "width=800,height=600");
-
-  win.document.write(`
-    <html>
-    <head>
-      <title>Print Admission</title>
-      <style>
-        body{font-family:Segoe UI;padding:20px;}
-        p{margin:8px 0;font-size:14px;}
-      </style>
-    </head>
-    <body>
-      <h2>Admission Details</h2>
-      ${content}
-    </body>
-    </html>
-  `);
-
-  win.document.close();
-  win.print();
-};
+if(printBtn){
+    printBtn.onclick = () => {
+        // code
+    };
+}
 
 
 function show(msg,type){
