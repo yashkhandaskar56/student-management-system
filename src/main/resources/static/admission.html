@@ -5,6 +5,8 @@
 <title>Student Admission Form</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
 	*{box-sizing:border-box}
 
@@ -465,42 +467,45 @@
 <button id="continueBtn" style="background:#2563eb;display:none;"> Continue to Dashboard </button>
 <button id="viewBtn" style="display:none;background:#7c3aed;">  👁 View Form </button>  -->
 
-<!-- SUCCESS SCREEN -->
-<div id="successScreen" style="display:none;text-align:center;padding:40px;">
 
-  <h2 style="color:#16a34a;">✅ Admission Submitted Successfully</h2>
-  <p style="margin-top:10px;color:#555;">
-    Your admission has been submitted successfully.
-  </p>
-
-  <div style="display:flex;gap:15px;justify-content:center;margin-top:25px;flex-wrap:wrap;">
-
-    <button id="viewAfterSubmit" class="btn btn-view">👁 View Form</button>
-
-    <button onclick="goDashboard()" class="btn btn-continue">
-      ➡ Continue to Dashboard
-    </button>
-
-  </div>
-
-</div>
 
 <div id="alert" class="alert"></div>
 
 <a href="javascript:void(0)" onclick="goBack()" class="back-btn">⬅ Back</a>
 
 <!-- VIEW POPUP -->
-<div id="viewPopup" class="popup">
+<div id="previewPopup" class="popup">
+
   <div class="popup-card">
 
-    <h3>📄 Admission Details</h3>
+    <h3>📋 Admission Preview</h3>
 
-    <div id="popupContent"></div>
+    <div id="previewContent"></div>
 
-    <button id="printBtn">🖨 Print</button>
-    <button onclick="closePopup()" style="background:#ef4444;">Close</button>
+    <div style="
+      display:flex;
+      gap:10px;
+      margin-top:20px;
+    ">
+
+      <button
+        id="editBtn"
+        style="background:#6b7280;"
+      >
+        ✏ Edit
+      </button>
+
+      <button
+        id="saveBtn"
+        style="background:#16a34a;"
+      >
+        ✅ Save & Next
+      </button>
+
+    </div>
 
   </div>
+
 </div>
 
 </div>
@@ -670,126 +675,37 @@ const alertBox=document.getElementById("alert");
 
 let admissionId=null;
 
-form.onsubmit = async e => {
-  e.preventDefault();
+form.onsubmit = e => {
 
-  const errors = validateForm();
+   e.preventDefault();
 
-  if(errors.length > 0){
-    show(errors.join("\n"), "error");
-    return;
-  }
+   const errors = validateForm();
 
-  const fd = new FormData(form);
-  
-  submittedData = Object.fromEntries(fd.entries());
-  
-  // ✅ FILES bhi store karo
-  submittedData.photoFile = form.photo.files[0];
-  submittedData.signFile = form.signature.files[0];
-  submittedData.adharFile = form.adharcard.files[0];
-  submittedData.markFile = form.marksheet.files[0];
-
- // show("Submitting admission...", "success");
-
-  try{
-
-    const res = await fetch("/admission/apply",{
-      method:"POST",
-      body:fd
-    });
-
-    if(!res.ok){
-      const msg = await res.text();
-      show(msg || "Submission failed","error");
+   if(errors.length){
+      show(errors.join("\n"),"error");
       return;
-    }
+   }
 
-    const json = await res.json();
+   const fd = new FormData(form);
 
-    admissionId = json.id;
+   submittedData =
+   Object.fromEntries(fd.entries());
 
-   document.getElementById("admissionForm").style.display = "none";
+   submittedData.photoFile =
+   form.photo.files[0];
 
-   // success screen show karo
-   document.getElementById("successScreen").style.display = "block";
-   
-  }catch(err){
-    show("Server error, please try again","error");
-  }
+   submittedData.signFile =
+   form.signature.files[0];
+
+   submittedData.adharFile =
+   form.adharcard.files[0];
+
+   submittedData.markFile =
+   form.marksheet.files[0];
+
+   openPreview();
+
 };
-
-const viewBtn = document.getElementById("viewAfterSubmit");
-
-viewBtn.onclick = () => {
-
-  function createDocRow(name, file){
-    if(!file){
-      return `
-        <tr>
-          <td>${name}</td>
-          <td style="color:red;">Not Uploaded</td>
-        </tr>
-      `;
-    }
-
-    const fileURL = URL.createObjectURL(file);
-
-    return `
-      <tr>
-        <td>${name}</td>
-        <td>
-          <button class="view-doc-btn" onclick="openDoc('${fileURL}','${file.type}')">
-            View
-          </button>
-        </td>
-      </tr>
-    `;
-  }
-
-  let html = `
-
-  <div class="view-title">Basic Details</div>
-  <div class="view-grid">
-    <div class="view-box"><b>Name</b>${submittedData.sname}</div>
-    <div class="view-box"><b>Email</b>${submittedData.email}</div>
-    <div class="view-box"><b>Mobile</b>${submittedData.mobno}</div>
-    <div class="view-box"><b>Course</b>${submittedData.courseName}</div>
-    <div class="view-box"><b>Gender</b>${submittedData.gender}</div>
-    <div class="view-box"><b>DOB</b>${submittedData.dob}</div>
-  </div>
-
-  <div class="view-title">Address Details</div>
-  <div class="view-grid">
-    <div class="view-box"><b>State</b>${submittedData.state}</div>
-    <div class="view-box"><b>District</b>${submittedData.district}</div>
-    <div class="view-box"><b>Taluka</b>${submittedData.taluka}</div>
-    <div class="view-box"><b>Address</b>${submittedData.address}</div>
-  </div>
-
-  <div class="view-title">Documents</div>
-
-  <table class="doc-table">
-    <tr>
-      <th>Document Name</th>
-      <th>Action</th>
-    </tr>
-
-    ${createDocRow("Photo", submittedData.photoFile)}
-    ${createDocRow("Signature", submittedData.signFile)}
-    ${createDocRow("Aadhar Card", submittedData.adharFile)}
-    ${createDocRow("Marksheet", submittedData.markFile)}
-
-  </table>
-  `;
-
-  document.getElementById("popupContent").innerHTML = html;
-  document.getElementById("viewPopup").style.display = "flex";
-};
-
-function closePopup(){
-  document.getElementById("viewPopup").style.display = "none";
-}
 
 document.getElementById("printBtn").onclick = () => {
 
@@ -826,6 +742,110 @@ function show(msg,type){
   setTimeout(()=>{
     alertBox.style.display = "none";
   },4000);
+}
+
+function openPreview(){
+
+ let html = `
+
+ <div class="view-title">
+ Basic Details
+ </div>
+
+ <div class="view-grid">
+
+ <div class="view-box">
+ <b>Name</b>
+ ${submittedData.sname}
+ </div>
+
+ <div class="view-box">
+ <b>Email</b>
+ ${submittedData.email}
+ </div>
+
+ <div class="view-box">
+ <b>Mobile</b>
+ ${submittedData.mobno}
+ </div>
+
+ <div class="view-box">
+ <b>Course</b>
+ ${submittedData.courseName}
+ </div>
+
+ <div class="view-box">
+ <b>Gender</b>
+ ${submittedData.gender}
+ </div>
+
+ <div class="view-box">
+ <b>DOB</b>
+ ${submittedData.dob}
+ </div>
+
+ </div>
+
+ <div class="view-title">
+ Address Details
+ </div>
+
+ <div class="view-grid">
+
+ <div class="view-box">
+ <b>State</b>
+ ${submittedData.state}
+ </div>
+
+ <div class="view-box">
+ <b>District</b>
+ ${submittedData.district}
+ </div>
+
+ <div class="view-box">
+ <b>Taluka</b>
+ ${submittedData.taluka}
+ </div>
+
+ <div class="view-box">
+ <b>Address</b>
+ ${submittedData.address}
+ </div>
+
+ </div>
+
+ <div class="view-title">
+ Documents Uploaded
+ </div>
+
+ <div class="view-grid">
+
+ <div class="view-box">
+ ✓ Photo Uploaded
+ </div>
+
+ <div class="view-box">
+ ✓ Signature Uploaded
+ </div>
+
+ <div class="view-box">
+ ✓ Aadhaar Uploaded
+ </div>
+
+ <div class="view-box">
+ ✓ Marksheet Uploaded
+ </div>
+
+ </div>
+
+ `;
+
+ document.getElementById("previewContent").innerHTML = html;
+
+ document.getElementById(
+ "previewPopup"
+ ).style.display = "flex";
+
 }
 
 /* AUTO FILL STUDENT DATA */
@@ -995,10 +1015,6 @@ mobInput.addEventListener("input", () => {
 
 });
 
-continueBtn.onclick = () => {
-    window.location.href = "student-dash.html";
-};
-
 function goBack(){
     window.history.back();
 }
@@ -1019,6 +1035,70 @@ function openDoc(url, type){
     `);
   }
 }
+	
+// SAVE & NEXT BUTTON
+document.getElementById("saveBtn")
+.onclick = async ()=>{
+
+   const fd = new FormData(form);
+
+   try{
+
+      const res = await fetch(
+         `${BASE_URL}/admission/apply`,
+         {
+            method:"POST",
+            body:fd
+         }
+      );
+
+      if(!res.ok){
+
+         const msg = await res.text();
+
+         show(
+            msg || "Submission Failed",
+            "error"
+         );
+
+         return;
+      }
+
+      document.getElementById(
+         "previewPopup"
+      ).style.display = "none";
+
+      Swal.fire({
+         icon:'success',
+         title:'Admission Submitted',
+         text:'Admission Saved Successfully',
+         confirmButtonText:'Continue'
+      }).then(()=>{
+
+         window.location.href =
+         'student-dash.html';
+
+      });
+
+   }
+   catch(err){
+
+      show(
+         "Server Error",
+         "error"
+      );
+
+   }
+
+};
+document.getElementById("editBtn")
+.onclick = ()=>{
+
+   document.getElementById(
+      "previewPopup"
+   ).style.display = "none";
+
+};
 
 </script>
 
